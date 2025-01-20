@@ -27,8 +27,16 @@ char* getHomeDirectory(void) {
 }
 
 void setWorkingDirectory(char *homedir) {
-  printf("Im setting the working directory to %s\n", homedir);
   // chdir CHanges the working DIRectory
+  // We change it to the user's home directory
   chdir(homedir);
   
+  if (chdir(homedir) != 0) {
+    perror("Failed to change directory");
+  }
+}
+
+void clearTerminal(void) {
+  // https://stackoverflow.com/questions/2347770/how-do-you-clear-the-console-screen-in-c
+  printf("\e[1;1H\e[2J");
 }
