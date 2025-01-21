@@ -37,10 +37,6 @@ int main() {
   // char buffer for the incoming arguments
   char buffer[512];
 
-  // char array for tokenising the user's inputs into arguments with <SPACE> delimiter
-  char *token;
-
-  
   clearTerminal();
 
   // Continuously loop until the user decides to quit
@@ -67,9 +63,11 @@ int main() {
       printf("\n"); // formatting
       break;
     }
-
-
-
+    char *token = strtok(buffer, " ");
+   
+    printf("token: %s\n", token);
+    token = strtok(NULL, " ");
+    
     
     // Once the EOF edge case is dealt with, remove the last line of the input which is (<RET>)
     // Note that this allows <RET> in the middle of commands so pasting is unnafected
@@ -104,6 +102,7 @@ int main() {
     // TODO: tokenise the input using strtok() but only after it has been saved to the history
     //       ... this means we will be tokenising fly and will be making things much easier
 
+    
 
     
     // Clear Terminal
