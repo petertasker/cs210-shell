@@ -1,9 +1,11 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <unistd.h> // chdir
-#include <sys/types.h>
-#include <pwd.h>
+#include <stdio.h>        // printf, perror
+#include <stdlib.h>       // getenv, malloc, free
+#include <string.h>       // strtok
+#include <unistd.h>       // chdir, getcwd, getuid
+#include <sys/types.h>    // getpwuid
+#include <pwd.h>          // struct passwd, getpwuid
+#include <linux/limits.h> // PATH_MAX
+
 
 char* getHomeDirectory(void) {
 
@@ -26,7 +28,30 @@ char* getHomeDirectory(void) {
   return NULL;
 }
 
+
+char *getWorkingDirectory(void) {
+
+  // Allocate memory for string of the working path  
+  char *cwd = malloc(PATH_MAX);
+  if (cwd == NULL) {
+    perror("Malloc error!");
+    return NULL;
+  }
+  
+  if (getcwd(cwd, PATH_MAX) != NULL) {
+    return cwd;
+  }
+  
+  perror("Path error!");
+  free(cwd);
+
+  // If this fails, return null
+  return NULL;
+}
+
+
 void setWorkingDirectory(char *homedir) {
+
   // chdir CHanges the working DIRectory
   // We change it to the user's home directory
   chdir(homedir);
@@ -36,7 +61,17 @@ void setWorkingDirectory(char *homedir) {
   }
 }
 
+
 void clearTerminal(void) {
   // https://stackoverflow.com/questions/2347770/how-do-you-clear-the-console-screen-in-c
   printf("\e[1;1H\e[2J");
+}
+
+
+void tokeniseUserInput(char *s) {
+  char *token = strtok(s, " ");
+  while (token) {
+    printf("token: %s\n", token);
+    token = strtok(NULL, " ");
+  }
 }

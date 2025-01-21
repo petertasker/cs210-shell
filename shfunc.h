@@ -1,4 +1,9 @@
-char* getHomeDirectory(void);
+char *getHomeDirectory(void);
+
 void setWorkingDirectory(char *);
-char *saveWorkingPath(void);
+
+char *getWorkingDirectory(void);
+
 void clearTerminal(void);
+
+void tokeniseUserInput(char *);

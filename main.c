@@ -20,67 +20,64 @@
 /* ✓ Exit */
 
 
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include "shfunc.h"
+#include <linux/limits.h> // PATH_MAX
+
+#define MAX_INPUT_LEN 512
 
 int main() {
-  
-  printf("Hello, world!!!\n");
-
-  // Set initial home and working directories
-  char *homedir = getHomeDirectory();
-  setWorkingDirectory(homedir);
 
   
-  // char buffer for the incoming arguments
-  char buffer[512];
+  char *userInputBuffer = malloc(MAX_INPUT_LEN); // Used for fgets()
+  char *token; // used for tokenising user input
+  
+  if (!userInputBuffer) {
+    perror("Failed to allocate memory...");
+    return 1;
+  }
 
+  // Set initial working directory to the home directory
+  char *homeDirectory = getHomeDirectory();
+  setWorkingDirectory(homeDirectory);  
   clearTerminal();
 
-  // Continuously loop until the user decides to quit
-  
   do {
 
-    printf("%s $", homedir);
+    // Display shell-like interface
+    printf("%s $", getWorkingDirectory());
+
+    
 
     
     // Call fgets for user input and instantly check if it is NULL,
-    // this means that the user inputed EOF, (<CTRL> + D), and halt
-    // the program
-
-    // This cannot be done in the while() condition alongside quit
-    // as the program can achieve undefined results due to what may
-    // be in the buffer previously
-
-    // You could have them together if you sacrifice the do-while
-    // structure, but it is too appropriate for this kind of task
-
-    // Thems the breaks
+    // this means that the user inputted EOF, (<CTRL> + D)
     
-    if (fgets(buffer, sizeof(buffer), stdin) == NULL) { 
+    if (fgets(userInputBuffer, MAX_INPUT_LEN, stdin) == NULL){ 
       printf("\n"); // formatting
       break;
     }
-    char *token = strtok(buffer, " ");
-   
-    printf("token: %s\n", token);
-    token = strtok(NULL, " ");
-    
-    
-    // Once the EOF edge case is dealt with, remove the last line of the input which is (<RET>)
-    // Note that this allows <RET> in the middle of commands so pasting is unnafected
 
-    buffer[strcspn(buffer, "\n")] = '\0';
+    // Remove the last line of the input (\n)
+    // Note that this allows \n in the middle of commands so pasting is unaffected
+    userInputBuffer[strcspn(userInputBuffer, "\n")] = '\0';
 
+    //  also halt if the user types quit
+    if (strcmp(userInputBuffer, "quit") == 0) {
+      break;
+    }
     
     // If buffer is empty (user has only hit <RET>), do nothing
     // This allows the prompt $ to show on the new line
     
-    if (strcmp(buffer, "") == 0) {
+    if (strcmp(userInputBuffer, "") == 0) {
       continue;
     }
+
+    tokeniseUserInput(userInputBuffer);
 
     
     // (add more)
@@ -106,7 +103,7 @@ int main() {
 
     
     // Clear Terminal
-    if (strcmp(buffer, "clear") == 0 || strcmp(buffer, "clr") == 0) {
+    if (strcmp(userInputBuffer, "clear") == 0 || strcmp(userInputBuffer, "clr") == 0) {
         clearTerminal();
 	
     }
@@ -114,9 +111,10 @@ int main() {
     
   }
   
-  // Quit the program
-  while (strcmp(buffer, "quit") != 0);
 
+  while (1);
+
+  free(userInputBuffer);
   printf("Exiting... \n");
   return 0;
 }
