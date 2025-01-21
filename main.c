@@ -29,7 +29,7 @@ int main() {
   
   printf("Hello, world!!!\n");
 
-  // Set home and working directory
+  // Set initial home and working directories
   char *homedir = getHomeDirectory();
   setWorkingDirectory(homedir);
 
@@ -37,32 +37,87 @@ int main() {
   // char buffer for the incoming arguments
   char buffer[512];
 
+  // char array for tokenising the user's inputs into arguments with <SPACE> delimiter
+  char *token;
+
+  
   clearTerminal();
+
   // Continuously loop until the user decides to quit
+  
   do {
+
     printf("%s $", homedir);
 
-    // get line input of user
-    fgets(buffer, sizeof(buffer), stdin);
     
-    // remove the last character of the input (which is <RET>)
-    buffer[strcspn(buffer, "\n")] = '\0';    
+    // Call fgets for user input and instantly check if it is NULL,
+    // this means that the user inputed EOF, (<CTRL> + D), and halt
+    // the program
+
+    // This cannot be done in the while() condition alongside quit
+    // as the program can achieve undefined results due to what may
+    // be in the buffer previously
+
+    // You could have them together if you sacrifice the do-while
+    // structure, but it is too appropriate for this kind of task
+
+    // Thems the breaks
+    
+    if (fgets(buffer, sizeof(buffer), stdin) == NULL) { 
+      printf("\n"); // formatting
+      break;
+    }
+
+
+
+    
+    // Once the EOF edge case is dealt with, remove the last line of the input which is (<RET>)
+    // Note that this allows <RET> in the middle of commands so pasting is unnafected
+
+    buffer[strcspn(buffer, "\n")] = '\0';
+
     
     // If buffer is empty (user has only hit <RET>), do nothing
     // This allows the prompt $ to show on the new line
+    
     if (strcmp(buffer, "") == 0) {
       continue;
     }
 
+    
+    // (add more)
+
+    // Edge Cases:
+    // <CTRL + D>
+    // <RET>
+    // ...
+    
+    // Regular Cases:
+    // quit
+    // clear, clr
+    // ...
+
+    // TODO:
+    // help
+    // ...
+    
+    // TODO: tokenise the input using strtok() but only after it has been saved to the history
+    //       ... this means we will be tokenising fly and will be making things much easier
+
+
+    
     // Clear Terminal
     if (strcmp(buffer, "clear") == 0 || strcmp(buffer, "clr") == 0) {
         clearTerminal();
-    }  
+	
+    }
+
+    
   }
   
   // Quit the program
   while (strcmp(buffer, "quit") != 0);
 
-  
+  printf("Exiting... \n");
   return 0;
 }
