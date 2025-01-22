@@ -28,7 +28,7 @@
 
 int main() {
 
-  char **arguments;
+  char **arguments = NULL;
   char *userInputBuffer = malloc(MAX_INPUT_LEN); // Used for fgets()
   
   if (!userInputBuffer) {
@@ -50,14 +50,10 @@ int main() {
     // Call fgets for user input and instantly check if it is NULL,
     // this means that the user inputted EOF (<CTRL> + D)
 
-    /*
-      BUG: if EOF is hit while there is text in the terminal input,
-      EOF has to be hit twice
-    */
-
     if (fgets(userInputBuffer, MAX_INPUT_LEN, stdin) == NULL) {
-      printf("\n");
+      if (feof(stdin)) {
       break;
+      }
     }
 
 
@@ -70,8 +66,9 @@ int main() {
       continue;
     }
 
-    
+      
     // Tokenise the arguments into an array of strings
+    
     arguments = tokeniseUserInput(userInputBuffer);
     //for (int i = 0; arguments[i] != NULL; i++) {
     //  printf("argument: %s\n", arguments[i]);
@@ -117,6 +114,6 @@ int main() {
 
   free(userInputBuffer);
   free(arguments);
-  printf("Exiting... \n");
+  printf("\nExiting...");
   return 0;
 }

@@ -7,7 +7,7 @@
 #include <linux/limits.h> // PATH_MAX
 #include <unistd.h>
 #include <wait.h>
-
+#include <ctype.h>
 #define TOKEN_DELIMITERS " \t|><,&;\n"
 #define MAX_INPUT_LEN 512
 #define MAX_NUM_ARGS 50
@@ -92,6 +92,8 @@ char **tokeniseUserInput(char *s) {
     token = strtok(NULL, TOKEN_DELIMITERS);
     i++;
   }
+
+  arguments[i] = NULL;
   return arguments;
 }
 
@@ -109,8 +111,8 @@ void externalCommands(char **args) {
      4. exit
   */
 
-  // Create a new process with fork and give it an ID (child)
-  // and a parent ID
+ // Create a new process with fork and give it an ID (child)
+ // and a parent ID
   pid_t pid = fork();
   
   // Fork failed
@@ -125,18 +127,15 @@ void externalCommands(char **args) {
     // as *that* command's arguments
     // The child process does not have to exit, as it is replaced by the
     // external command
-    execvp(args[0], args);
-
+    if (execvp(args[0], args) == -1) {
+      fprintf(stderr , "%s: command not found\n", args[0]);  
+      exit(1);
+    }
     
-    
-    // This point is only reached if execvp fails
-    perror("Execution of external command failed");
-    exit(1);
-  }
-
-  // Parent waits for the child to finish
-  else {  
-    int status;
-    waitpid(pid, &status, 0);
+    // Parent waits for the child to finish
+    else {  
+      int status;
+      waitpid(pid, &status, 0);
+    }	  
   }
 }

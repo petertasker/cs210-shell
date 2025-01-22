@@ -13,3 +13,5 @@ char **tokeniseUserInput(char *);
 int *compareStrings(char*, char*);
 
 void externalCommands(char **);
+
+char *trimWhitespace(char *s);
