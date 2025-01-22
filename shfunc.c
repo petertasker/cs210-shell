@@ -54,13 +54,12 @@ char *getWorkingDirectory(void) {
 }
 
 
-void setWorkingDirectory(char *homedir) {
-
+void setWorkingDirectory(char *arg) {
+  printf("you are trying to go to: %s\n", arg);
   // chdir CHanges the working DIRectory
-  // We change it to the user's home directory
-  chdir(homedir);
+  chdir(arg);
   
-  if (chdir(homedir) != 0) {
+  if (chdir(arg) != 0) {
     perror("Failed to change directory");
   }
 }

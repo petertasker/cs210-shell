@@ -1,5 +1,3 @@
-
-
 /* ✓  Find the user home directory from the environment */ 
 /* ? Set current working directory to user home directory */
 /* Save the current path */
@@ -101,6 +99,13 @@ int main() {
       }
     }
 
+    else if (compareStrings(arguments[0], "pwd")) {
+      printf("%s\n", getWorkingDirectory());
+    }
+
+    else if (compareStrings(arguments[0], "cd")) {
+      setWorkingDirectory(arguments[1]);
+    }
     // command isnt in the list
     else {
       printf("%s: command not found\n", arguments[0]);
