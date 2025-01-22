@@ -1,78 +1,120 @@
-#include <stdio.h>        // printf, perror
-#include <stdlib.h>       // getenv, malloc, free
-#include <string.h>       // strtok
-#include <unistd.h>       // chdir, getcwd, getuid
-#include <sys/types.h>    // getpwuid
-#include <pwd.h>          // struct passwd, getpwuid
+// Main loop of the shell
+
+
+/* ✓  Find the user home directory from the environment */ 
+/* ? Set current working directory to user home directory */
+/* Save the current path */
+/* Load history */
+/* Load aliases */
+/* ✓ Do while shell has not terminated */
+/* ✓ Display prompt */
+/* ✓ Read and parse user input */
+/* While the command is a history invocation or alias then replace it with the */
+/* appropriate command from history or the aliased command respectively */
+/* If command is built-in invoke appropriate function */
+/* Else execute command as an external process */
+/* ✓ End while */
+/* Save history */
+/* Save aliases */
+/* Restore original path */
+/* ✓ Exit */
+
+
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include "shfunc.h"
 #include <linux/limits.h> // PATH_MAX
 
-#define TOKEN_DELIMITERS " \t|<>&;"
+#define MAX_INPUT_LEN 512
 
-char* getHomeDirectory(void) {
+int main() {
 
-  // Check if the HOME enviroment variable is set
-  char *home = getenv("HOME");
-  if (home) {
-    return home;
+  
+  char *userInputBuffer = malloc(MAX_INPUT_LEN); // Used for fgets()
+ // char *token; // used for tokenising user input
+  
+  if (!userInputBuffer) {
+    perror("Failed to allocate memory...");
+    return 1;
   }
 
-  // Otherwise, get the details of the current user by
-  // accessing their user ID and password for their user ID
-  struct passwd *pw = getpwuid(getuid());
+  // Set initial working directory to the home directory
+  char *homeDirectory = getHomeDirectory();
+  setWorkingDirectory(homeDirectory);  
+  clearTerminal();
 
-  // pw contains the home directory of the current user
-  if (pw) {
-    return pw->pw_dir;
-  }
+  do {
 
-  // If this fails, return null
-  return NULL;
-}
+    // Display shell-like interface
+    printf("%s $ ", getWorkingDirectory());
 
+    
 
-char *getWorkingDirectory(void) {
+    
+    // Call fgets for user input and instantly check if it is NULL,
+    // this means that the user inputted EOF, (<CTRL> + D)
+    
+    if (fgets(userInputBuffer, MAX_INPUT_LEN, stdin) == NULL){ 
+      printf("\n"); // formatting
+      break;
+    }
 
-  // Allocate memory for string of the working path  
-  char *cwd = malloc(PATH_MAX);
-  if (cwd == NULL) {
-    perror("Malloc error!");
-    return NULL;
+    // Remove the last line of the input (\n)
+    // Note that this allows \n in the middle of commands so pasting is unaffected
+    userInputBuffer[strcspn(userInputBuffer, "\n")] = '\0';
+
+    //  also halt if the user types quit
+    if (strcmp(userInputBuffer, "quit") == 0) {
+      break;
+    }
+    
+    // If buffer is empty (user has only hit <RET>), do nothing
+    // This allows the prompt $ to show on the new line
+    
+    if (strcmp(userInputBuffer, "") == 0) {
+      continue;
+    }
+
+    tokeniseUserInput(userInputBuffer);
+
+    
+    // (add more)
+
+    // Edge Cases:
+    // <CTRL + D>
+    // <RET>
+    // ...
+    
+    // Regular Cases:
+    // quit
+    // clear, clr
+    // ...
+
+    // TODO:
+    // help
+    // ...
+    
+    // TODO: tokenise the input using strtok() but only after it has been saved to the history
+    //       ... this means we will be tokenising fly and will be making things much easier
+
+    
+
+    
+    // Clear Terminal
+    if (strcmp(userInputBuffer, "clear") == 0 || strcmp(userInputBuffer, "clr") == 0) {
+        clearTerminal();
+	
+    }
+
+    
   }
   
-  if (getcwd(cwd, PATH_MAX) != NULL) {
-    return cwd;
-  }
-  
-  perror("Path error!");
-  free(cwd);
 
-  // If this fails, return null
-  return NULL;
-}
+  while (1);
 
-
-void setWorkingDirectory(char *homedir) {
-
-  // chdir CHanges the working DIRectory
-  // We change it to the user's home directory
-  chdir(homedir);
-  
-  if (chdir(homedir) != 0) {
-    perror("Failed to change directory");
-  }
-}
-
-
-void clearTerminal(void) {
-  // https://stackoverflow.com/questions/2347770/how-do-you-clear-the-console-screen-in-c
-  printf("\e[1;1H\e[2J");
-}
-
-
-void tokeniseUserInput(char *s) {
-  char *token = strtok(s, TOKEN_DELIMITERS);
-  while (token) {
-    printf("token: %s\n", token);
-    token = strtok(NULL, TOKEN_DELIMITERS);
-  }
+  free(userInputBuffer);
+  printf("Exiting... \n");
+  return 0;
 }
