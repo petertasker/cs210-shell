@@ -65,8 +65,8 @@ int main() {
     // Note that this allows \n in the middle of commands so pasting is unaffected
     userInputBuffer[strcspn(userInputBuffer, "\n")] = '\0';
 
-    //  also halt if the user types quit
-    if (strcmp(userInputBuffer, "quit") == 0) {
+    //  also halt if the user types exit
+    if (strcmp(userInputBuffer, "exit") == 0) {
       break;
     }
     
