@@ -76,8 +76,8 @@ int main() {
     //for (int i = 0; arguments[i] != NULL; i++) {
     //  printf("argument: %s\n", arguments[i]);
     //}
-
     
+
     /* --------- Internal Commands ---------*/
     // NOTE: else-if is an antipattern but unless someone wants
     // to create a hash function thems the breaks
@@ -108,7 +108,8 @@ int main() {
     }
     // command isnt in the list
     else {
-      printf("%s: command not found\n", arguments[0]);
+      /* --------- External Commands ---------*/
+      externalCommands(arguments);
     }
   }
   

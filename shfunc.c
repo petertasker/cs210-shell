@@ -1,10 +1,12 @@
 #include <stdio.h>        // printf, perror
 #include <stdlib.h>       // getenv, malloc, free
 #include <string.h>       // strtok
-#include <unistd.h>       // chdir, getcwd, getuid
+#include <unistd.h>       // chdir, getcwd, getuid, execvp
 #include <sys/types.h>    // getpwuid
 #include <pwd.h>          // struct passwd, getpwuid
 #include <linux/limits.h> // PATH_MAX
+#include <unistd.h>
+#include <wait.h>
 
 #define TOKEN_DELIMITERS " \t|><,&;\n"
 #define MAX_INPUT_LEN 512
@@ -96,4 +98,45 @@ char **tokeniseUserInput(char *s) {
 
 int compareStrings(char *input, char *arg) {
   return strcmp(input, arg) == 0;  
+}
+
+void externalCommands(char **args) {
+
+  /* External Processes:
+     1. fork
+     2. exec
+     3. wait
+     4. exit
+  */
+
+  // Create a new process with fork and give it an ID (child)
+  // and a parent ID
+  pid_t pid = fork();
+  
+  // Fork failed
+  if (pid == -1) {  
+    perror("fork failed");
+    return;
+  }
+
+  // pid = 0 is the child process
+  else if (pid == 0) {
+    // Execute first argument as a command, with all other arguments as that 
+    // as *that* command's arguments
+    // The child process does not have to exit, as it is replaced by the
+    // external command
+    execvp(args[0], args);
+
+    
+    
+    // This point is only reached if execvp fails
+    perror("Execution of external command failed");
+    exit(1);
+  }
+
+  // Parent waits for the child to finish
+  else {  
+    int status;
+    waitpid(pid, &status, 0);
+  }
 }

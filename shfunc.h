@@ -11,3 +11,5 @@ void clearTerminal(void);
 char **tokeniseUserInput(char *);
 
 int *compareStrings(char*, char*);
+
+void externalCommands(char **);
