@@ -91,12 +91,10 @@ char **tokeniseUserInput(char *s) {
     token = strtok(NULL, TOKEN_DELIMITERS);
     i++;
   }
-  
-  arguments[i] = NULL;
   return arguments;
 }
 
 
-int compareStrings(char *input, char *argument) {
-  return strcmp(input, argument) == 0;  
+int compareStrings(char *input, char *arg) {
+  return strcmp(input, arg) == 0;  
 }

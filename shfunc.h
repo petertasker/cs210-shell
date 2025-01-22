@@ -10,4 +10,4 @@ void clearTerminal(void);
 
 char **tokeniseUserInput(char *);
 
-int compareStrings(char *, char*);
+int *compareStrings(char*, char*);
