@@ -6,7 +6,7 @@
 #include <pwd.h>          // struct passwd, getpwuid
 #include <linux/limits.h> // PATH_MAX
 
-#define TOKEN_DELIMITERS " \t|<>&;"
+#define TOKEN_DELIMITERS " \t|><,&;\n"
 
 char* getHomeDirectory(void) {
 
@@ -75,4 +75,9 @@ void tokeniseUserInput(char *s) {
     printf("token: %s\n", token);
     token = strtok(NULL, TOKEN_DELIMITERS);
   }
+}
+
+
+int compareStrings(char *input, char *argument) {
+  return strcmp(input, argument) == 0;  
 }

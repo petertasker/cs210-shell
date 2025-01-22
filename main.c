@@ -33,7 +33,6 @@ int main() {
 
   
   char *userInputBuffer = malloc(MAX_INPUT_LEN); // Used for fgets()
- // char *token; // used for tokenising user input
   
   if (!userInputBuffer) {
     perror("Failed to allocate memory...");
@@ -49,66 +48,45 @@ int main() {
 
     // Display shell-like interface
     printf("%s $ ", getWorkingDirectory());
-
+    fflush(stdout);
     
 
     
     // Call fgets for user input and instantly check if it is NULL,
-    // this means that the user inputted EOF, (<CTRL> + D)
-    
-    if (fgets(userInputBuffer, MAX_INPUT_LEN, stdin) == NULL){ 
-      printf("\n"); // formatting
+    // this means that the user inputted EOF (<CTRL> + D)
+
+    // BUG: if EOF is hit while there is text in the terminal input,
+    // EOF has to be hit twice
+
+    // Read user input
+    if (fgets(userInputBuffer, MAX_INPUT_LEN, stdin) == NULL) {
+      printf("\n"); // Formatting
       break;
     }
 
+
     // Remove the last line of the input (\n)
-    // Note that this allows \n in the middle of commands so pasting is unaffected
     userInputBuffer[strcspn(userInputBuffer, "\n")] = '\0';
 
-    //  also halt if the user types quit
-    if (strcmp(userInputBuffer, "quit") == 0) {
+    //  Quit the program
+    if (compareStrings(userInputBuffer, "exit")){
       break;
     }
     
     // If buffer is empty (user has only hit <RET>), do nothing
-    // This allows the prompt $ to show on the new line
-    
-    if (strcmp(userInputBuffer, "") == 0) {
+    if (compareStrings(userInputBuffer, "")) {
       continue;
     }
-
+    
     tokeniseUserInput(userInputBuffer);
-
     
-    // (add more)
-
-    // Edge Cases:
-    // <CTRL + D>
-    // <RET>
-    // ...
-    
-    // Regular Cases:
-    // quit
-    // clear, clr
-    // ...
-
-    // TODO:
-    // help
-    // ...
-    
-    // TODO: tokenise the input using strtok() but only after it has been saved to the history
-    //       ... this means we will be tokenising fly and will be making things much easier
-
-    
-
     
     // Clear Terminal
-    if (strcmp(userInputBuffer, "clear") == 0 || strcmp(userInputBuffer, "clr") == 0) {
+    if (compareStrings(userInputBuffer, "clear") || compareStrings(userInputBuffer, "cls")) {
         clearTerminal();
 	
     }
 
-    
   }
   
 
