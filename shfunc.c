@@ -7,6 +7,9 @@
 #include <linux/limits.h> // PATH_MAX
 
 #define TOKEN_DELIMITERS " \t|><,&;\n"
+#define MAX_INPUT_LEN 512
+#define MAX_NUM_ARGS 50
+
 
 char* getHomeDirectory(void) {
 
@@ -69,12 +72,28 @@ void clearTerminal(void) {
 }
 
 
-void tokeniseUserInput(char *s) {
-  char *token = strtok(s, TOKEN_DELIMITERS);
-  while (token) {
-    printf("token: %s\n", token);
-    token = strtok(NULL, TOKEN_DELIMITERS);
+char **tokeniseUserInput(char *s) {
+
+  char **arguments = malloc(MAX_NUM_ARGS *sizeof(char *));
+
+  if (!arguments) {
+    perror("Failed to allocate memory for arguments");
+    return NULL;
   }
+  
+  char *token = strtok(s, TOKEN_DELIMITERS);
+  int i = 0;
+
+  // Loop through each token and put it into memory, erasing the token afterwards
+  // Should maybe be triple pointer later for history?
+  while (token && i < MAX_NUM_ARGS) {
+    arguments[i] = token;
+    token = strtok(NULL, TOKEN_DELIMITERS);
+    i++;
+  }
+  
+  arguments[i] = NULL;
+  return arguments;
 }
 
 

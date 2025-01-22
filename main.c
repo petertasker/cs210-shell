@@ -1,6 +1,3 @@
-// Main loop of the shell
-
-
 /* ✓  Find the user home directory from the environment */ 
 /* ? Set current working directory to user home directory */
 /* Save the current path */
@@ -31,7 +28,7 @@
 
 int main() {
 
-  
+  char **arguments;
   char *userInputBuffer = malloc(MAX_INPUT_LEN); // Used for fgets()
   
   if (!userInputBuffer) {
@@ -48,8 +45,9 @@ int main() {
 
     // Display shell-like interface
     printf("%s $ ", getWorkingDirectory());
-    fflush(stdout);
+
     
+    /* Edge Cases */
 
     
     // Call fgets for user input and instantly check if it is NULL,
@@ -58,14 +56,12 @@ int main() {
     // BUG: if EOF is hit while there is text in the terminal input,
     // EOF has to be hit twice
 
-    // Read user input
     if (fgets(userInputBuffer, MAX_INPUT_LEN, stdin) == NULL) {
       printf("\n"); // Formatting
       break;
     }
-
-
-    // Remove the last line of the input (\n)
+    
+    // Remove the last character of the input (\n)
     userInputBuffer[strcspn(userInputBuffer, "\n")] = '\0';
 
     //  Quit the program
@@ -77,9 +73,23 @@ int main() {
     if (compareStrings(userInputBuffer, "")) {
       continue;
     }
+
     
-    tokeniseUserInput(userInputBuffer);
+    /* Regular Cases */
+
     
+    /*
+     There are four categories of command:
+         1. History invocation
+         2. Alias
+         3. In-built command
+         4. External command
+    */
+    
+    arguments = tokeniseUserInput(userInputBuffer);
+    for (int i = 0; arguments[i] != NULL; i++) {
+      printf("argument: %s\n", arguments[i]);
+    }
     
     // Clear Terminal
     if (compareStrings(userInputBuffer, "clear") || compareStrings(userInputBuffer, "cls")) {
@@ -93,6 +103,7 @@ int main() {
   while (1);
 
   free(userInputBuffer);
+  free(arguments);
   printf("Exiting... \n");
   return 0;
 }
