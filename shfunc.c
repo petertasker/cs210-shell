@@ -136,10 +136,15 @@ void externalCommands(char **args) {
   }
 }
 
-char* trimString(char *s){
-  while(isspace(*s)){
+char* trimString(char *s) {
+  char *original = s; // Store original pointer for later use
+
+  while (isspace((unsigned char)*s)) {
     s++;
   }
-  return s;
-}
 
+  // Use memmove to shift the trimmed string to the start of the buffer
+  memmove(original, s, strlen(s) + 1);
+
+  return original;
+}
