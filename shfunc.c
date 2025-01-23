@@ -118,7 +118,7 @@ void externalCommands(char **args) {
   }
 
   // pid = 0 is the child process
-  else if (pid == 0) {
+  if (pid == 0) {
     // Execute first argument as a command, with all other arguments as that 
     // as *that* command's arguments
     // The child process does not have to exit, as it is replaced by the
@@ -127,13 +127,14 @@ void externalCommands(char **args) {
       fprintf(stderr , "%s: command not found\n", args[0]);  
       exit(1);
     }
+  }
     
     // Parent waits for the child to finish
-    else {  
-      int status;
-      waitpid(pid, &status, 0);
-    }	  
-  }
+  else {  
+    int status;
+    waitpid(pid, &status, 0);
+  }	  
+  
 }
 
 char* trimString(char *s) {
