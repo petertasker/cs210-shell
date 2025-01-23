@@ -30,6 +30,7 @@ int main() {
 
   char **arguments = NULL;
   char *userInputBuffer = malloc(MAX_INPUT_LEN); // Used for fgets()
+  char *userInputBufferOGPos = userInputBuffer;
   
   if (!userInputBuffer) {
     perror("Failed to allocate memory...");
@@ -49,6 +50,7 @@ int main() {
     // Call fgets for user input and instantly check if it is NULL,
     // this means that the user inputted EOF (<CTRL> + D)
 
+    userInputBuffer = userInputBufferOGPos; // reset buffer pointer
 
     if (fgets(userInputBuffer, MAX_INPUT_LEN, stdin) == NULL) {
       if (feof(stdin)) {
@@ -113,9 +115,10 @@ int main() {
   }
   
   while (1);
-  free(userInputBuffer);
 
-  
+  free(userInputBufferOGPos);
+  free(arguments);
+
   printf("\nExiting...");
   return 0;
 }
