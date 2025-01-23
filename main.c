@@ -110,11 +110,12 @@ int main() {
     else {
       externalCommands(arguments);
     }
+      free(arguments);
+
   }
-  
+
   while (1);
   free(userInputBuffer);
-  free(arguments);
   
   printf("\nExiting...");
   return 0;
