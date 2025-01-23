@@ -16,6 +16,21 @@
 /* Restore original path */
 /* ✓ Exit */
 
+/*
+Internal Commands:
+✓ cd
+✓ getpath
+x setpath
+x history
+x !!
+x !<no>
+x !<no> -
+x alias
+x alias <name> <command>
+x unalias
+*/
+
+
 
 
 #include <stdio.h>
@@ -37,6 +52,9 @@ int main() {
     return 1;
   }
 
+  // Get current working directory so it can be restored on exit
+  char *initialDirectory = getWorkingDirectory();
+  
   // Set initial working directory to the home directory
   char *homeDirectory = getHomeDirectory();
   setWorkingDirectory(homeDirectory);  
@@ -100,13 +118,16 @@ int main() {
       }
     }
 
-    else if (compareStrings(arguments[0], "pwd")) {
+    else if (compareStrings(arguments[0], "pwd") || \
+	     compareStrings(arguments[0], "getpath")) {
       printf("%s\n", getWorkingDirectory());
     }
 
     else if (compareStrings(arguments[0], "cd")) {
       setWorkingDirectory(arguments[1]);
     }
+    
+			   
 
     // command isnt in the list, therefore it
     // is either external or does not exist
@@ -116,8 +137,8 @@ int main() {
     free(arguments);
   }
   while (1);
-
-  printf("\nExiting...\n");
+  setWorkingDirectory(initialDirectory);
+  printf("\nExiting...\n\n");
   return 0;
 
 
