@@ -57,7 +57,6 @@ char *getWorkingDirectory(void) {
 
 
 void setWorkingDirectory(char *arg) {
-  printf("you are trying to go to: %s\n", arg);
   // chdir CHanges the working DIRectory  
   if (chdir(arg) != 0) {
     perror("Failed to change directory");
@@ -66,10 +65,10 @@ void setWorkingDirectory(char *arg) {
 
 
 void clearTerminal(void) {
-  // https://stackoverflow.com/questions/2347770/how-do-you-clear-the-console-screen-in-c
-  printf("\e[1;1H\e[2J");
-}
+  // https://stackoverflow.com/questions/55672661/what-does-printf-033h-033j-do-in-c
+  printf("\033[H\033[J");
 
+}
 
 char **tokeniseUserInput(char *s) {
 
@@ -79,7 +78,7 @@ char **tokeniseUserInput(char *s) {
     perror("Failed to allocate memory for arguments");
     return NULL;
   }
-  
+
   char *token = strtok(s, TOKEN_DELIMITERS);
   int i = 0;
 
@@ -90,7 +89,6 @@ char **tokeniseUserInput(char *s) {
     token = strtok(NULL, TOKEN_DELIMITERS);
     i++;
   }
-
   arguments[i] = NULL;
   return arguments;
 }

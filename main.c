@@ -1,5 +1,5 @@
 /* ✓  Find the user home directory from the environment */ 
-/* ? Set current working directory to user home directory */
+/* ✓ Set current working directory to user home directory */
 /* Save the current path */
 /* Load history */
 /* Load aliases */
@@ -9,7 +9,7 @@
 /* While the command is a history invocation or alias then replace it with the */
 /* appropriate command from history or the aliased command respectively */
 /* If command is built-in invoke appropriate function */
-/* Else execute command as an external process */
+/* ✓ Else execute command as an external process */
 /* ✓ End while */
 /* Save history */
 /* Save aliases */
@@ -58,7 +58,7 @@ int main() {
 
     // trim leading whitespace
     userInputBuffer = trimString(userInputBuffer);
-
+    
     // Remove the last character of the input (\n)
     userInputBuffer[strcspn(userInputBuffer, "\n")] = '\0';
 
@@ -104,17 +104,18 @@ int main() {
     else if (compareStrings(arguments[0], "cd")) {
       setWorkingDirectory(arguments[1]);
     }
-    // command isnt in the list
+
+    // command isnt in the list, therefore it
+    // is either external or does not exist
     else {
-      /* --------- External Commands ---------*/
       externalCommands(arguments);
     }
   }
   
   while (1);
-
   free(userInputBuffer);
-  free(arguments);
+
+  
   printf("\nExiting...");
   return 0;
 }
