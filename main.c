@@ -43,6 +43,8 @@ x unalias
 
 int main() {
 
+  clearTerminal();
+
   char **arguments = NULL;
   char *userInputBuffer = malloc(MAX_INPUT_LEN); // Used for fgets()
   char *userInputBufferOGPos = userInputBuffer;
@@ -53,13 +55,15 @@ int main() {
   }
 
   // Get current working directory so it can be restored on exit
+  char *homeDirectory = getHomeDirectory();
   char *initialDirectory = getWorkingDirectory();
   
   // Set initial working directory to the home directory
-  char *homeDirectory = getHomeDirectory();
   setWorkingDirectory(homeDirectory);  
-  clearTerminal();
 
+  /* ------------- HISTORY AND ALIASES GO HERE!! ------------- */
+
+  
   do {
 
     // Display shell-like interface
