@@ -81,6 +81,7 @@ int main() {
     /* --------- Internal Commands ---------*/
     // NOTE: else-if is an antipattern but unless someone wants
     // to create a hash function thems the breaks
+
     
     // Exit the program
     if (compareStrings(arguments[0], "exit")) {
@@ -112,20 +113,12 @@ int main() {
     else {
       externalCommands(arguments);
     }
-      free(arguments);
-
+    free(arguments);
   }
-
   while (1);
-<<<<<<< HEAD
-  free(userInputBuffer);
-  
-=======
 
-  free(userInputBufferOGPos);
-  free(arguments);
-
->>>>>>> refs/remotes/origin/master
-  printf("\nExiting...");
+  printf("\nExiting...\n");
   return 0;
+
+
 }
