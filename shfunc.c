@@ -58,9 +58,7 @@ char *getWorkingDirectory(void) {
 
 void setWorkingDirectory(char *arg) {
   printf("you are trying to go to: %s\n", arg);
-  // chdir CHanges the working DIRectory
-  chdir(arg);
-  
+  // chdir CHanges the working DIRectory  
   if (chdir(arg) != 0) {
     perror("Failed to change directory");
   }
@@ -139,3 +137,11 @@ void externalCommands(char **args) {
     }	  
   }
 }
+
+char* trimString(char *s){
+  while(isspace(*s)){
+    s++;
+  }
+  return s;
+}
+

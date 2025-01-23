@@ -1,5 +1,3 @@
-
-
 char *getHomeDirectory(void);
 
 void setWorkingDirectory(char *);
@@ -14,4 +12,4 @@ int *compareStrings(char*, char*);
 
 void externalCommands(char **);
 
-char *trimWhitespace(char *s);
+char *trimString(char *s);

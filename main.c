@@ -46,29 +46,30 @@ int main() {
     // Display shell-like interface
     printf("%s $ ", getWorkingDirectory());
 
-    
     // Call fgets for user input and instantly check if it is NULL,
     // this means that the user inputted EOF (<CTRL> + D)
 
+
     if (fgets(userInputBuffer, MAX_INPUT_LEN, stdin) == NULL) {
       if (feof(stdin)) {
-      break;
+        break;
       }
     }
 
+    // trim leading whitespace
+    userInputBuffer = trimString(userInputBuffer);
 
     // Remove the last character of the input (\n)
     userInputBuffer[strcspn(userInputBuffer, "\n")] = '\0';
 
-
+  
     // Edge case: user has inputted nothing
     if (compareStrings(userInputBuffer, "")) {
       continue;
     }
 
-      
     // Tokenise the arguments into an array of strings
-    
+
     arguments = tokeniseUserInput(userInputBuffer);
     //for (int i = 0; arguments[i] != NULL; i++) {
     //  printf("argument: %s\n", arguments[i]);
@@ -92,7 +93,7 @@ int main() {
     // Echo the command
     else if (compareStrings(arguments[0], "echo")) {
       for (int i = 1; arguments[i] != NULL; i++) {
-	printf("%s\n", arguments[i]);
+	      printf("%s\n", arguments[i]);
       }
     }
 
