@@ -138,6 +138,7 @@ int main() {
     else {
       externalCommands(arguments);
     }
+    free(userInputBufferOGPos); // this should be working now
     free(arguments);
   }
   while (1);
