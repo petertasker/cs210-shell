@@ -1,3 +1,4 @@
 # Ignore emacs backup files
 *~
+*#
 gmon.out
