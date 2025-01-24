@@ -8,7 +8,7 @@
 #include <unistd.h>
 #include <wait.h>
 #include <ctype.h>
-#define TOKEN_DELIMITERS " \t|><,&;\n"
+#define TOKEN_DELIMITERS " \t|><&;\n"
 #define MAX_INPUT_LEN 512
 #define MAX_NUM_ARGS 50
 
