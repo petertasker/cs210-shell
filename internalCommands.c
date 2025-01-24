@@ -9,12 +9,7 @@ int exitShell(void) {
   // every single internal command in one place
   return 1;
 }
- 
-void clearTerminal(void) {
-  // https://stackoverflow.com/questions/55672661/what-does-printf-033h-033j-do-in-c
-  printf("\033[H\033[J");
 
-}
 
 void echo(char **arguments) {
   // Loop through every argument and print
@@ -22,6 +17,7 @@ void echo(char **arguments) {
     printf("%s ", arguments[i]);
   }
 }
+
 
 void pwd(void) {
   printf("%s\n", getWorkingDirectory());

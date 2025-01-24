@@ -49,8 +49,9 @@ This is becuase perror suceeding prints "Success" to the screen
 #define MAX_INPUT_LEN 512
 
 int main() {
-
-  clearTerminal();
+  // Manually clear shell (this only works on UNIX based terminals)
+  system("clear");
+  
   int exitFlag = 0;
   char **arguments = NULL;
 
@@ -95,7 +96,7 @@ int main() {
     // this means that the user inputted EOF (<CTRL> + D)
     if (fgets(userInputBuffer, MAX_INPUT_LEN, stdin) == NULL) {
       if (feof(stdin)) {
-        exitFlag = exitShell();
+        exitFlag = 1;
       }
     }
 
@@ -126,14 +127,9 @@ int main() {
     
     // Exit the program
     if (compareStrings(arguments[0], "exit")) {
-      exitFlag = exitShell();
+      exitFlag = 1;
     }    
-    
-    // Clear terminal
-    else if (compareStrings(arguments[0], "clear")) {
-      clearTerminal();
-    }
-
+  
     // Echo the command
     else if (compareStrings(arguments[0], "echo")) {
       echo(arguments);
