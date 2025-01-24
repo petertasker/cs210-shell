@@ -146,6 +146,8 @@ int main() {
   while (1);
   setWorkingDirectory(initialDirectory);
   printf("\nExiting...\n\n");
+  free(userInputBufferOGPos); // this should be working now
+  // free(arguments); 
   return 0;
 
 
