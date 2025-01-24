@@ -1,9 +1,6 @@
-// THIS IS A TEST. DONT WORRY ABOUT IT! I AM SEEING IF GITLAB AUTOMAGICALLY MIRRORS
-
-
 /* ✓  Find the user home directory from the environment */ 
 /* ✓ Set current working directory to user home directory */
-/* Save the current path */
+/* ✓ Save the current path */
 /* Load history */
 /* Load aliases */
 /* ✓ Do while shell has not terminated */
@@ -11,12 +8,12 @@
 /* ✓ Read and parse user input */
 /* While the command is a history invocation or alias then replace it with the */
 /* appropriate command from history or the aliased command respectively */
-/* If command is built-in invoke appropriate function */
+/* ? If command is built-in invoke appropriate function */
 /* ✓ Else execute command as an external process */
 /* ✓ End while */
 /* Save history */
 /* Save aliases */
-/* Restore original path */
+/* ✓ Restore original path */
 /* ✓ Exit */
 
 /*
@@ -34,23 +31,33 @@ x unalias
 */
 
 
+/*
+Note the difference in use between perror() and fprintf().
+fprintf() is to give the user public facing errors, while
+perror() is for system'y errors, such as malloc
+This is becuase perror suceeding prints "Success" to the screen
+ */
 
 
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "shfunc.h"
-#include <linux/limits.h> // PATH_MAX
+#include <linux/limits.h>     // PATH_MAX
+#include "shfunc.h"           // some shell functions that we define
+#include "internalCommands.h" // all internal commands
 
 #define MAX_INPUT_LEN 512
 
 int main() {
 
   clearTerminal();
-
+  int exitFlag = 0;
   char **arguments = NULL;
-  char *userInputBuffer = malloc(MAX_INPUT_LEN); // Used for fgets()
-  char *userInputBufferOGPos = userInputBuffer;
+
+  // Create input buffer and also a copy of the initial
+  // pointer so the buffer can reset every cycle of the loop
+  char *userInputBuffer = malloc(MAX_INPUT_LEN);
+  char *userInputBufferCopy = userInputBuffer;
   
   if (!userInputBuffer) {
     perror("Failed to allocate memory...");
@@ -68,18 +75,27 @@ int main() {
 
   
   do {
+    // Get current working directory
+    char *cwd = getWorkingDirectory();
+    if (cwd == NULL) {
+      perror("Error trying to get working directory");
+      exitFlag = exitShell();
+    }
+
     
     // Display shell-like interface
-    printf("%s $", getWorkingDirectory());
+    printf("%s $", cwd);
+    free(cwd);
+
+    
+    // Reset buffer pointer
+    userInputBuffer = userInputBufferCopy; 
 
     // Call fgets for user input and instantly check if it is NULL,
     // this means that the user inputted EOF (<CTRL> + D)
-
-    userInputBuffer = userInputBufferOGPos; // reset buffer pointer
-
     if (fgets(userInputBuffer, MAX_INPUT_LEN, stdin) == NULL) {
       if (feof(stdin)) {
-        break;
+        exitFlag = exitShell();
       }
     }
 
@@ -110,7 +126,7 @@ int main() {
     
     // Exit the program
     if (compareStrings(arguments[0], "exit")) {
-      break;
+      exitFlag = exitShell();
     }    
     
     // Clear terminal
@@ -120,34 +136,37 @@ int main() {
 
     // Echo the command
     else if (compareStrings(arguments[0], "echo")) {
-      for (int i = 1; arguments[i] != NULL; i++) {
-	      printf("%s\n", arguments[i]);
-      }
+      echo(arguments);
     }
 
+    // Print path
     else if (compareStrings(arguments[0], "pwd") || \
 	     compareStrings(arguments[0], "getpath")) {
-      printf("%s\n", getWorkingDirectory());
+      pwd();
     }
 
+    // Change directory
     else if (compareStrings(arguments[0], "cd")) {
-      setWorkingDirectory(arguments[1]);
+      cd(arguments);
     }
     
-			   
-
-    // command isnt in the list, therefore it
-    // is either external or does not exist
+    // command isnt in the list of internals, therefore
+    // it is either external or does not exist
     else {
       externalCommands(arguments);
     }
+
+    // reset arguments in memory every time as to not leak any memory
     free(arguments);
   }
-  while (1);
+  while (!exitFlag);
+
+  // replenish directory
   setWorkingDirectory(initialDirectory);
   printf("\nExiting...\n\n");
-  free(userInputBufferOGPos); // this should be working now
-  // free(arguments); 
+
+  free(userInputBufferCopy);
+  
   return 0;
 
 

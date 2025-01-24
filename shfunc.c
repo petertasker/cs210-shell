@@ -8,7 +8,7 @@
 #include <unistd.h>
 #include <wait.h>
 #include <ctype.h>
-#define TOKEN_DELIMITERS " \t|><&;\n"
+#define TOKEN_DELIMITERS " \t\n;&><|"
 #define MAX_INPUT_LEN 512
 #define MAX_NUM_ARGS 50
 
@@ -36,24 +36,14 @@ char* getHomeDirectory(void) {
 
 
 char *getWorkingDirectory(void) {
-
-  // Allocate memory for string of the working path  
-  char *cwd = malloc(PATH_MAX);
+  // getcwd(NULL, 0) dynamically allocates memory,
+  // this must be freed by the caller
+  char *cwd = getcwd(NULL, 0);
   if (cwd == NULL) {
-    perror("Malloc error!");
-    return NULL;
+    perror("Failed to get working directory");
   }
-  
-  if (getcwd(cwd, PATH_MAX) != NULL) {
-    return cwd;
-  }
-  
-  perror("Path error!");
-  free(cwd);
-
-  // If this fails, return null
-  return NULL;
-}
+  return cwd;
+}  
 
 
 void setWorkingDirectory(char *arg) {
@@ -63,12 +53,6 @@ void setWorkingDirectory(char *arg) {
   }
 }
 
-
-void clearTerminal(void) {
-  // https://stackoverflow.com/questions/55672661/what-does-printf-033h-033j-do-in-c
-  printf("\033[H\033[J");
-
-}
 
 char **tokeniseUserInput(char *s) {
 
