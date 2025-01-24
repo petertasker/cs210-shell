@@ -136,9 +136,22 @@ int main() {
     }
 
     // Print path
-    else if (compareStrings(arguments[0], "pwd") || \
+    else if (compareStrings(arguments[0], "pwd") ||	\
 	     compareStrings(arguments[0], "getpath")) {
       pwd();
+    }
+    
+    // Set path
+    else if (compareStrings(arguments[0], "setpath")) {
+	if (arguments[1] == NULL) {
+	  fprintf(stdout, "Failed to set path: a path must be given\n");
+	}
+	else if (arguments[3] != NULL) {
+	  fprintf(stdout, "Failed to set path: only one argument must be given\n");
+	}
+	else {
+	  setWorkingDirectory(arguments[1]);
+	}
     }
 
     // Change directory
