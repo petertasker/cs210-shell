@@ -1,3 +1,6 @@
+// THIS IS A TEST. DONT WORRY ABOUT IT! I AM SEEING IF GITLAB AUTOMAGICALLY MIRRORS
+
+
 /* ✓  Find the user home directory from the environment */ 
 /* ✓ Set current working directory to user home directory */
 /* Save the current path */
@@ -65,9 +68,9 @@ int main() {
 
   
   do {
-
+    
     // Display shell-like interface
-    printf("%s $ ", getWorkingDirectory());
+    printf("%s $", getWorkingDirectory());
 
     // Call fgets for user input and instantly check if it is NULL,
     // this means that the user inputted EOF (<CTRL> + D)
