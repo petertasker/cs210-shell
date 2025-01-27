@@ -8,10 +8,11 @@
 #include <unistd.h>
 #include <wait.h>
 #include <ctype.h>
+
 #define TOKEN_DELIMITERS " \t\n;&><|"
 #define MAX_INPUT_LEN 512
-#define MAX_NUM_ARGS 50
-
+#define MAX_NUM_ARGS 5
+#define MAX_NUM_HISTORY 20
 
 char* getHomeDirectory(void) {
 
@@ -34,15 +35,14 @@ char* getHomeDirectory(void) {
 }
 
 
-char *getWorkingDirectory(char *buffer) {
-  
+void getWorkingDirectory(char *buffer) {
+
   // Replace the old path with the new path
   buffer = getcwd(buffer, PATH_MAX);
   if (!buffer) {
     perror("Failed to get working directory!");
   }
-  return buffer;
-}  
+}
 
 
 void setWorkingDirectory(char *arg) {
@@ -124,7 +124,7 @@ void externalCommands(char **args) {
 }
 
 
-char* trimString(char *s) {
+void trimString(char *s) {
   
   // Create copy of original pointer address
   char *original = s;
@@ -134,6 +134,4 @@ char* trimString(char *s) {
 
   // Use memmove to shift the trimmed string to the start of the buffer
   memmove(original, s, strlen(s) + 1);
-
-  return original;
 }

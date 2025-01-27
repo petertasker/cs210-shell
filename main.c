@@ -1,4 +1,4 @@
-/* ✓  Find the user home directory from the environment */ 
+   /* ✓  Find the user home directory from the environment */ 
 /* ✓ Set current working directory to user home directory */
 /* ✓ Save the current path */
 /* Load history */
@@ -49,7 +49,9 @@ This is becuase perror suceeding prints "Success" to the screen
 #include "shfunc.h"           // some shell functions that we define
 #include "internalCommands.h" // all internal commands
 
-#define MAX_INPUT_LEN 512
+// If you decide to change these, make sure they are changed in shfunc.c
+#define MAX_INPUT_LEN 511
+#define MAX_NUM_HISTORY 20
 
 int main() {
 
@@ -57,7 +59,7 @@ int main() {
 
   // Create input buffer and also a copy of the initial
   // pointer so the buffer can reset every cycle of the loop
-  char *userInputBuffer = malloc(MAX_INPUT_LEN * sizeof(char));
+  char *userInputBuffer = malloc((MAX_INPUT_LEN + 1) * sizeof(char));
   if (!userInputBuffer) {
     perror("Failed to allocate memory...");
    return 1;
@@ -68,7 +70,7 @@ int main() {
 
   // Working directory of the place which the shell was ran
   char *initialDirectory = malloc(PATH_MAX * sizeof(char));
-  initialDirectory = getWorkingDirectory(initialDirectory);
+  getWorkingDirectory(initialDirectory);
   if (!initialDirectory) {
     perror("Failed to allocate memory for cwd");
   }
@@ -87,12 +89,24 @@ int main() {
 
   /* ------------- HISTORY AND ALIASES GO HERE!! ------------- */
 
+  // Allocated fixed sized list of strings for history
+  // malloc is evil and is not to be done in schfunc
+  char **history = malloc(MAX_NUM_HISTORY * sizeof(char*));
+  for (int i = 0; i < MAX_NUM_HISTORY; i++) {
+    history[i] = malloc((MAX_INPUT_LEN + 1) * sizeof(char));
+  }
+  if (!history) {
+    perror("Failed to allocate memory for history");
+    exit(1);
+  }
+  
+  
   // Main shell loop
   do {
 
     // Get current working directory
-    currentDirectory = getWorkingDirectory(currentDirectory);
-    if (currentDirectory == NULL) {
+    getWorkingDirectory(currentDirectory);
+    if (!currentDirectory) {
       perror("Error trying to get working directory");
       break;
     }
@@ -116,7 +130,7 @@ int main() {
     }
 
     // Trim leading whitespace
-    userInputBuffer = trimString(userInputBuffer);
+    trimString(userInputBuffer);
     
     // Remove the last character of the input (\n)
     userInputBuffer[strcspn(userInputBuffer, "\n")] = '\0';
@@ -144,7 +158,15 @@ int main() {
     // Exit the program
     if (compareStrings(arguments[0], "exit")) {
       break;
-    }    
+    }
+
+    /* By this point in the program, the user has inputted a command
+       which should be saved. Note that in linux, invalid commands
+       are also saved.
+    */
+
+  
+    
     // Echo the command
     else if (compareStrings(arguments[0], "echo")) {
       echo(arguments);
@@ -179,6 +201,9 @@ int main() {
     // Free arguments that is malloced in tokeniseUserInput()
     free(arguments);
     arguments = NULL;
+
+    
+
   }
   while (1);
 

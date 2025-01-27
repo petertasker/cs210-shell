@@ -13,7 +13,7 @@ void echo(char **arguments) {
 
 
 void pwd(char *currentDirectory) {
-  printf("%s\n", getWorkingDirectory(currentDirectory));
+  printf("%s\n", currentDirectory);
 }
 
 void cd(char **arguments) {
