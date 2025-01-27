@@ -8,7 +8,7 @@
 /* ✓ Read and parse user input */
 /* While the command is a history invocation or alias then replace it with the */
 /* appropriate command from history or the aliased command respectively */
-/* ? If command is built-in invoke appropriate function */
+/* ✓ If command is built-in invoke appropriate function */
 /* ✓ Else execute command as an external process */
 /* ✓ End while */
 /* Save history */
@@ -36,8 +36,11 @@ Note the difference in use between perror() and fprintf().
 fprintf() is to give the user public facing errors, while
 perror() is for system'y errors, such as malloc
 This is becuase perror suceeding prints "Success" to the screen
- */
+*/
 
+// Memory issue : ending child process loses(?) some still reachable memory.
+// Assumedly, this is all the memory that that child process used.
+// This is not really a problem.
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -118,8 +121,8 @@ int main() {
     }
 
     // Tokenise the arguments into an array of strings
-
     arguments = tokeniseUserInput(userInputBuffer);
+    
     //for (int i = 0; arguments[i] != NULL; i++) {
     //  printf("argument: %s\n", arguments[i]);
     //}
@@ -179,11 +182,15 @@ int main() {
   setWorkingDirectory(initialDirectory);
   printf("\nExiting...\n\n");
 
+
+  if (arguments) {
+    free(arguments);
+  }
   free(currentDirectory);
   free(initialDirectory);
   free(userInputBufferCopy);
   
   return 0;
 
-
+  
 }

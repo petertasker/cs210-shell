@@ -106,6 +106,7 @@ void externalCommands(char **args) {
     // external command
     if (execvp(args[0], args) == -1) {
       fprintf(stderr , "%s: command not found\n", args[0]);  
+      // maybe free here?
       exit(1);
     }
   }
@@ -114,8 +115,9 @@ void externalCommands(char **args) {
   else {  
     int status;
     waitpid(pid, &status, 0);
-  }	  
-  
+    // maybe here???
+  }
+  // maybe here???? 
 }
 
 char* trimString(char *s) {
