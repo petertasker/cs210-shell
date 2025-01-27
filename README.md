@@ -6,11 +6,11 @@ This project is for CS210: Computer Systems and Architecture.
 
 Written By:  
 
-Kyle Ashley <br>
-Brian McKenzie <br>
-Callum McManus <br>
-Peter Tasker <br>
-Jay Thompson <br>
+[Kyle Ashley](https://github.com/Ziggyzag07)<br>
+[Brian McKenzie](https://github.com/BrianSMckenzie)<br>
+[Callum McManus](https://github.com/Callumxm)<br>
+[Peter Tasker](https://github.com/petertasker)<br>
+[Jay Thompson](https://github.com/nosferatuus)<br>
 
 ## Overview
 
