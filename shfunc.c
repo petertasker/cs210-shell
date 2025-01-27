@@ -30,25 +30,23 @@ char* getHomeDirectory(void) {
     return pw->pw_dir;
   }
 
-  // If this fails, return null
   return NULL;
 }
 
 
 char *getWorkingDirectory(char *buffer) {
-  // getcwd(NULL, 0) dynamically allocates memory,
-  // this must be freed by the caller
+  
+  // Replace the old path with the new path
   buffer = getcwd(buffer, PATH_MAX);
   if (!buffer) {
     perror("Failed to get working directory!");
-    return;
   }
-  
   return buffer;
 }  
 
 
 void setWorkingDirectory(char *arg) {
+
   // chdir CHanges the working DIRectory  
   if (chdir(arg) != 0) {
     perror("Failed to change directory");
@@ -57,8 +55,8 @@ void setWorkingDirectory(char *arg) {
 
 
 char **tokeniseUserInput(char *s) {
-  char **arguments = malloc(MAX_NUM_ARGS *sizeof(char *));
 
+  char **arguments = malloc(MAX_NUM_ARGS *sizeof(char *));
   if (!arguments) {
     perror("Failed to allocate memory for arguments");
     return NULL;
@@ -67,8 +65,7 @@ char **tokeniseUserInput(char *s) {
   char *token = strtok(s, TOKEN_DELIMITERS);
   int i = 0;
 
-  // Loop through each token and put it into memory, erasing the token afterwards
-  // Should maybe be triple pointer later for history?
+  // Loop through the command and put each token in arguments
   while (token && i < MAX_NUM_ARGS) {
     arguments[i] = token;
     token = strtok(NULL, TOKEN_DELIMITERS);
@@ -128,8 +125,9 @@ void externalCommands(char **args) {
 
 
 char* trimString(char *s) {
-  char *original = s; // Store original pointer for later use
-
+  
+  // Create copy of original pointer address
+  char *original = s;
   while (isspace((unsigned char)*s)) {
     s++;
   }

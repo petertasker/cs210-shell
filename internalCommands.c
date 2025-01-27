@@ -27,12 +27,7 @@ void cd(char **arguments) {
     fprintf(stdout, "Failed to change directory: too many arguments provided\n");
     return;
   }
-  
   else {
     setWorkingDirectory(arguments[1]);
   }
-}
-
-void internalCommands(command){
-
 }

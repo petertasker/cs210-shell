@@ -20,7 +20,7 @@
 Internal Commands:
 ✓ cd
 ✓ getpath
-x setpath
+✓ setpath
 x history
 x !!
 x !<no>
@@ -60,7 +60,7 @@ int main() {
   char *userInputBuffer = malloc(MAX_INPUT_LEN * sizeof(char));
   if (!userInputBuffer) {
     perror("Failed to allocate memory...");
-    return 1;
+   return 1;
   }
   
   char *userInputBufferCopy = userInputBuffer;
@@ -109,7 +109,9 @@ int main() {
     // this means that the user inputted EOF (<CTRL> + D)
     if (fgets(userInputBuffer, MAX_INPUT_LEN, stdin) == NULL) {
       if (feof(stdin)) {
-        break;
+	// Formatting
+	printf("\n");
+	break;
       }
     }
 
@@ -176,12 +178,13 @@ int main() {
 
     // Free arguments that is malloced in tokeniseUserInput()
     free(arguments);
+    arguments = NULL;
   }
   while (1);
 
   // replenish directory
   setWorkingDirectory(initialDirectory);
-  printf("\nExiting...\n");
+  printf("Exiting...\n");
 
 
   if (arguments) {
