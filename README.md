@@ -1,16 +1,16 @@
 # cs210-shell
 
-A simplified shell for Unix type systems written in C.
+A simplified shell for Unix type systems written in C.  
 
-This project is for CS210: Computer Systems and Architecture.
+This project is for CS210: Computer Systems and Architecture.  
 
-Written By:
+Written By:  
 
-Kyle Ashley
-Brian McKenzie
-Callum McManus
-Peter Tasker
-Jay Thompson
+Kyle Ashley  
+Brian McKenzie  
+Callum McManus  
+Peter Tasker  
+Jay Thompson  
 
 
 ## Overview
@@ -19,6 +19,7 @@ This simplified shell implements the following commands:
 * echo
 * pwd
 * cd
+* exit  
 as well as having the ability to pipe external commands, a history of recently used commands, and an ability to bind and unbind aliases.
 
 ## Requirements
