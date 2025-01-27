@@ -35,14 +35,11 @@ char* getHomeDirectory(void) {
 }
 
 
-char *getWorkingDirectory(void) {
+char *getWorkingDirectory(char *buffer) {
   // getcwd(NULL, 0) dynamically allocates memory,
   // this must be freed by the caller
-  char *cwd = getcwd(NULL, 0);
-  if (cwd == NULL) {
-    perror("Failed to get working directory");
-  }
-  return cwd;
+  buffer = getcwd(buffer, PATH_MAX);
+  return buffer;
 }  
 
 

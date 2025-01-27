@@ -3,24 +3,17 @@
 #include <unistd.h>
 #include "shfunc.h"
 
-int exitShell(void) {
-  // This is a bit verbose, but exiting is put
-  // in a function like this so we can have
-  // every single internal command in one place
-  return 1;
-}
-
-
 void echo(char **arguments) {
   // Loop through every argument and print
   for (int i = 1; arguments[i] != NULL; i++) {
     printf("%s ", arguments[i]);
   }
+  printf("\n");
 }
 
 
-void pwd(void) {
-  printf("%s\n", getWorkingDirectory());
+void pwd(char *currentDirectory) {
+  printf("%s\n", getWorkingDirectory(currentDirectory));
 }
 
 void cd(char **arguments) {

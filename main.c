@@ -51,13 +51,12 @@ This is becuase perror suceeding prints "Success" to the screen
 int main() {
   // Manually clear shell (this only works on UNIX based terminals)
   system("clear");
-  
-  int exitFlag = 0;
+
   char **arguments = NULL;
 
   // Create input buffer and also a copy of the initial
   // pointer so the buffer can reset every cycle of the loop
-  char *userInputBuffer = malloc(MAX_INPUT_LEN);
+  char *userInputBuffer = malloc(MAX_INPUT_LEN * sizeof(char));
   char *userInputBufferCopy = userInputBuffer;
   
   if (!userInputBuffer) {
@@ -66,28 +65,34 @@ int main() {
   }
 
   // Get current working directory so it can be restored on exit
-  char *homeDirectory = getHomeDirectory();
-  char *initialDirectory = getWorkingDirectory();
-  
-  // Set initial working directory to the home directory
-  setWorkingDirectory(homeDirectory);  
+  char *initialDirectory = malloc(PATH_MAX * sizeof(char));
+  initialDirectory = getWorkingDirectory(initialDirectory);
+  if (!initialDirectory) {
+    perror("Failed to allocate memory for cwd");
+  }
 
+
+  char *currentDirectory = malloc(PATH_MAX * sizeof(char));
+  if (!currentDirectory) {
+    perror("Failed to allocate memory for cwd");
+  }
+  
+  setWorkingDirectory(getHomeDirectory());
   /* ------------- HISTORY AND ALIASES GO HERE!! ------------- */
 
   
   do {
     // Get current working directory
-    char *cwd = getWorkingDirectory();
-    if (cwd == NULL) {
+    currentDirectory = getWorkingDirectory(currentDirectory);
+    if (currentDirectory == NULL) {
       perror("Error trying to get working directory");
-      exitFlag = exitShell();
+      break;
     }
 
     
     // Display shell-like interface
-    printf("%s $", cwd);
-    free(cwd);
-
+    printf("%s $", currentDirectory);
+    
     
     // Reset buffer pointer
     userInputBuffer = userInputBufferCopy; 
@@ -96,7 +101,7 @@ int main() {
     // this means that the user inputted EOF (<CTRL> + D)
     if (fgets(userInputBuffer, MAX_INPUT_LEN, stdin) == NULL) {
       if (feof(stdin)) {
-        exitFlag = 1;
+        break;
       }
     }
 
@@ -127,7 +132,7 @@ int main() {
     
     // Exit the program
     if (compareStrings(arguments[0], "exit")) {
-      exitFlag = 1;
+      break;
     }    
   
     // Echo the command
@@ -138,7 +143,7 @@ int main() {
     // Print path
     else if (compareStrings(arguments[0], "pwd") ||	\
 	     compareStrings(arguments[0], "getpath")) {
-      pwd();
+      pwd(currentDirectory);
     }
     
     // Set path
@@ -168,12 +173,14 @@ int main() {
     // reset arguments in memory every time as to not leak any memory
     free(arguments);
   }
-  while (!exitFlag);
+  while (1);
 
   // replenish directory
   setWorkingDirectory(initialDirectory);
   printf("\nExiting...\n\n");
 
+  free(currentDirectory);
+  free(initialDirectory);
   free(userInputBufferCopy);
   
   return 0;

@@ -2,7 +2,7 @@ char *getHomeDirectory(void);
 
 void setWorkingDirectory(char *);
 
-char *getWorkingDirectory(void);
+char *getWorkingDirectory(char *);
 
 char **tokeniseUserInput(char *);
 
