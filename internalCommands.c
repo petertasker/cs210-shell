@@ -32,4 +32,7 @@ void cd(char **arguments) {
     setWorkingDirectory(arguments[1]);
   }
 }
-   
+
+void internalCommands(command){
+
+}

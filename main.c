@@ -38,7 +38,7 @@ perror() is for system'y errors, such as malloc
 This is becuase perror suceeding prints "Success" to the screen
 */
 
-// Memory issue : ending child process loses(?) some still reachable memory.
+// Memory issue: ending child process loses(?) some still reachable memory.
 // Assumedly, this is all the memory that that child process used.
 // This is not really a problem.
 
@@ -52,39 +52,44 @@ This is becuase perror suceeding prints "Success" to the screen
 #define MAX_INPUT_LEN 512
 
 int main() {
-  // Manually clear shell (this only works on UNIX based terminals)
-  system("clear");
 
-  char **arguments = NULL;
+  system("clear");
 
   // Create input buffer and also a copy of the initial
   // pointer so the buffer can reset every cycle of the loop
   char *userInputBuffer = malloc(MAX_INPUT_LEN * sizeof(char));
-  char *userInputBufferCopy = userInputBuffer;
-  
   if (!userInputBuffer) {
     perror("Failed to allocate memory...");
     return 1;
   }
+  
+  char *userInputBufferCopy = userInputBuffer;
+  
 
-  // Get current working directory so it can be restored on exit
+  // Working directory of the place which the shell was ran
   char *initialDirectory = malloc(PATH_MAX * sizeof(char));
   initialDirectory = getWorkingDirectory(initialDirectory);
   if (!initialDirectory) {
     perror("Failed to allocate memory for cwd");
   }
 
-
+  
+  // Current working directory
   char *currentDirectory = malloc(PATH_MAX * sizeof(char));
   if (!currentDirectory) {
     perror("Failed to allocate memory for cwd");
   }
-  
+
+  // Initialise in the home directory
   setWorkingDirectory(getHomeDirectory());
+  
+  char **arguments = NULL;
+
   /* ------------- HISTORY AND ALIASES GO HERE!! ------------- */
 
-  
+  // Main shell loop
   do {
+
     // Get current working directory
     currentDirectory = getWorkingDirectory(currentDirectory);
     if (currentDirectory == NULL) {
@@ -108,18 +113,19 @@ int main() {
       }
     }
 
-    // trim leading whitespace
+    // Trim leading whitespace
     userInputBuffer = trimString(userInputBuffer);
     
     // Remove the last character of the input (\n)
     userInputBuffer[strcspn(userInputBuffer, "\n")] = '\0';
 
-  
+    
     // Edge case: user has inputted nothing
     if (compareStrings(userInputBuffer, "")) {
       continue;
     }
 
+    
     // Tokenise the arguments into an array of strings
     arguments = tokeniseUserInput(userInputBuffer);
     
@@ -137,18 +143,15 @@ int main() {
     if (compareStrings(arguments[0], "exit")) {
       break;
     }    
-  
     // Echo the command
     else if (compareStrings(arguments[0], "echo")) {
       echo(arguments);
     }
-
     // Print path
     else if (compareStrings(arguments[0], "pwd") ||	\
 	     compareStrings(arguments[0], "getpath")) {
       pwd(currentDirectory);
     }
-    
     // Set path
     else if (compareStrings(arguments[0], "setpath")) {
 	if (arguments[1] == NULL) {
@@ -161,31 +164,30 @@ int main() {
 	  setWorkingDirectory(arguments[1]);
 	}
     }
-
     // Change directory
     else if (compareStrings(arguments[0], "cd")) {
       cd(arguments);
     }
-    
     // command isnt in the list of internals, therefore
     // it is either external or does not exist
     else {
       externalCommands(arguments);
     }
 
-    // reset arguments in memory every time as to not leak any memory
+    // Free arguments that is malloced in tokeniseUserInput()
     free(arguments);
   }
   while (1);
 
   // replenish directory
   setWorkingDirectory(initialDirectory);
-  printf("\nExiting...\n\n");
+  printf("\nExiting...\n");
 
 
   if (arguments) {
     free(arguments);
   }
+  
   free(currentDirectory);
   free(initialDirectory);
   free(userInputBufferCopy);

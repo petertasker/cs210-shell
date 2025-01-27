@@ -39,6 +39,11 @@ char *getWorkingDirectory(char *buffer) {
   // getcwd(NULL, 0) dynamically allocates memory,
   // this must be freed by the caller
   buffer = getcwd(buffer, PATH_MAX);
+  if (!buffer) {
+    perror("Failed to get working directory!");
+    return;
+  }
+  
   return buffer;
 }  
 
@@ -52,7 +57,6 @@ void setWorkingDirectory(char *arg) {
 
 
 char **tokeniseUserInput(char *s) {
-
   char **arguments = malloc(MAX_NUM_ARGS *sizeof(char *));
 
   if (!arguments) {
@@ -78,6 +82,8 @@ char **tokeniseUserInput(char *s) {
 int compareStrings(char *input, char *arg) {
   return strcmp(input, arg) == 0;  
 }
+
+
 
 void externalCommands(char **args) {
 
@@ -119,6 +125,7 @@ void externalCommands(char **args) {
   }
   // maybe here???? 
 }
+
 
 char* trimString(char *s) {
   char *original = s; // Store original pointer for later use
