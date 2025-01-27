@@ -89,6 +89,8 @@ void externalCommands(char **args) {
      2. exec
      3. wait
      4. exit
+
+     
   */
 
  // Create a new process with fork and give it an ID (child)
@@ -105,16 +107,14 @@ void externalCommands(char **args) {
   if (pid == 0) {
     // Execute first argument as a command, with all other arguments as that 
     // as *that* command's arguments
-    // The child process does not have to exit, as it is replaced by the
-    // external command
     if (execvp(args[0], args) == -1) {
       fprintf(stderr , "%s: command not found\n", args[0]);  
       // maybe free here?
       exit(1);
     }
   }
-    
-    // Parent waits for the child to finish
+  
+  // Parent waits for the child to finish (pid has changed state)
   else {  
     int status;
     waitpid(pid, &status, 0);
@@ -125,7 +125,7 @@ void externalCommands(char **args) {
 
 
 void trimString(char *s) {
-  
+
   // Create copy of original pointer address
   char *original = s;
   while (isspace((unsigned char)*s)) {

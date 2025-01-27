@@ -32,10 +32,10 @@ x unalias
 
 
 /*
-Note the difference in use between perror() and fprintf().
-fprintf() is to give the user public facing errors, while
-perror() is for system'y errors, such as malloc
-This is becuase perror suceeding prints "Success" to the screen
+  Note the difference in use between perror() and fprintf().
+  fprintf() is to give the user public facing errors, while
+  perror() is for system'y errors, such as malloc
+  This is becuase perror suceeding prints "Success" to the screen
 */
 
 // Memory issue: ending child process loses(?) some still reachable memory.
@@ -62,7 +62,7 @@ int main() {
   char *userInputBuffer = malloc((MAX_INPUT_LEN + 1) * sizeof(char));
   if (!userInputBuffer) {
     perror("Failed to allocate memory...");
-   return 1;
+    return 1;
   }
   
   char *userInputBufferCopy = userInputBuffer;
@@ -86,8 +86,6 @@ int main() {
   setWorkingDirectory(getHomeDirectory());
   
   char **arguments = NULL;
-
-  /* ------------- HISTORY AND ALIASES GO HERE!! ------------- */
 
   // Allocated fixed sized list of strings for history
   // malloc is evil and is not to be done in schfunc
@@ -144,15 +142,12 @@ int main() {
     
     // Tokenise the arguments into an array of strings
     arguments = tokeniseUserInput(userInputBuffer);
+
     
+    // Code for the lab demonstrating arguments
     //for (int i = 0; arguments[i] != NULL; i++) {
     //  printf("argument: %s\n", arguments[i]);
     //}
-    
-
-    /* --------- Internal Commands ---------*/
-    // NOTE: else-if is an antipattern but unless someone wants
-    // to create a hash function thems the breaks
 
     
     // Exit the program
@@ -163,30 +158,34 @@ int main() {
     /* By this point in the program, the user has inputted a command
        which should be saved. Note that in linux, invalid commands
        are also saved.
-    */
 
-  
+       If the most recent command (the first in history matches the
+       current command, then do nothing)
+    */
+    
+    // History saving to go here
+   
     
     // Echo the command
     else if (compareStrings(arguments[0], "echo")) {
       echo(arguments);
     }
     // Print path
-    else if (compareStrings(arguments[0], "pwd") ||	\
+    else if (compareStrings(arguments[0], "pwd") || \
 	     compareStrings(arguments[0], "getpath")) {
       pwd(currentDirectory);
     }
     // Set path
     else if (compareStrings(arguments[0], "setpath")) {
-	if (arguments[1] == NULL) {
-	  fprintf(stdout, "Failed to set path: a path must be given\n");
-	}
-	else if (arguments[3] != NULL) {
-	  fprintf(stdout, "Failed to set path: only one argument must be given\n");
-	}
-	else {
-	  setWorkingDirectory(arguments[1]);
-	}
+      if (arguments[1] == NULL) {
+	fprintf(stdout, "Failed to set path: a path must be given\n");
+      }
+      else if (arguments[3] != NULL) {
+	fprintf(stdout, "Failed to set path: only one argument must be given\n");
+      }
+      else {
+	setWorkingDirectory(arguments[1]);
+      }
     }
     // Change directory
     else if (compareStrings(arguments[0], "cd")) {
@@ -200,17 +199,13 @@ int main() {
 
     // Free arguments that is malloced in tokeniseUserInput()
     free(arguments);
-    arguments = NULL;
-
-    
+    arguments = NULL;    
 
   }
   while (1);
 
   // replenish directory
   setWorkingDirectory(initialDirectory);
-  printf("Exiting...\n");
-
 
   if (arguments) {
     free(arguments);
@@ -218,8 +213,10 @@ int main() {
   
   free(currentDirectory);
   free(initialDirectory);
-  free(userInputBufferCopy);
-  
+  free(userInputBufferCopy); // Important to free the copy as it points to userInputBuffer[0]
+
+
+  printf("Exiting...\n");
   return 0;
 
   
