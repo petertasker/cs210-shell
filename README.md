@@ -6,20 +6,19 @@ This project is for CS210: Computer Systems and Architecture.
 
 Written By:  
 
-Kyle Ashley  
-Brian McKenzie  
-Callum McManus  
-Peter Tasker  
-Jay Thompson  
-
+Kyle Ashley <br>  
+Brian McKenzie <br>
+Callum McManus <br>
+Peter Tasker <br>
+Jay Thompson <br>
 
 ## Overview
 
 This simplified shell implements the following commands:
-* echo
-* pwd
-* cd
-* exit  
+* echo <br>
+* pwd <br>
+* cd <br>
+* exit <br>
 as well as having the ability to pipe external commands, a history of recently used commands, and an ability to bind and unbind aliases.
 
 ## Requirements
