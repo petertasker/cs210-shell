@@ -6,7 +6,7 @@ This project is for CS210: Computer Systems and Architecture.
 
 Written By:  
 
-Kyle Ashley <br>  
+Kyle Ashley <br>
 Brian McKenzie <br>
 Callum McManus <br>
 Peter Tasker <br>
@@ -19,13 +19,19 @@ This simplified shell implements the following commands:
 * pwd <br>
 * cd <br>
 * exit <br>
-as well as having the ability to pipe external commands, a history of recently used commands, and an ability to bind and unbind aliases.
+
+Other features:
+* External command piping
+* A history of recently used commands, and the ability to recall previously used commands
+* An ability to bind and unbind aliases.
 
 ## Requirements
 
 A Unix type system (e.g. Linux or macOS) is required to run as we use Unix system calls.
 
 ## Installation
+
+Clone the repository and compile the project:
 ```bash
 git clone https://github.com/petertasker/cs210-shell.git
 cd cs210-shell
