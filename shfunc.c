@@ -1,5 +1,4 @@
 /* Some internal functions which help out the main file */
-
 #include <stdio.h>        // printf, perror
 #include <stdlib.h>       // getenv, malloc, free
 #include <string.h>       // strtok
@@ -131,6 +130,25 @@ void trimString(char *s) {
   s[strcspn(s, "\n")] = '\0';
 }
 
-void addToHistory(history, command) {
-  
+
+void addToHistory(char **history, char *command) {
+
+  if (compareStrings(command, "history")) {
+      return;
+    }
+
+  // Shift array to the right
+  for (int i = MAX_INPUT_LEN - 1; i > 0; i--) {
+    history[i] = history[i - 1];
+  }
+ 
+  // Add new command
+  history[0] = strdup(command);
+}
+
+void freeHistory(char **history) {
+  for (int i = MAX_INPUT_LEN - 1; i >= 0; i--) {
+    free(history[i]);
+  }
+  free(history);
 }

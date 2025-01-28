@@ -47,12 +47,21 @@ char **initialiseHistory() {
   // Allocated fixed sized list of strings for history
   // malloc is evil and is only to be done in main.c
   char **history = malloc(MAX_NUM_HISTORY * sizeof(char*));
+
+
   for (int i = 0; i < MAX_NUM_HISTORY; i++) {
     history[i] = malloc((MAX_INPUT_LEN + 1) * sizeof(char));
+    if (!history[i]) {
+      perror("Failed to allocate memory for history entry");
+      // Free already allocated memory before returning
+      for (int j = 0; j < i; j++) {
+	free(history[j]);
+      }
+      free(history);
+      return NULL;
+    }
+    history[i][0] = '\0'; // Initialize each string as empty
   }
-  if (!history) {
-    perror("Failed to allocate memory for history");
-    return NULL;
-  }
+  
   return history;
 }

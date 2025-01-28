@@ -61,6 +61,7 @@ int main() {
   // Working directory
   char *currentDirectory = initialiseDirectory();
 
+  char **history = initialiseHistory();
   // Initialise arguments
   char **arguments = NULL;
   
@@ -114,7 +115,7 @@ int main() {
     addToHistory(history, userInputBuffer);
 
     // Echo the command
-    else if (compareStrings(arguments[0], "echo")) {
+    if (compareStrings(arguments[0], "echo")) {
       echo(arguments);
     }
     // Print path
@@ -123,9 +124,12 @@ int main() {
       pwd(currentDirectory);
     }
     // Change directory
-  else if ((compareStrings(arguments[0], "cd")) ||	\
-      compareStrings(arguments[0], "setpath")) {
+    else if ((compareStrings(arguments[0], "cd")) ||	\
+	     compareStrings(arguments[0], "setpath")) {
       cd(arguments);
+    }
+    else if (compareStrings(arguments[0], "history")) {
+      printHistory(history);
     }
     // Command isnt in the list of internals, therefore
     // it is either external or does not exist
@@ -146,7 +150,7 @@ int main() {
   if (arguments) {
     free(arguments);
   }
-  
+  freeHistory(history);
   free(currentDirectory);
   free(initialDirectory);
   free(userInputBufferCopy); // Important to free the copy as it points to userInputBuffer[0]

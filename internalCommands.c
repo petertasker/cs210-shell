@@ -5,6 +5,8 @@
 #include <unistd.h>
 #include "shfunc.h"
 
+#define MAX_HISTORY_SIZE 20
+
 void echo(char **arguments) {
   // Loop through every argument and print
   for (int i = 1; arguments[i] != NULL; i++) {
@@ -32,5 +34,15 @@ void cd(char **arguments) {
   }
   else {
     setWorkingDirectory(arguments[1]);
+  }
+}
+
+void printHistory(char **history) {
+  printf("History:\n");
+  // Print all slots that are not NULL
+  for (int i = 0; i < MAX_HISTORY_SIZE; i++) {
+    if (*history[i] != '\0') {
+      printf("%d: %s\n", i, history[i]);
+    }
   }
 }
