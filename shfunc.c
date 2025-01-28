@@ -1,4 +1,4 @@
-/* Some internal functions which help out the main file */
+* Some internal functions which help out the main file */
 #include <stdio.h>        // printf, perror
 #include <stdlib.h>       // getenv, malloc, free
 #include <string.h>       // strtok
@@ -128,7 +128,7 @@ void trimString(char *s) {
   }
   // Use memmove to shift the trimmed string to the start of the buffer
   memmove(original, s, strlen(s) + 1);
-  s[strcspn(s, "\n")] = '\0';
+  original[strcspn(s, "\n")] = '\0';
 }
 
 
@@ -175,4 +175,26 @@ void writeHistoryToFile(char **history) {
     }
   }   
   fclose(fptr);
+}
+
+void readHistoryFromFile(char **history) {
+    FILE *fptr = fopen(".hist.list", "r");
+    if (fptr == NULL) {
+        perror("Error opening file");
+        return;
+    }
+    char line[MAX_INPUT_LEN + 1];
+    int i = 0;
+    
+    while (i < MAX_NUM_HISTORY && fgets(line, sizeof(line), fptr)) {          
+      trimString(line);        
+      history[i] = strdup(line);
+      if (history[i] == NULL) {
+	perror("Memory allocation failed");
+	fclose(fptr);
+	return;
+      }
+      i++;
+    }
+    fclose(fptr);
 }

@@ -8,3 +8,4 @@ void trimString(char *);
 void addToHistory(char **, char*);
 void freeHistory(char **);
 void writeHistoryToFile(char **);
+void readHistoryFromFile(char **);

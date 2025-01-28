@@ -4,8 +4,7 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include "shfunc.h"
-
-#define MAX_NUM_HISTORY 20
+#include "initialise.h"
 
 void echo(char **arguments) {
   // Loop through every argument and print

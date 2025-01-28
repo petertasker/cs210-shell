@@ -1,7 +1,7 @@
-/* ✓  Find the user home directory from the environment */ 
+/* ✓ Find the user home directory from the environment */ 
 /* ✓ Set current working directory to user home directory */
 /* ✓ Save the current path */
-/* Load history */
+/* ✓ Load history */
 /* Load aliases */
 /* ✓ Do while shell has not terminated */
 /* ✓ Display prompt */
@@ -10,7 +10,7 @@
 /* appropriate command from history or the aliased command respectively */
 /* ✓ If command is built-in invoke appropriate function */
 /* ✓ Else execute command as an external process */
-/*  End while */
+/* ✓ End while */
 /* ✓ Save history */
 /* Save aliases */
 /* ✓ Restore original path */
@@ -64,13 +64,18 @@ int main() {
   // Directory of the place which the shell was ran
   char *initialDirectory = saveInitialDirectory();
 
-  // Working directory
+  // Initialise working directory
   char *currentDirectory = initialiseDirectory();
 
-  char **history = initialiseHistory();
   // Initialise arguments
   char **arguments = NULL;
+
+  // Initialise history
+  char **history = initialiseHistory();
   
+  // Load local history
+  readHistoryFromFile(history);
+
   // Main shell loop
   do {
 
