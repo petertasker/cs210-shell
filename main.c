@@ -96,11 +96,7 @@ int main() {
     // Tokenise the arguments into an array of strings
     arguments = tokeniseUserInput(userInputBuffer);
     
-    // Code for the lab demonstrating arguments
-    //for (int i = 0; arguments[i] != NULL; i++) {
-    //  printf("argument: %s\n", arguments[i]);
-    //}
-
+ 
     // Exit the program
     if (compareStrings(arguments[0], "exit")) {
       break;
