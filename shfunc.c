@@ -85,18 +85,19 @@ int compareStrings(char *input, char *arg) {
 
 
 void externalCommands(char **args) {
-
+  
   /* External Processes:
      1. fork
      2. exec
      3. wait
      4. exit
-
      
+     Problem here(?) Exiting a child process potentially
+     doesn't free all the memory it uses
   */
 
- // Create a new process with fork and give it an ID (child)
- // and a parent ID
+  // Create a new process with fork and give it an ID (child)
+  // and a parent ID
   pid_t pid = fork();
   
   // Fork failed
@@ -111,7 +112,6 @@ void externalCommands(char **args) {
     // as *that* command's arguments
     if (execvp(args[0], args) == -1) {
       fprintf(stderr , "%s: command not found\n", args[0]);  
-      // maybe free here?
       exit(1);
     }
   }
@@ -120,9 +120,7 @@ void externalCommands(char **args) {
   else {  
     int status;
     waitpid(pid, &status, 0);
-    // maybe here???
   }
-  // maybe here???? 
 }
 
 
