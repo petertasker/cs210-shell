@@ -135,4 +135,5 @@ void trimString(char *s) {
   }
   // Use memmove to shift the trimmed string to the start of the buffer
   memmove(original, s, strlen(s) + 1);
+  s[strcspn(s, "\n")] = '\0';
 }

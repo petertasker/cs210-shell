@@ -85,29 +85,22 @@ int main() {
       }
     }
 
-    // Trim leading whitespace
+    // Trim leading whitespace and NULL terminator
     trimString(userInputBuffer);
-    
-    // Remove the last character of the input (\n)
-    userInputBuffer[strcspn(userInputBuffer, "\n")] = '\0';
-
     
     // Edge case: user has inputted nothing
     if (compareStrings(userInputBuffer, "")) {
       continue;
     }
 
-    
     // Tokenise the arguments into an array of strings
     arguments = tokeniseUserInput(userInputBuffer);
-
     
     // Code for the lab demonstrating arguments
     //for (int i = 0; arguments[i] != NULL; i++) {
     //  printf("argument: %s\n", arguments[i]);
     //}
 
-    
     // Exit the program
     if (compareStrings(arguments[0], "exit")) {
       break;
@@ -122,31 +115,19 @@ int main() {
     */
     
     // History saving to go here
-   
-    
+       
     // Echo the command
     else if (compareStrings(arguments[0], "echo")) {
       echo(arguments);
     }
     // Print path
-    else if (compareStrings(arguments[0], "pwd") || \
+    else if ((compareStrings(arguments[0], "pwd")) ||	\
 	     compareStrings(arguments[0], "getpath")) {
       pwd(currentDirectory);
     }
-    // Set path
-    else if (compareStrings(arguments[0], "setpath")) {
-      if (arguments[1] == NULL) {
-	fprintf(stdout, "Failed to set path: a path must be given\n");
-      }
-      else if (arguments[3] != NULL) {
-	fprintf(stdout, "Failed to set path: only one argument must be given\n");
-      }
-      else {
-	setWorkingDirectory(arguments[1]);
-      }
-    }
     // Change directory
-    else if (compareStrings(arguments[0], "cd")) {
+  else if ((compareStrings(arguments[0], "cd")) ||	\
+      compareStrings(arguments[0], "setpath")) {
       cd(arguments);
     }
     // command isnt in the list of internals, therefore
