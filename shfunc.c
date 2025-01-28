@@ -9,6 +9,7 @@
 #include <unistd.h>
 #include <wait.h>
 #include <ctype.h>
+#include <errno.h>
 
 #define TOKEN_DELIMITERS " \t\n;&><|"
 #define MAX_INPUT_LEN 512
@@ -132,27 +133,46 @@ void trimString(char *s) {
 
 
 void addToHistory(char **history, char *command) {
-
+  // Don't have history in history
   if (compareStrings(command, "history")) {
     return;
   }
-
-  if (history == NULL) {printf("history!!!!");}
-
-  // Shift array to the right
+  // Shift array to the right to make room for newest
+  // (This array is recent ascending)
   for (int i = MAX_NUM_HISTORY - 1; i > 0; i--) {
     history[i] = history[i - 1];
   }
  
   // Add new command
   history[0] = strdup(command);
-
-  if (history[0] == NULL) {printf("we've fucked up");}
 }
 
+
 void freeHistory(char **history) {
+  // Free every indice of history and then history itself
   for (int i = MAX_NUM_HISTORY - 1; i >= 0; i--) {
     free(history[i]);
   }
   free(history);
+}
+
+
+void writeHistoryToFile(char **history) {
+  FILE *fptr;
+
+  fptr = fopen(".hist.list", "w");
+  if (fptr == NULL) {
+    perror("Error opening file");
+    // Print the error number
+    printf("Error number: %d\n", errno);
+    return; // Exit if the file can't be opened
+  }
+
+  // Reuse code from internalComamands
+  for (int i = 0; i < MAX_NUM_HISTORY; i++) {
+    if (history[i] != NULL && *history[i] != '\0') {
+      fprintf(fptr, "%s\n",history[i]);
+    }
+  }   
+  fclose(fptr);
 }

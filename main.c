@@ -10,8 +10,8 @@
 /* appropriate command from history or the aliased command respectively */
 /* ✓ If command is built-in invoke appropriate function */
 /* ✓ Else execute command as an external process */
-/* ✓ End while */
-/* Save history */
+/*  End while */
+/* ✓ Save history */
 /* Save aliases */
 /* ✓ Restore original path */
 /* ✓ Exit */
@@ -29,6 +29,9 @@ x alias
 x alias <name> <command>
 x unalias
 */
+
+// Critial Issue: Adding to history doesnt add the arguments (even though
+// we pass in userInputBuffer and not arguments
 
 // Memory Issue: ending child process loses(?) some still reachable memory.
 // Assumedly, this is all the memory that that child process used.
@@ -88,7 +91,7 @@ int main() {
 	break;
       }
     }
-
+    
     // Trim leading whitespace and NULL terminator
     trimString(userInputBuffer);
     
@@ -147,12 +150,18 @@ int main() {
   }
   while (1);
 
+
   // Replenish directory
   setWorkingDirectory(initialDirectory);
 
+  // Save session history to file
+  writeHistoryToFile(history);
+
+  
   if (arguments) {
     free(arguments);
   }
+  
   freeHistory(history);
   free(currentDirectory);
   free(initialDirectory);
@@ -161,6 +170,6 @@ int main() {
 
   printf("Exiting...\n");
   return 0;
-
+  
   
 }

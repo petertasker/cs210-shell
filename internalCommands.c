@@ -5,7 +5,7 @@
 #include <unistd.h>
 #include "shfunc.h"
 
-#define MAX_HISTORY_SIZE 20
+#define MAX_NUM_HISTORY 20
 
 void echo(char **arguments) {
   // Loop through every argument and print
@@ -40,7 +40,7 @@ void cd(char **arguments) {
 void printHistory(char **history) {
   printf("History:\n");
   // Print all slots that are not NULL
-  for (int i = 0; i < MAX_HISTORY_SIZE; i++) {
+  for (int i = 0; i < MAX_NUM_HISTORY; i++) {
     if (history[i] != NULL && *history[i] != '\0') {
       printf("%d: %s\n", i, history[i]);
     }
