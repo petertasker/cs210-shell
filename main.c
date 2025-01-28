@@ -111,7 +111,8 @@ int main() {
     */
     
     // History saving to go here
-       
+    addToHistory(history, userInputBuffer);
+
     // Echo the command
     else if (compareStrings(arguments[0], "echo")) {
       echo(arguments);

@@ -107,7 +107,9 @@ void externalCommands(char **args) {
     // as *that* command's arguments
     if (execvp(args[0], args) == -1) {
       fprintf(stderr , "%s: command not found\n", args[0]);  
+      // here?
       exit(1);
+      
     }
   }
   // Parent waits for the child to finish (pid has changed state)
@@ -127,4 +129,8 @@ void trimString(char *s) {
   // Use memmove to shift the trimmed string to the start of the buffer
   memmove(original, s, strlen(s) + 1);
   s[strcspn(s, "\n")] = '\0';
+}
+
+void addToHistory(history, command) {
+  
 }
