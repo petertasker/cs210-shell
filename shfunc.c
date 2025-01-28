@@ -1,4 +1,4 @@
-* Some internal functions which help out the main file */
+/* Some internal functions which help out the main file */
 #include <stdio.h>        // printf, perror
 #include <stdlib.h>       // getenv, malloc, free
 #include <string.h>       // strtok
