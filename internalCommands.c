@@ -18,6 +18,7 @@ void pwd(char *currentDirectory) {
   printf("%s\n", currentDirectory);
 }
 
+
 void cd(char **arguments) {
   // In Linux shells, typing "cd" takes you to %HOME%
   if (arguments[1] == NULL) {

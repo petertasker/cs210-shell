@@ -126,7 +126,7 @@ int main() {
       compareStrings(arguments[0], "setpath")) {
       cd(arguments);
     }
-    // command isnt in the list of internals, therefore
+    // Command isnt in the list of internals, therefore
     // it is either external or does not exist
     else {
       externalCommands(arguments);
@@ -139,7 +139,7 @@ int main() {
   }
   while (1);
 
-  // replenish directory
+  // Replenish directory
   setWorkingDirectory(initialDirectory);
 
   if (arguments) {

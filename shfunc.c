@@ -17,7 +17,6 @@
 #define MAX_NUM_HISTORY 20
 
 char* getHomeDirectory(void) {
-
   // Check if the HOME enviroment variable is set
   char *home = getenv("HOME");
   if (home) {
@@ -38,7 +37,6 @@ char* getHomeDirectory(void) {
 
 
 void getWorkingDirectory(char *buffer) {
-
   // Replace the old path with the new path
   buffer = getcwd(buffer, PATH_MAX);
   if (!buffer) {
@@ -48,7 +46,6 @@ void getWorkingDirectory(char *buffer) {
 
 
 void setWorkingDirectory(char *arg) {
-
   // chdir CHanges the working DIRectory  
   if (chdir(arg) != 0) {
     perror("Failed to change directory");
@@ -57,7 +54,6 @@ void setWorkingDirectory(char *arg) {
 
 
 char **tokeniseUserInput(char *s) {
-
   char **arguments = malloc(MAX_NUM_ARGS *sizeof(char *));
   if (!arguments) {
     perror("Failed to allocate memory for arguments");
@@ -66,13 +62,13 @@ char **tokeniseUserInput(char *s) {
 
   char *token = strtok(s, TOKEN_DELIMITERS);
   int i = 0;
-
   // Loop through the command and put each token in arguments
   while (token && i < MAX_NUM_ARGS) {
     arguments[i] = token;
     token = strtok(NULL, TOKEN_DELIMITERS);
     i++;
   }
+  
   arguments[i] = NULL;
   return arguments;
 }
@@ -84,8 +80,7 @@ int compareStrings(char *input, char *arg) {
 
 
 
-void externalCommands(char **args) {
-  
+void externalCommands(char **args) {  
   /* External Processes:
      1. fork
      2. exec
@@ -105,7 +100,7 @@ void externalCommands(char **args) {
     perror("fork failed");
     return;
   }
-
+  
   // pid = 0 is the child process
   if (pid == 0) {
     // Execute first argument as a command, with all other arguments as that 
@@ -115,7 +110,6 @@ void externalCommands(char **args) {
       exit(1);
     }
   }
-  
   // Parent waits for the child to finish (pid has changed state)
   else {  
     int status;
@@ -125,7 +119,6 @@ void externalCommands(char **args) {
 
 
 void trimString(char *s) {
-
   // Create copy of original pointer address
   char *original = s;
   while (isspace((unsigned char)*s)) {
