@@ -46,12 +46,12 @@ https://github.com/petertasker/cs210-shell.git
 ```
 We recommend you use the gcc compiler
 ```bash
-gcc main.c internalCommands.c shfunc.c -o shell
+gcc main.c shfunc.c internalCommands.c initialise.c -o main
 ```
 
 Once compiled, run using
 ```bash
-./shell
+./main
 ```
 
 ## License

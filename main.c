@@ -1,4 +1,4 @@
-   /* ✓  Find the user home directory from the environment */ 
+/* ✓  Find the user home directory from the environment */ 
 /* ✓ Set current working directory to user home directory */
 /* ✓ Save the current path */
 /* Load history */
@@ -30,14 +30,6 @@ x alias <name> <command>
 x unalias
 */
 
-
-/*
-  Note the difference in use between perror() and fprintf().
-  fprintf() is to give the user public facing errors, while
-  perror() is for system'y errors, such as malloc
-  This is becuase perror suceeding prints "Success" to the screen
-*/
-
 // Memory issue: ending child process loses(?) some still reachable memory.
 // Assumedly, this is all the memory that that child process used.
 // This is not really a problem.
@@ -48,80 +40,46 @@ x unalias
 #include <linux/limits.h>     // PATH_MAX
 #include "shfunc.h"           // some shell functions that we define
 #include "internalCommands.h" // all internal commands
+#include "initialise.h"
 
 // If you decide to change these, make sure they are changed in shfunc.c
 #define MAX_INPUT_LEN 511
 #define MAX_NUM_HISTORY 20
 
 int main() {
-
+  
   system("clear");
 
   // Create input buffer and also a copy of the initial
   // pointer so the buffer can reset every cycle of the loop
-  char *userInputBuffer = malloc((MAX_INPUT_LEN + 1) * sizeof(char));
-  if (!userInputBuffer) {
-    perror("Failed to allocate memory...");
-    return 1;
-  }
-  
+  char *userInputBuffer = createBuffer();
   char *userInputBufferCopy = userInputBuffer;
   
+  // Directory of the place which the shell was ran
+  char *initialDirectory = saveInitialDirectory();
 
-  // Working directory of the place which the shell was ran
-  char *initialDirectory = malloc(PATH_MAX * sizeof(char));
-  getWorkingDirectory(initialDirectory);
-  if (!initialDirectory) {
-    perror("Failed to allocate memory for cwd");
-  }
+  // Working directory
+  char *currentDirectory = initialiseDirectory();
 
-  
-  // Current working directory
-  char *currentDirectory = malloc(PATH_MAX * sizeof(char));
-  if (!currentDirectory) {
-    perror("Failed to allocate memory for cwd");
-  }
-
-  // Initialise in the home directory
-  setWorkingDirectory(getHomeDirectory());
-  
+  // Initialise arguments
   char **arguments = NULL;
-
-  // Allocated fixed sized list of strings for history
-  // malloc is evil and is not to be done in schfunc
-  char **history = malloc(MAX_NUM_HISTORY * sizeof(char*));
-  for (int i = 0; i < MAX_NUM_HISTORY; i++) {
-    history[i] = malloc((MAX_INPUT_LEN + 1) * sizeof(char));
-  }
-  if (!history) {
-    perror("Failed to allocate memory for history");
-    exit(1);
-  }
-  
   
   // Main shell loop
   do {
 
     // Get current working directory
     getWorkingDirectory(currentDirectory);
-    if (!currentDirectory) {
-      perror("Error trying to get working directory");
-      break;
-    }
-
-    
-    // Display shell-like interface
-    printf("%s $", currentDirectory);
-    
     
     // Reset buffer pointer
     userInputBuffer = userInputBufferCopy; 
 
+    // Display shell-like interface
+    printf("%s $", currentDirectory);
+    
     // Call fgets for user input and instantly check if it is NULL,
     // this means that the user inputted EOF (<CTRL> + D)
     if (fgets(userInputBuffer, MAX_INPUT_LEN, stdin) == NULL) {
       if (feof(stdin)) {
-	// Formatting
 	printf("\n");
 	break;
       }

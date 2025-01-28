@@ -1,3 +1,5 @@
+/* Some internal functions which help out the main file */
+
 #include <stdio.h>        // printf, perror
 #include <stdlib.h>       // getenv, malloc, free
 #include <string.h>       // strtok
@@ -131,7 +133,6 @@ void trimString(char *s) {
   while (isspace((unsigned char)*s)) {
     s++;
   }
-
   // Use memmove to shift the trimmed string to the start of the buffer
   memmove(original, s, strlen(s) + 1);
 }
