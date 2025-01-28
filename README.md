@@ -1,10 +1,3 @@
-<style>
-a {
- border: none !important;
-}
-</style>
-
-
 # cs210-shell
 
 A simplified shell for Unix type systems written in C.  
