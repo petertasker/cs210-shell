@@ -21,7 +21,7 @@ Internal Commands:
 ✓ cd
 ✓ getpath
 ✓ setpath
-x history
+✓ history
 x !!
 x !<no>
 x !<no> -
@@ -30,9 +30,12 @@ x alias <name> <command>
 x unalias
 */
 
-// Memory issue: ending child process loses(?) some still reachable memory.
+// Memory Issue: ending child process loses(?) some still reachable memory.
 // Assumedly, this is all the memory that that child process used.
 // This is not really a problem.
+
+// Weird Issue: Using an ANSI character such as up arrow overwrites the line
+// that the shell input is taken. This is not a funtional problem
 
 #include <stdio.h>
 #include <stdlib.h>

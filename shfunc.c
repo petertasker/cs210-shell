@@ -134,20 +134,24 @@ void trimString(char *s) {
 void addToHistory(char **history, char *command) {
 
   if (compareStrings(command, "history")) {
-      return;
-    }
+    return;
+  }
+
+  if (history == NULL) {printf("history!!!!");}
 
   // Shift array to the right
-  for (int i = MAX_INPUT_LEN - 1; i > 0; i--) {
+  for (int i = MAX_NUM_HISTORY - 1; i > 0; i--) {
     history[i] = history[i - 1];
   }
  
   // Add new command
   history[0] = strdup(command);
+
+  if (history[0] == NULL) {printf("we've fucked up");}
 }
 
 void freeHistory(char **history) {
-  for (int i = MAX_INPUT_LEN - 1; i >= 0; i--) {
+  for (int i = MAX_NUM_HISTORY - 1; i >= 0; i--) {
     free(history[i]);
   }
   free(history);

@@ -41,7 +41,7 @@ void printHistory(char **history) {
   printf("History:\n");
   // Print all slots that are not NULL
   for (int i = 0; i < MAX_HISTORY_SIZE; i++) {
-    if (*history[i] != '\0') {
+    if (history[i] != NULL && *history[i] != '\0') {
       printf("%d: %s\n", i, history[i]);
     }
   }
