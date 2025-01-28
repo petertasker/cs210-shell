@@ -30,9 +30,6 @@ x alias <name> <command>
 x unalias
 */
 
-// Critial Issue: Adding to history doesnt add the arguments (even though
-// we pass in userInputBuffer and not arguments
-
 // Memory Issue: ending child process loses(?) some still reachable memory.
 // Assumedly, this is all the memory that that child process used.
 // This is not really a problem.
@@ -105,6 +102,9 @@ int main() {
       continue;
     }
 
+    // History saving to go here
+    addToHistory(history, userInputBuffer);
+
     // Tokenise the arguments into an array of strings
     arguments = tokeniseUserInput(userInputBuffer);
     
@@ -122,8 +122,6 @@ int main() {
        current command, then do nothing)
     */
     
-    // History saving to go here
-    addToHistory(history, userInputBuffer);
 
     // Echo the command
     if (compareStrings(arguments[0], "echo")) {

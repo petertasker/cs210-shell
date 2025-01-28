@@ -133,8 +133,8 @@ void trimString(char *s) {
 
 
 void addToHistory(char **history, char *command) {
-  // Don't have history in history
-  if (compareStrings(command, "history")) {
+  // Don't have exit in history
+  if (compareStrings(command, "exit")) {
     return;
   }
   // Shift array to the right to make room for newest
@@ -198,3 +198,4 @@ void readHistoryFromFile(char **history) {
     }
     fclose(fptr);
 }
+

@@ -1,4 +1,7 @@
-ps
+exit
+emacs main.c
+ls
+cd ..
 test
 test
 test
