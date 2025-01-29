@@ -98,21 +98,27 @@ int main() {
       continue;
     }
 
-    // History saving to go here
+    // Add command to history
     addToHistory(history, userInputBuffer);
+
     
     // Tokenise the arguments into an array of strings
-    arguments = tokeniseUserInput(userInputBuffer);
-
-    // If history is invoked, it will be processed here
-    // where the history becomes arguments
-    if (arguments[0][0] == '!') {
-      invokeHistory(history, arguments);
+    // either from history or from the input buffer
+    if (userInputBuffer[0] == '!') {
+      arguments = invokeHistory(history, userInputBuffer);	
+      // If arguments is NULL an error has been thrown
+      if (arguments == NULL) {
+	continue;
+      }
+    }
+    else {  
+      arguments = tokeniseUserInput(userInputBuffer);
     }
 
+    // Internal Commands:
 
     // Exit the program
-    else if (compareStrings(arguments[0], "exit")) {
+    if (compareStrings(arguments[0], "exit")) {
       break;
     }
     // Echo the command
@@ -133,7 +139,6 @@ int main() {
     else if (compareStrings(arguments[0], "history")) {
       printHistory(history);
     }
-
     // Command isnt in the list of internals, therefore
     // it is either external or does not exist
     else {
