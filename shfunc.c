@@ -53,6 +53,12 @@ void setWorkingDirectory(char *arg) {
 char **tokeniseUserInput(char *s) {
   // Make a local copy so the base userInputBuffer
   // can go directly to addToHistory
+
+
+  if (!s) {
+    return NULL;
+  }
+  
   char *copy = strdup(s);
   char **arguments = malloc(MAX_NUM_ARGS *sizeof(char *));
   if (!arguments) {
@@ -139,6 +145,10 @@ void addToHistory(char **history, char *command) {
   if (compareStrings(command, "exit")) {
     return;
   }
+  // Don'lt have history invocations in history
+  if (command[0] == '!') {
+    return;
+  }
   // Shift array to the right to make room for newest
   // (This array is recent ascending)
   for (int i = MAX_NUM_HISTORY - 1; i > 0; i--) {
@@ -172,7 +182,6 @@ void writeHistoryToFile(char **history, char *initialDirectory) {
     printf("Error number: %d\n", errno);
     return; // Exit if the file can't be opened
   }
-
   // Reuse code from internalComamands
   for (int i = 0; i < MAX_NUM_HISTORY; i++) {
     if (history[i] != NULL && *history[i] != '\0') {
@@ -205,50 +214,32 @@ void readHistoryFromFile(char **history, char *initialDirectory) {
 }
 
 
-void invokeHistory(char **history, char **arguments) {
+char **invokeHistory(char **history, char *command) {
   // This can either be done on the fly
   // (this implementation), or pre-parsed
   // (Brian's implementation)
 
-  // Ensure only one argument
-  if (compareStrings(arguments[0], "!!")) {
-    if (history[0] == NULL) {
-      fprintf(stderr, "No commands in history\n");
-      return;
-    }
-    arguments = tokeniseUserInput(history[0]);
-    return;
-  }
 
-  // Check if argument starts with !
-  if (arguments[0][0] != '!') {
-    fprintf(stderr, "Invoke history: command must start with '!'\n");
-    return;
-  }
-
-  // Convert number after ! to integer
-  char *numStr = arguments[0] + 1;
-  char *endptr;
-  long historyNum = strtol(numStr, &endptr, 10);
-
-  // Validate conversion
-  if (*endptr != '\0' || MAX_NUM_HISTORY <= 0) {
-    fprintf(stderr, "Invoke history: invalid number format\n");
-    return;
-  }
-
-
-  // Find the command in history
-  int i;
-  for (i = 0; i < MAX_NUM_HISTORY && history[i] != NULL; i++);
-    
-  if (historyNum > i) {
-    fprintf(stderr, "Invoke history: number exceeds history length\n");
-    return;
-  }
-
-  arguments = tokeniseUserInput(history[MAX_NUM_HISTORY - 1]);
+  printf("starting invoking history\n");
   
+  // Create [1:] substring of command to lop ! off 
+  char commandSubstr[sizeof(command)];
+  strcpy(commandSubstr, command + 1);
+
+  // If command is "!!"
+  if (commandSubstr[0] == '!' && commandSubstr[1] == '\0') {
+    return tokeniseUserInput(history[1]);
+  }
+  
+  printf("no match!\n");
+  // Check substring contains only numbers
+  if (!isdigit(commandSubstr)) {
+    fprintf(stderr, "You must invoke history with either !! or !<n>");
+    return tokeniseUserInput(NULL);
+  }
+  
+  
+  return tokeniseUserInput(NULL);
 }
 
   
