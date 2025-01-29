@@ -16,9 +16,10 @@ Written By:
 
 This simplified shell implements the following commands:
 * echo <br>
-* pwd <br>
-* cd <br>
+* pwd/ getpath <br>
+* cd/ setpath <br>
 * exit <br>
+* history
 
 Other features:
 * External command piping
