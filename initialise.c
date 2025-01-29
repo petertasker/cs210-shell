@@ -72,6 +72,9 @@ char **initialiseHistory() {
 char* concatHistoryFile(char *initialDirectory){
   // Concatenate file of where the executable was ran with
   // ".hist.list"
+  // Note that (./.hist.list) does't work because the program
+  // changes the user's directory to %HOME%, which isn't
+  // where the file is to be saved or loaded
   char *f = strdup(initialDirectory);
   strcat(f, HISTORY_FILE);
   return f;
