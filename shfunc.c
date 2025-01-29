@@ -228,18 +228,25 @@ char **invokeHistory(char **history, char *command) {
 
   // If command is "!!"
   if (commandSubstr[0] == '!' && commandSubstr[1] == '\0') {
-    return tokeniseUserInput(history[1]);
+    return tokeniseUserInput(history[0]);
   }
   
-  printf("no match!\n");
   // Check substring contains only numbers
-  if (!isdigit(commandSubstr)) {
-    fprintf(stderr, "You must invoke history with either !! or !<n>");
-    return tokeniseUserInput(NULL);
+  for (int i = 0; commandSubstr != '\0'; i++) {
+    if (!isdigit(commandSubstr[i])) {
+      fprintf(stderr, "You must invoke history with either !! or !<n>\n");
+      return NULL;
+    }
+  }
+  // Get every element of substring until it hits NULL (&endptr) as an integer 
+  char *endptr;
+  int historyIndex = strtol(commandSubstr, &endptr, 10);
+  if (historyIndex < MAX_NUM_HISTORY || historyIndex < 0) {
+    fprintf(stderr, "History cannot be invoked by it's %d limit.",MAX_NUM_HISTORY);
+    return NULL;
   }
   
-  
-  return tokeniseUserInput(NULL);
+  return tokeniseUserInput(history[historyIndex]);
 }
 
   
