@@ -5,3 +5,4 @@ gmon.out
 valgrind-out.txt
 .hist.list
 .nfs*
+./main
