@@ -44,10 +44,7 @@ x unalias
 #include "shfunc.h"           // some shell functions that we define
 #include "internalCommands.h" // all internal commands
 #include "initialise.h"
-
-// If you decide to change these, make sure they are changed in shfunc.c
-#define MAX_INPUT_LEN 511
-#define MAX_NUM_HISTORY 20
+#include "constants.h"
 
 int main() {
   
@@ -70,7 +67,7 @@ int main() {
   char **history = initialiseHistory();
   
   // Load local history
-  readHistoryFromFile(history);
+  readHistoryFromFile(history, initialDirectory);
 
   // Main shell loop
   do {
@@ -155,7 +152,7 @@ int main() {
   setWorkingDirectory(initialDirectory);
 
   // Save session history to file
-  writeHistoryToFile(history);
+  writeHistoryToFile(history, initialDirectory);
 
   
   if (arguments) {

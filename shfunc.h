@@ -7,6 +7,6 @@ void externalCommands(char **);
 void trimString(char *);
 void addToHistory(char **, char*);
 void freeHistory(char **);
-void writeHistoryToFile(char **);
-void readHistoryFromFile(char **);
+void writeHistoryToFile(char **, char*);
+void readHistoryFromFile(char **, char*);
 void invokeHistory(char **, char **);

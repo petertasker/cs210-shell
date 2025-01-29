@@ -1,7 +1,10 @@
-echo << hi
-pwd
 history
-test
-test
-test
-test
+history
+cd ..
+ls
+whoami
+ps aux
+pwd
+dir
+cd ..
+ls ..

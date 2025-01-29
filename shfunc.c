@@ -11,10 +11,7 @@
 #include <ctype.h>
 #include <errno.h>
 
-#define TOKEN_DELIMITERS " \t\n;&><|"
-#define MAX_INPUT_LEN 512
-#define MAX_NUM_ARGS 5
-#define MAX_NUM_HISTORY 20
+#include "constants.h"
 
 char* getHomeDirectory(void) {
   // Check if the HOME enviroment variable is set
@@ -162,10 +159,13 @@ void freeHistory(char **history) {
 }
 
 
-void writeHistoryToFile(char **history) {
-  FILE *fptr;
+void writeHistoryToFile(char **history, char *initialDirectory) {
+  // Get the local .hist.list file
+  char *f = strdup(initialDirectory);
+  strcat(f, HISTORY_FILE);
 
-  fptr = fopen(".hist.list", "w");
+  FILE *fptr;
+  fptr = fopen(f, "w");
   if (fptr == NULL) {
     perror("Error opening file");
     // Print the error number
@@ -182,23 +182,23 @@ void writeHistoryToFile(char **history) {
   fclose(fptr);
 }
 
-void readHistoryFromFile(char **history) {
-    FILE *fptr = fopen(".hist.list", "r");
+void readHistoryFromFile(char **history, char *initialDirectory) {
+
+    char *f = strdup(initialDirectory);
+    strcat(f, HISTORY_FILE);
+
+    FILE *fptr = fopen(f, "r");
     if (fptr == NULL) {
-        perror("Error opening file");
-        return;
+      perror("Error opening file");
+      return;
     }
     char line[MAX_INPUT_LEN + 1];
     int i = 0;
-    
+
+    // Copy each line of the file to history
     while (i < MAX_NUM_HISTORY && fgets(line, sizeof(line), fptr)) {          
       trimString(line);        
-      history[i] = strdup(line);
-      if (history[i] == NULL) {
-	perror("Memory allocation failed");
-	fclose(fptr);
-	return;
-      }
+      strcpy(history[i], line);
       i++;
     }
     fclose(fptr);

@@ -1,12 +1,10 @@
 /* Initalise some variables used in the main loop */
 #include <stdio.h>
-#include "shfunc.h"
 #include <stdlib.h>
 #include <linux/limits.h>
 
-
-#define MAX_INPUT_LEN 511
-#define MAX_NUM_HISTORY 20
+#include "shfunc.h"
+#include "constants.h"
 
 char *createBuffer() {
   char *buf = malloc((MAX_INPUT_LEN + 1) * sizeof(char));
@@ -46,6 +44,9 @@ char *initialiseDirectory() {
 char **initialiseHistory() {
   // Allocated fixed sized list of strings for history
   // malloc is evil and is only to be done in main.c
+
+  // It's important to note that everything in history
+  // acts like a pseudo userInputBuffer, and must be parsed
   char **history = malloc(MAX_NUM_HISTORY * sizeof(char*));
 
 

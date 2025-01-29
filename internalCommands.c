@@ -4,7 +4,7 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include "shfunc.h"
-#include "initialise.h"
+#include "constants.h"
 
 void echo(char **arguments) {
   // Loop through every argument and print
