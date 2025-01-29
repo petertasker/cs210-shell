@@ -54,22 +54,27 @@ void setWorkingDirectory(char *arg) {
 
 
 char **tokeniseUserInput(char *s) {
+  // Make a local copy so the base userInputBuffer
+  // can go directly to addToHistory
+  char *copy = strdup(s);
   char **arguments = malloc(MAX_NUM_ARGS *sizeof(char *));
   if (!arguments) {
+    free(copy);
     perror("Failed to allocate memory for arguments");
     return NULL;
   }
 
-  char *token = strtok(s, TOKEN_DELIMITERS);
+  char *token = strtok(copy, TOKEN_DELIMITERS);
   int i = 0;
   // Loop through the command and put each token in arguments
   while (token && i < MAX_NUM_ARGS) {
-    arguments[i] = token;
+    arguments[i] = strdup(token);
     token = strtok(NULL, TOKEN_DELIMITERS);
     i++;
   }
   
   arguments[i] = NULL;
+  free(copy);
   return arguments;
 }
 
@@ -199,3 +204,52 @@ void readHistoryFromFile(char **history) {
     fclose(fptr);
 }
 
+
+void invokeHistory(char **history, char **arguments) {
+  // This can either be done on the fly
+  // (this implementation), or pre-parsed
+  // (Brian's implementation)
+
+  // Ensure only one argument
+  if (compareStrings(arguments[0], "!!")) {
+    if (history[0] == NULL) {
+      fprintf(stderr, "No commands in history\n");
+      return;
+    }
+    arguments = tokeniseUserInput(history[0]);
+    return;
+  }
+
+  // Check if argument starts with !
+  if (arguments[0][0] != '!') {
+    fprintf(stderr, "Invoke history: command must start with '!'\n");
+    return;
+  }
+
+  // Convert number after ! to integer
+  char *numStr = arguments[0] + 1;
+  char *endptr;
+  long historyNum = strtol(numStr, &endptr, 10);
+
+  // Validate conversion
+  if (*endptr != '\0' || MAX_NUM_HISTORY <= 0) {
+    fprintf(stderr, "Invoke history: invalid number format\n");
+    return;
+  }
+
+
+  // Find the command in history
+  int i;
+  for (i = 0; i < MAX_NUM_HISTORY && history[i] != NULL; i++);
+    
+  if (historyNum > i) {
+    fprintf(stderr, "Invoke history: number exceeds history length\n");
+    return;
+  }
+
+  arguments = tokeniseUserInput(history[MAX_NUM_HISTORY - 1]);
+  
+}
+
+  
+ 

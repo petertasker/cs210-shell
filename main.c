@@ -63,7 +63,6 @@ int main() {
 
   // Initialise working directory
   char *currentDirectory = initialiseDirectory();
-
   // Initialise arguments
   char **arguments = NULL;
 
@@ -104,27 +103,23 @@ int main() {
 
     // History saving to go here
     addToHistory(history, userInputBuffer);
-
+    
     // Tokenise the arguments into an array of strings
     arguments = tokeniseUserInput(userInputBuffer);
-    
- 
-    // Exit the program
-    if (compareStrings(arguments[0], "exit")) {
-      break;
+
+    // If history is invoked, it will be processed here
+    // where the history becomes arguments
+    if (arguments[0][0] == '!') {
+      invokeHistory(history, arguments);
     }
 
-    /* By this point in the program, the user has inputted a command
-       which should be saved. Note that in linux, invalid commands
-       are also saved.
 
-       If the most recent command (the first in history matches the
-       current command, then do nothing)
-    */
-    
-
+    // Exit the program
+    else if (compareStrings(arguments[0], "exit")) {
+      break;
+    }
     // Echo the command
-    if (compareStrings(arguments[0], "echo")) {
+    else if (compareStrings(arguments[0], "echo")) {
       echo(arguments);
     }
     // Print path
@@ -137,9 +132,11 @@ int main() {
 	     compareStrings(arguments[0], "setpath")) {
       cd(arguments);
     }
+    // Print History
     else if (compareStrings(arguments[0], "history")) {
       printHistory(history);
     }
+
     // Command isnt in the list of internals, therefore
     // it is either external or does not exist
     else {

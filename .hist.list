@@ -1,7 +1,6 @@
-exit
-emacs main.c
-ls
-cd ..
+echo << hi
+pwd
+history
 test
 test
 test
