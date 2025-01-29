@@ -3,4 +3,4 @@
 *#
 gmon.out
 valgrind-out.txt
-.hist.list
+*/.hist.list
