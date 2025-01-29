@@ -36,7 +36,6 @@ Clone the repository and compile the project:
 ```bash
 git clone https://github.com/petertasker/cs210-shell.git
 cd cs210-shell
-https://github.com/petertasker/cs210-shell.git
 ```
 We recommend you use the gcc compiler
 ```bash
