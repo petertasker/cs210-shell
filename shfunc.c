@@ -168,14 +168,10 @@ void freeHistory(char **history) {
   free(history);
 }
 
-
-void writeHistoryToFile(char **history, char *initialDirectory) {
-  // Get the local .hist.list file
-  char *f = strdup(initialDirectory);
-  strcat(f, HISTORY_FILE);
-
+  
+void writeHistoryToFile(char **history, char *path) {
   FILE *fptr;
-  fptr = fopen(f, "w");
+  fptr = fopen(path, "w");
   if (fptr == NULL) {
     perror("Error opening file");
     // Print the error number
@@ -191,12 +187,9 @@ void writeHistoryToFile(char **history, char *initialDirectory) {
   fclose(fptr);
 }
 
-void readHistoryFromFile(char **history, char *initialDirectory) {
+void readHistoryFromFile(char **history, char *path) {
 
-    char *f = strdup(initialDirectory);
-    strcat(f, HISTORY_FILE);
-
-    FILE *fptr = fopen(f, "r");
+    FILE *fptr = fopen(path, "r");
     if (fptr == NULL) {
       perror("Error opening file");
       return;

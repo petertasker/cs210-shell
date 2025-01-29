@@ -1,6 +1,7 @@
 /* Initalise some variables used in the main loop */
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include <linux/limits.h>
 
 #include "shfunc.h"
@@ -65,4 +66,13 @@ char **initialiseHistory() {
   }
   
   return history;
+}
+
+
+char* concatHistoryFile(char *initialDirectory){
+  // Concatenate file of where the executable was ran with
+  // ".hist.list"
+  char *f = strdup(initialDirectory);
+  strcat(f, HISTORY_FILE);
+  return f;
 }

@@ -60,14 +60,20 @@ int main() {
 
   // Initialise working directory
   char *currentDirectory = initialiseDirectory();
+
   // Initialise arguments
   char **arguments = NULL;
 
   // Initialise history
   char **history = initialiseHistory();
+
+
+  // Find .hist.list
+  char *historyFilePath = concatHistoryFile(initialDirectory);
+
   
   // Load local history
-  readHistoryFromFile(history, initialDirectory);
+  readHistoryFromFile(history, historyFilePath);
 
   // Main shell loop
   do {
@@ -157,7 +163,7 @@ int main() {
   setWorkingDirectory(initialDirectory);
 
   // Save session history to file
-  writeHistoryToFile(history, initialDirectory);
+  writeHistoryToFile(history, historyFilePath);
 
   
   if (arguments) {
