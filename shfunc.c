@@ -141,8 +141,8 @@ void trimString(char *s) {
 
 
 void addToHistory(char **history, char *command) {
-  // Don't have exit in history
-  if (compareStrings(command, "exit")) {
+  // Don't have exit or invocations in history
+  if (compareStrings(command, "exit") || command[0] == '\!')) {
     return;
   }
   // Don'lt have history invocations in history
@@ -235,7 +235,7 @@ char **invokeHistory(char **history, char *command) {
   char *endptr;
   int historyIndex = strtol(commandSubstr, &endptr, 10);
   if (historyIndex < MAX_NUM_HISTORY || historyIndex < 0) {
-    fprintf(stderr, "History cannot be invoked by it's %d limit.",MAX_NUM_HISTORY);
+    fprintf(stderr, "History cannot be invoked past its %d limit.", MAX_NUM_HISTORY);
     return NULL;
   }
   
