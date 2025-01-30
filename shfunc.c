@@ -142,7 +142,7 @@ void trimString(char *s) {
 
 void addToHistory(char **history, char *command) {
   // Don't have exit or invocations in history
-  if (compareStrings(command, "exit") || command[0] == '\!')) {
+  if (compareStrings(command, "exit") || command[0] == '!') {
     return;
   }
   // Don'lt have history invocations in history
