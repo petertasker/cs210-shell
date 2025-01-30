@@ -173,6 +173,7 @@ int main() {
   freeHistory(history);
   free(currentDirectory);
   free(initialDirectory);
+  free(historyFilePath);
   free(userInputBufferCopy); // Important to free the copy as it points to userInputBuffer[0]
 
 
