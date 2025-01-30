@@ -21,11 +21,11 @@ char *saveInitialDirectory() {
 
   // Working directory of the place which the shell was ran
   char *dir = malloc(PATH_MAX * sizeof(char));
-  getWorkingDirectory(dir);
   if (!dir) {
     perror("Failed to allocate memory for cwd");
     return NULL;
   }
+  getWorkingDirectory(dir);
   return dir;
 }
 
@@ -37,24 +37,25 @@ char *initialiseDirectory() {
     perror("Failed to allocate memory for cwd");
   }
   // Initialise in the home directory
-  setWorkingDirectory(getHomeDirectory());
-
+  strcpy(currentDirectory, getHomeDirectory());
+  setWorkingDirectory(currentDirectory);
   return currentDirectory;
 }
 
+
 char **initialiseHistory() {
-  // Allocated fixed sized list of strings for history
-  // malloc is evil and is only to be done in main.c
-
-  // It's important to note that everything in history
-  // acts like a pseudo userInputBuffer, and must be parsed
+  
   char **history = malloc(MAX_NUM_HISTORY * sizeof(char*));
-
+  if (!history) {
+    perror("Failed to allocate memory for history array");
+    return NULL;
+  }
 
   for (int i = 0; i < MAX_NUM_HISTORY; i++) {
     history[i] = malloc((MAX_INPUT_LEN + 1) * sizeof(char));
     if (!history[i]) {
       perror("Failed to allocate memory for history entry");
+
       // Free already allocated memory before returning
       for (int j = 0; j < i; j++) {
 	free(history[j]);
@@ -64,7 +65,7 @@ char **initialiseHistory() {
     }
     history[i][0] = '\0'; // Initialize each string as empty
   }
-  
+    
   return history;
 }
 
@@ -75,8 +76,12 @@ char* concatHistoryFile(char *initialDirectory){
   // Note that (./.hist.list) does't work because the program
   // changes the user's directory to %HOME%, which isn't
   // where the file is to be saved or loaded
-  char *f = malloc(strlen(initialDirectory) + strlen(HISTORY_FILE));
-  strcpy(f, initialDirectory);
-  strcat(f, HISTORY_FILE);
-  return f;
+  size_t len = strlen(initialDirectory) + strlen(HISTORY_FILE) + 1;
+  char *path = malloc(len);
+  if (!path) {
+    perror("Failed to allocate memory for history path");
+  }
+  // Concatenate
+  snprintf(path, len, "%s%s", initialDirectory, HISTORY_FILE);
+  return path;
 }

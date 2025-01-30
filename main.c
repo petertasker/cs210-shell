@@ -152,8 +152,7 @@ int main() {
     }
 
     // Free arguments that is malloced in tokeniseUserInput()
-    free(arguments);
-    arguments = NULL;    
+    freeArguments(arguments);   
 
   }
   while (1);
@@ -166,9 +165,7 @@ int main() {
   writeHistoryToFile(history, historyFilePath);
 
   
-  if (arguments) {
-    free(arguments);
-  }
+  freeArguments(arguments);
   
   freeHistory(history);
   free(currentDirectory);

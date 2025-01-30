@@ -81,6 +81,19 @@ char **tokeniseUserInput(char *s) {
   return arguments;
 }
 
+void freeArguments(char **arguments) {
+  // Nothing to free
+  if (!arguments) {
+    return;  
+  }
+  // Free each token
+  for (int i = 0; arguments[i] != NULL; i++) {
+    free(arguments[i]); 
+  }
+  // Free the array itself
+  free(arguments);  
+}
+
 
 int compareStrings(char *input, char *arg) {
   return (strcmp(input, arg) == 0);  
@@ -151,6 +164,7 @@ void addToHistory(char **history, char *command) {
   // Shift array to the right to make room for newest
   // (This array is recent ascending)
   for (int i = MAX_NUM_HISTORY - 1; i > 0; i--) {
+    free(history[i]);
     history[i] = history[i - 1];
   }
  
@@ -160,10 +174,14 @@ void addToHistory(char **history, char *command) {
 
 
 void freeHistory(char **history) {
-  // Free every indice of history and then history itself
-  for (int i = MAX_NUM_HISTORY - 1; i >= 0; i--) {
+  if (!history) {
+    return;
+  }
+
+  for (int i = 0; i < MAX_NUM_HISTORY; i++) {
     free(history[i]);
   }
+        
   free(history);
 }
 
