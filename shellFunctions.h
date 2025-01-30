@@ -3,9 +3,9 @@ char *getHomeDirectory();
 void setWorkingDirectory(char *);
 void getWorkingDirectory(char *);
 
-// Input Parsing
+// Input parsing
 char **tokeniseUserInput(char *);
-int *compareStrings(char *, char *);
+int compareStrings(char *, char *);
 void externalCommands(char **);
 void trimString(char *);
 
@@ -15,3 +15,5 @@ void freeHistory(char **);
 void writeHistoryToFile(char **, char*);
 void readHistoryFromFile(char **, char*);
 char **invokeHistory(char **, char *);
+int validHistoryInvocation(char *);
+int getHistoryIndexForInvocation(char *);

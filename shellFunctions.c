@@ -11,6 +11,7 @@
 #include <ctype.h>
 #include <errno.h>
 
+#include "shellFunctions.h"
 #include "constants.h"
 
 char* getHomeDirectory(void) {
@@ -82,7 +83,7 @@ char **tokeniseUserInput(char *s) {
 
 
 int compareStrings(char *input, char *arg) {
-  return strcmp(input, arg) == 0;  
+  return (strcmp(input, arg) == 0);  
 }
 
 
@@ -207,36 +208,58 @@ void readHistoryFromFile(char **history, char *path) {
 
 
 char **invokeHistory(char **history, char *command) {
-  // This can either be done on the fly
-  // (this implementation), or pre-parsed
-  // (Brian's implementation)
 
-  // Create [1:] substring of command to lop ! off 
-  char commandSubstr[sizeof(command)];
-  strcpy(commandSubstr, command + 1);
-
-  // If command is "!!"
-  if (commandSubstr[0] == '!' && commandSubstr[1] == '\0') {
+  int index = validHistoryInvocation(command);
+    
+  if (index == -1) {
     return tokeniseUserInput(history[0]);
   }
-  
-  // Check substring contains only numbers
-  for (int i = 0; commandSubstr[i] != '\0'; i++) {
-    if (!isdigit(commandSubstr[i])) {
-      fprintf(stderr, "You must invoke history with either !! or !<n>\n");
-      return NULL;
-    }
+  if (index) {
+    return tokeniseUserInput(history[index]);
   }
-  // Get every element of substring until it hits NULL (&endptr) as an integer 
-  char *endptr;
-  int historyIndex = strtol(commandSubstr, &endptr, 10);
-  if (historyIndex < MAX_NUM_HISTORY || historyIndex < 0) {
-    fprintf(stderr, "History cannot be invoked past its %d limit.", MAX_NUM_HISTORY);
-    return NULL;
-  }
-  
-  return tokeniseUserInput(history[historyIndex]);
+  return NULL;
 }
 
-  
- 
+
+int getHistoryIndexForInvocation(char *command) {
+  int historyIndex = 0;
+    
+  // Check if each character is a digit
+  for (int i = 0; command[i] != '\0'; i++) {
+    if (!isdigit(command[i])) {
+      fprintf(stderr, "You must invoke history with either !! or !<n>\n");
+      return 0;
+    }
+    // Shift digits
+    historyIndex = historyIndex * 10 + (command[i] - '0');
+  }
+    
+  // Number too big
+  if (historyIndex > MAX_NUM_HISTORY) {
+    fprintf(stderr, "Failed to invoke history: history has a capacity of %d entries\n", MAX_NUM_HISTORY);
+    return 0;
+  }
+    
+  // Number too small
+  if (historyIndex < 1) {
+    fprintf(stderr, "Failed to invoke history: invalid number");
+    return 0;
+  }
+    
+  return historyIndex;
+}
+
+
+int validHistoryInvocation(char *command) {
+  // Skip the first character (!)
+  char *commandSubstr = command + 1;
+    
+  // If command is "!!"
+  if (commandSubstr[0] == '!' && commandSubstr[1] == '\0') {
+    return -1;
+  }
+    
+  // Return the index of history
+  return getHistoryIndexForInvocation(commandSubstr);
+}
+
