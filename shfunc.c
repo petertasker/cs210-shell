@@ -225,7 +225,7 @@ char **invokeHistory(char **history, char *command) {
   }
   
   // Check substring contains only numbers
-  for (int i = 0; commandSubstr != '\0'; i++) {
+  for (int i = 0; commandSubstr[i] != '\0'; i++) {
     if (!isdigit(commandSubstr[i])) {
       fprintf(stderr, "You must invoke history with either !! or !<n>\n");
       return NULL;

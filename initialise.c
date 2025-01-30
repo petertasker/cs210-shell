@@ -75,7 +75,8 @@ char* concatHistoryFile(char *initialDirectory){
   // Note that (./.hist.list) does't work because the program
   // changes the user's directory to %HOME%, which isn't
   // where the file is to be saved or loaded
-  char *f = strdup(initialDirectory);
+  char *f = malloc(strlen(initialDirectory) + strlen(HISTORY_FILE));
+  strcpy(f, initialDirectory);
   strcat(f, HISTORY_FILE);
   return f;
 }
