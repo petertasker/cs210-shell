@@ -4,7 +4,7 @@
 #include <string.h>
 #include <linux/limits.h>
 
-#include "shfunc.h"
+#include "shellFunctions.h"
 #include "constants.h"
 
 char *createBuffer() {

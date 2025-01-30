@@ -41,7 +41,7 @@ x unalias
 #include <stdlib.h>
 #include <string.h>
 #include <linux/limits.h>     // PATH_MAX
-#include "shfunc.h"           // some shell functions that we define
+#include "shellFunctions.h"           // some shell functions that we define
 #include "internalCommands.h" // all internal commands
 #include "initialise.h"
 #include "constants.h"

@@ -39,7 +39,7 @@ cd cs210-shell
 ```
 We recommend you use the gcc compiler
 ```bash
-gcc main.c shfunc.c internalCommands.c initialise.c -o main
+gcc main.c shellFunctions.c internalCommands.c initialise.c -o main
 ```
 
 Once compiled, run using

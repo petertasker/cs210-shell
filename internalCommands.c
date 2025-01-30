@@ -2,7 +2,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
-#include "shfunc.h"
+#include "shellFunctions.h"
 #include "constants.h"
 
 void echo(char **arguments) {
