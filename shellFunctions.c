@@ -215,8 +215,16 @@ char **invokeHistory(char **history, char *command) {
     return tokeniseUserInput(history[0]);
   }
   if (index) {
+
+    if (history[index][0] == '\0') {
+      fprintf(stderr, "Failed to invoke history: history %d doesnt exist!\n", index);
+      return NULL;
+    }
+
+    // Else ..
     return tokeniseUserInput(history[index]);
   }
+  
   return NULL;
 }
 
@@ -242,7 +250,7 @@ int getHistoryIndexForInvocation(char *command) {
     
   // Number too small
   if (historyIndex < 1) {
-    fprintf(stderr, "Failed to invoke history: invalid number");
+    fprintf(stderr, "Failed to invoke history: invalid number\n");
     return 0;
   }
     
