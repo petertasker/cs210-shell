@@ -229,6 +229,20 @@ char **invokeHistory(char **history, char *command) {
 }
 
 
+int validHistoryInvocation(char *command) {
+  // Skip the first character (!)
+  char *commandSubstr = command + 1;
+    
+  // If command is "!!"
+  if (commandSubstr[0] == '!' && commandSubstr[1] == '\0') {
+    return -1;
+  }
+    
+  // Return the index of history
+  return getHistoryIndexForInvocation(commandSubstr);
+}
+
+
 int getHistoryIndexForInvocation(char *command) {
   int historyIndex = 0;
     
@@ -256,18 +270,3 @@ int getHistoryIndexForInvocation(char *command) {
     
   return historyIndex;
 }
-
-
-int validHistoryInvocation(char *command) {
-  // Skip the first character (!)
-  char *commandSubstr = command + 1;
-    
-  // If command is "!!"
-  if (commandSubstr[0] == '!' && commandSubstr[1] == '\0') {
-    return -1;
-  }
-    
-  // Return the index of history
-  return getHistoryIndexForInvocation(commandSubstr);
-}
-
