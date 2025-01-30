@@ -167,7 +167,11 @@ void addToHistory(char **history, char *command) {
     free(history[i]);
     history[i] = history[i - 1];
   }
- 
+
+  if (history[0] != NULL) {
+    free(history[0]);
+  }
+  
   // Add new command
   history[0] = strdup(command);
 }
@@ -177,12 +181,15 @@ void freeHistory(char **history) {
   if (!history) {
     return;
   }
-
+    
   for (int i = 0; i < MAX_NUM_HISTORY; i++) {
-    free(history[i]);
+    if (history[i]) {
+      // Free strings
+      free(history[i]); 
+    }
   }
-        
-  free(history);
+  // Free empty array
+  free(history); 
 }
 
   
