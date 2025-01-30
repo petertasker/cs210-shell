@@ -54,7 +54,6 @@ char **tokeniseUserInput(char *s) {
   // Make a local copy so the base userInputBuffer
   // can go directly to addToHistory
 
-
   if (!s) {
     return NULL;
   }
@@ -85,7 +84,6 @@ char **tokeniseUserInput(char *s) {
 int compareStrings(char *input, char *arg) {
   return strcmp(input, arg) == 0;  
 }
-
 
 
 void externalCommands(char **args) {  
@@ -187,6 +185,7 @@ void writeHistoryToFile(char **history, char *path) {
   fclose(fptr);
 }
 
+
 void readHistoryFromFile(char **history, char *path) {
 
     FILE *fptr = fopen(path, "r");
@@ -212,9 +211,6 @@ char **invokeHistory(char **history, char *command) {
   // (this implementation), or pre-parsed
   // (Brian's implementation)
 
-
-  printf("starting invoking history\n");
-  
   // Create [1:] substring of command to lop ! off 
   char commandSubstr[sizeof(command)];
   strcpy(commandSubstr, command + 1);
