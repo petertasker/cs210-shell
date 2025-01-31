@@ -20,10 +20,10 @@ This simplified shell implements the following commands:
 * cd/ setpath <br>
 * exit <br>
 * history
-
+* !!
+* !<n>
 Other features:
 * External command piping
-* A history of recently used commands, and the ability to recall previously used commands
 * An ability to bind and unbind aliases.
 
 ## Requirements
