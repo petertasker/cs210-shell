@@ -55,13 +55,6 @@ char **initialiseHistory() {
     history[i] = malloc((MAX_INPUT_LEN + 1) * sizeof(char));
     if (!history[i]) {
       perror("Failed to allocate memory for history entry");
-
-      // Free already allocated memory before returning
-      for (int j = 0; j < i; j++) {
-	free(history[j]);
-      }
-      free(history);
-      return NULL;
     }
     history[i][0] = '\0'; // Initialize each string as empty
   }

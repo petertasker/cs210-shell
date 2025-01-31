@@ -164,14 +164,8 @@ void addToHistory(char **history, char *command) {
   // Shift array to the right to make room for newest
   // (This array is recent ascending)
   for (int i = MAX_NUM_HISTORY - 1; i > 0; i--) {
-    free(history[i]);
     history[i] = history[i - 1];
   }
-
-  if (history[0] != NULL) {
-    free(history[0]);
-  }
-  
   // Add new command
   history[0] = strdup(command);
 }
