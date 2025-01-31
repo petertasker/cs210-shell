@@ -21,7 +21,7 @@ This simplified shell implements the following commands:
 * exit <br>
 * history
 * !!
-* !\<n\> <br>
+* !&lt n &gt
 Other features:
 * External command piping
 * An ability to bind and unbind aliases.
