@@ -15,13 +15,12 @@ Written By:
 ## Overview
 
 This simplified shell implements the following commands:
-* echo <br>
-* pwd/ getpath <br>
-* cd/ setpath <br>
-* exit <br>
-* history
-* !!
-* !`!<n>`
+* `echo` <br>
+* `pwd`,  `getpath` <br>
+* `cd`, `setpath` <br>
+* `exit` <br>
+* `history`<br>
+* `!!`, `!<n>` <br>
 Other features:
 * External command piping
 * An ability to bind and unbind aliases.
