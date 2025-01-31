@@ -88,10 +88,11 @@ void freeArguments(char **arguments) {
   }
   // Free each token
   for (int i = 0; arguments[i] != NULL; i++) {
-    free(arguments[i]); 
+    free(arguments[i]);
   }
   // Free the array itself
-  free(arguments);  
+  free(arguments);
+  arguments = NULL;
 }
 
 

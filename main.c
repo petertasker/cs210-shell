@@ -30,10 +30,6 @@ x alias <name> <command>
 x unalias
 */
 
-// Memory Issue: ending child process loses(?) some still reachable memory.
-// Assumedly, this is all the memory that that child process used.
-// This is not really a problem.
-
 // Weird Issue: Using an ANSI character such as up arrow overwrites the line
 // that the shell input is taken. This is not a funtional problem
 
