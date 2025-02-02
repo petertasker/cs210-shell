@@ -126,6 +126,7 @@ void externalCommands(char **args) {
   // pid = 0 is the child process
   if (pid == 0) {
     // Execute first argument as a command, with all other arguments as that 
+
     // as *that* command's arguments
     if (execvp(args[0], args) == -1) {
       fprintf(stderr , "%s: command not found\n", args[0]);  
@@ -164,14 +165,18 @@ void addToHistory(char **history, char *command) {
   if (command[0] == '!') {
     return;
   }
-  
+
+  // Erase memory of old command
+  free(history[MAX_NUM_HISTORY - 1]);
+
   // Shift array to the right to make room for newest
   // (This array is recent ascending)
   for (int i = MAX_NUM_HISTORY - 1; i > 0; i--) {
     history[i] = history[i - 1];
   }
+  
   // Add new command
-  history[0] = strdup(command); // <- Possible memory leak?
+  history[0] = strdup(command);
 }
 
 

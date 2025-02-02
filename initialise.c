@@ -1,3 +1,4 @@
+
 /* Initalise some variables used in the main loop */
 #include <stdio.h>
 #include <stdlib.h>
@@ -50,16 +51,30 @@ char **initialiseHistory() {
     perror("Failed to allocate memory for history array");
     return NULL;
   }
+  // Initialize all pointers to NULL
+  for (int i = 0; i < MAX_NUM_HISTORY; i++) {
+    history[i] = NULL;
+  }
+
   // Allocate char arrays for each index of history
   for (int i = 0; i < MAX_NUM_HISTORY; i++) {
     history[i] = malloc((MAX_INPUT_LEN + 1) * sizeof(char));
     if (!history[i]) {
+      
+      // Clean up previously allocated memory
+      for (int j = 0; j < i; j++) {
+	free(history[j]);
+      }
+
+      free(history);
       perror("Failed to allocate memory for history entry");
+      return NULL;
     }
+
     // Initialize each string as empty
-    history[i][0] = '\0'; 
+    history[i][0] = '\0';
   }
-    
+
   return history;
 }
 
