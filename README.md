@@ -19,12 +19,14 @@ This simplified shell implements the following commands:
 * `pwd`,  `getpath` <br>
 * `cd`, `setpath` <br>
 * `exit` <br>
-* `history`<br>
-* `!!`, `!<n>` <br>
+* `histry`<br>
+* `!!`,<br>
+* `!<n>`, where `n` is the nth newest command <br>
+* `!-<n>`, where `-n` is the nth oldest command<br>
 
 Other features:
 * External command piping
-* An ability to bind and unbind aliases.
+* An ability to bind and unbind aliases TBD.
 
 ## Requirements
 
