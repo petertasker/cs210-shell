@@ -16,5 +16,5 @@ void freeHistory(char **);
 void writeHistoryToFile(char **, char*);
 void readHistoryFromFile(char **, char*);
 char **invokeHistory(char **, char *);
-int validHistoryInvocation(char *);
-int getHistoryIndexForInvocation(char *);
+int validHistoryInvocation(char *, int);
+int getHistoryIndexForInvocation(char *, int);

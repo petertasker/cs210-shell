@@ -231,77 +231,80 @@ void readHistoryFromFile(char **history, char *path) {
 
 
 char **invokeHistory(char **history, char *command) {
-  /* Index will return either:
-     0, which means failure,
-     -1, which means index 0, or
-     the index 0 < i < 20
 
-     This is because tokeniseUserInput() returns NULL
-     when 0 is passed as an argument
-  */
-  
-  int index = validHistoryInvocation(command);
+  // Gets how many commands are in history
+  int currentHistorySize = 0;
+  for (int i = 0; i < MAX_NUM_HISTORY; i++) {
+        if (history[i] != NULL && history[i][0] != '\0') {
+            currentHistorySize++;
+        } else {
+            break; // Breaks out if reach empty location
+        }
+    }
 
-  // Manual -1 case
+  int index = validHistoryInvocation(command, currentHistorySize);
+
   if (index == -1) {
     return tokeniseUserInput(history[0]);
   }
-  
-  // 0 < i < 20 case
-  if (index) {
-    
-    // Check history exists
-    if (history[index][0] == '\0') {
-      fprintf(stderr, "Failed to invoke history: history %d doesnt exist!\n", index);
-      return NULL;
+  if (index >= 0) {
+
+    if (index >= currentHistorySize ||history[index][0] == '\0') {
+        fprintf(stderr, "Failed to invoke history: history %d doesn't exist!\n", index);
+        return NULL;
     }
+
+    // Else ..
     return tokeniseUserInput(history[index]);
   }
-  
-  // Invalid case
+
   return NULL;
 }
 
 
-int validHistoryInvocation(char *command) {
-
+int validHistoryInvocation(char *command, int currentHistorySize) {
   // Skip the first character (!)
   char *commandSubstr = command + 1;
-    
+
   // If command is "!!"
   if (commandSubstr[0] == '!' && commandSubstr[1] == '\0') {
     return -1;
   }
-    
+
+  // If command is "!-<no>"
+  if (commandSubstr[0] == '-') {
+        int inputIndex = atoi(commandSubstr + 1);
+        if (inputIndex <= 0 || inputIndex >= currentHistorySize) {
+            fprintf(stderr, "Failed to invoke history: invalid history index\n");
+            return 0;
+        }
+        return currentHistorySize - inputIndex-1;
+    }
+
+
   // Return the index of history
-  return getHistoryIndexForInvocation(commandSubstr);
+  return getHistoryIndexForInvocation(commandSubstr , currentHistorySize);
 }
 
 
-int getHistoryIndexForInvocation(char *command) {
+int getHistoryIndexForInvocation(char *command, int currentHistorySize) {
   int historyIndex = 0;
-    
+
   // Check if each character is a digit
   for (int i = 0; command[i] != '\0'; i++) {
     if (!isdigit(command[i])) {
       fprintf(stderr, "You must invoke history with either !! or !<n>\n");
-      return 0;
+      return -2;
     }
     // Shift digits
     historyIndex = historyIndex * 10 + (command[i] - '0');
   }
-    
-  // Number too big
-  if (historyIndex > MAX_NUM_HISTORY) {
-    fprintf(stderr, "Failed to invoke history: history has a capacity of %d entries\n", MAX_NUM_HISTORY);
-    return 0;
+
+  // Number out of range
+  if (historyIndex < 1 || historyIndex > currentHistorySize) {
+    fprintf(stderr, "Failed to invoke history: out of range. Valid range is 1 to %d.\n", currentHistorySize);
+    return -2;
   }
-    
-  // Number too small
-  if (historyIndex < 1) {
-    fprintf(stderr, "Failed to invoke history: invalid number\n");
-    return 0;
-  }
-    
-  return historyIndex;
+
+  return historyIndex-1;
 }
