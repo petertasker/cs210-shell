@@ -1,8 +1,15 @@
 // Some constants
+
+// Max length of user input
 #define MAX_INPUT_LEN 511
+
+// Max number of history entries
 #define MAX_NUM_HISTORY 20
-#define MAX_NUM_ARGS 5
+
+// Suffix of history file
 #define HISTORY_FILE "/.hist.list"
+
+// Delimiters used for tokenisation
 #define TOKEN_DELIMITERS " \t\n;&><|"
 
 

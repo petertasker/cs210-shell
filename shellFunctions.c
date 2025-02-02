@@ -1,11 +1,12 @@
 /* Some internal functions which help out the main file */
+
 #include <stdio.h>        // printf, perror
 #include <stdlib.h>       // getenv, malloc, free
 #include <string.h>       // strtok
 #include <unistd.h>       // chdir, getcwd, getuid, execvp
 #include <sys/types.h>    // getpwuid
 #include <pwd.h>          // struct passwd, getpwuid
-#include <linux/limits.h> // PATH_MAX
+#include <linux/limits.h> // PATH_MAX, ARG_MAX
 #include <unistd.h>
 #include <wait.h>
 #include <ctype.h>
@@ -29,7 +30,7 @@ char* getHomeDirectory(void) {
   if (pw) {
     return pw->pw_dir;
   }
-
+  
   return NULL;
 }
 
@@ -60,17 +61,16 @@ char **tokeniseUserInput(char *s) {
   }
   
   char *copy = strdup(s);
-  char **arguments = malloc(MAX_NUM_ARGS *sizeof(char *));
+  char **arguments = malloc(ARG_MAX *sizeof(char *));
   if (!arguments) {
     free(copy);
     perror("Failed to allocate memory for arguments");
     return NULL;
   }
-
-  char *token = strtok(copy, TOKEN_DELIMITERS);
   int i = 0;
+  char *token = strtok(copy, TOKEN_DELIMITERS);
   // Loop through the command and put each token in arguments
-  while (token && i < MAX_NUM_ARGS) {
+  while (token && i < ARG_MAX) {
     arguments[i] = strdup(token);
     token = strtok(NULL, TOKEN_DELIMITERS);
     i++;
@@ -80,6 +80,7 @@ char **tokeniseUserInput(char *s) {
   free(copy);
   return arguments;
 }
+
 
 void freeArguments(char **arguments) {
   // Nothing to free
@@ -147,6 +148,7 @@ void trimString(char *s) {
   while (isspace((unsigned char)*s)) {
     s++;
   }
+
   // Use memmove to shift the trimmed string to the start of the buffer
   memmove(original, s, strlen(s) + 1);
   original[strcspn(s, "\n")] = '\0';
@@ -158,17 +160,18 @@ void addToHistory(char **history, char *command) {
   if (compareStrings(command, "exit") || command[0] == '!') {
     return;
   }
-  // Don'lt have history invocations in history
+  // Don't have history invocations in history
   if (command[0] == '!') {
     return;
   }
+  
   // Shift array to the right to make room for newest
   // (This array is recent ascending)
   for (int i = MAX_NUM_HISTORY - 1; i > 0; i--) {
     history[i] = history[i - 1];
   }
   // Add new command
-  history[0] = strdup(command);
+  history[0] = strdup(command); // <- Possible memory leak?
 }
 
 
@@ -176,7 +179,7 @@ void freeHistory(char **history) {
   if (!history) {
     return;
   }
-    
+  
   for (int i = 0; i < MAX_NUM_HISTORY; i++) {
     if (history[i]) {
       // Free strings
@@ -228,28 +231,40 @@ void readHistoryFromFile(char **history, char *path) {
 
 
 char **invokeHistory(char **history, char *command) {
+  /* Index will return either:
+     0, which means failure,
+     -1, which means index 0, or
+     the index 0 < i < 20
 
+     This is because tokeniseUserInput() returns NULL
+     when 0 is passed as an argument
+  */
+  
   int index = validHistoryInvocation(command);
-    
+
+  // Manual -1 case
   if (index == -1) {
     return tokeniseUserInput(history[0]);
   }
+  
+  // 0 < i < 20 case
   if (index) {
-
+    
+    // Check history exists
     if (history[index][0] == '\0') {
       fprintf(stderr, "Failed to invoke history: history %d doesnt exist!\n", index);
       return NULL;
     }
-
-    // Else ..
     return tokeniseUserInput(history[index]);
   }
   
+  // Invalid case
   return NULL;
 }
 
 
 int validHistoryInvocation(char *command) {
+
   // Skip the first character (!)
   char *commandSubstr = command + 1;
     

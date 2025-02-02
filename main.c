@@ -22,9 +22,9 @@ Internal Commands:
 ✓ getpath
 ✓ setpath
 ✓ history
-x !!
-x !<no>
-x !<no> -
+✓ !!
+✓ !<no>
+✓ !<no> -
 x alias
 x alias <name> <command>
 x unalias
@@ -37,10 +37,10 @@ x unalias
 #include <stdlib.h>
 #include <string.h>
 #include <linux/limits.h>     // PATH_MAX
-#include "shellFunctions.h"           // some shell functions that we define
-#include "internalCommands.h" // all internal commands
-#include "initialise.h"
-#include "constants.h"
+#include "shellFunctions.h"   // Some shell functions that we define
+#include "internalCommands.h" // All internal commands
+#include "initialise.h"       // Variables created before do-while loop
+#include "constants.h"        // Constants
 
 int main() {
   
@@ -60,17 +60,18 @@ int main() {
   // Initialise arguments
   char **arguments = NULL;
 
+
+
   // Initialise history
   char **history = initialiseHistory();
 
-
   // Find .hist.list
   char *historyFilePath = concatHistoryFile(initialDirectory);
-
   
   // Load local history
   readHistoryFromFile(history, historyFilePath);
 
+  
   // Main shell loop
   do {
 
@@ -117,6 +118,7 @@ int main() {
       arguments = tokeniseUserInput(userInputBuffer);
     }
 
+    
     // Internal Commands:
 
     // Exit the program
@@ -160,15 +162,15 @@ int main() {
   // Save session history to file
   writeHistoryToFile(history, historyFilePath);
 
-  
+  // Free malloc'd variables
   freeArguments(arguments);
-  
   freeHistory(history);
   free(currentDirectory);
   free(initialDirectory);
   free(historyFilePath);
-  free(userInputBufferCopy); // Important to free the copy as it points to userInputBuffer[0]
-
+  
+  // Important to free the copy as it points to userInputBuffer[0]
+  free(userInputBufferCopy); 
 
   printf("Exiting...\n");
   return 0;

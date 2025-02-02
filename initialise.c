@@ -8,6 +8,7 @@
 #include "constants.h"
 
 char *createBuffer() {
+  // Create user input buffer
   char *buf = malloc((MAX_INPUT_LEN + 1) * sizeof(char));
   if (!buf) {
     perror("Failed to allocate memory...");
@@ -18,7 +19,6 @@ char *createBuffer() {
 
 
 char *saveInitialDirectory() {  
-
   // Working directory of the place which the shell was ran
   char *dir = malloc(PATH_MAX * sizeof(char));
   if (!dir) {
@@ -44,19 +44,20 @@ char *initialiseDirectory() {
 
 
 char **initialiseHistory() {
-  
+  // Allocate array of pointers for history
   char **history = malloc(MAX_NUM_HISTORY * sizeof(char*));
   if (!history) {
     perror("Failed to allocate memory for history array");
     return NULL;
   }
-
+  // Allocate char arrays for each index of history
   for (int i = 0; i < MAX_NUM_HISTORY; i++) {
     history[i] = malloc((MAX_INPUT_LEN + 1) * sizeof(char));
     if (!history[i]) {
       perror("Failed to allocate memory for history entry");
     }
-    history[i][0] = '\0'; // Initialize each string as empty
+    // Initialize each string as empty
+    history[i][0] = '\0'; 
   }
     
   return history;
