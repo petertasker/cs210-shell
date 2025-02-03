@@ -103,16 +103,6 @@ int compareStrings(char *input, char *arg) {
 
 
 void externalCommands(char **args) {  
-  /* External Processes:
-     1. fork
-     2. exec
-     3. wait
-     4. exit
-     
-     Problem here(?) Exiting a child process potentially
-     doesn't free all the memory it uses
-  */
-
   // Create a new process with fork and give it an ID (child)
   // and a parent ID
   pid_t pid = fork();
@@ -125,8 +115,7 @@ void externalCommands(char **args) {
   
   // pid = 0 is the child process
   if (pid == 0) {
-    // Execute first argument as a command, with all other arguments as that 
-
+    // Execute first argument as a command, with all other arguments
     // as *that* command's arguments
     if (execvp(args[0], args) == -1) {
       fprintf(stderr , "%s: command not found\n", args[0]);  
@@ -233,10 +222,12 @@ void readHistoryFromFile(char **history, char *path) {
     }
     fclose(fptr);
 }
+
 void deleteHistory(char **history){
-  for (int i = MAX_NUM_HISTORY; i >= 0; i--) {
-    history[i] = NULL;
-      free(history[i]);
+  for (int i = 0; i < MAX_NUM_HISTORY; i++) {
+    if (history[i]) {
+      history[i][0] = '\0';
+    }
   }
 }
 

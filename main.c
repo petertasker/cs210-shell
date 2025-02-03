@@ -144,7 +144,7 @@ int main() {
       printHistory(history);
     }
     // Erase History
-     else if (compareStrings(arguments[0], "delhist")) {
+    else if (compareStrings(arguments[0], "delhist")) {
       deleteHistory(history);
     }
     // Command isnt in the list of internals, therefore
