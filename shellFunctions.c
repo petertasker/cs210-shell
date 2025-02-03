@@ -1,3 +1,5 @@
+
+
 /* Some internal functions which help out the main file */
 
 #include <stdio.h>        // printf, perror
@@ -61,12 +63,18 @@ char **tokeniseUserInput(char *s) {
   }
   
   char *copy = strdup(s);
-  char **arguments = malloc(ARG_MAX *sizeof(char *));
+  if (!copy) {
+    perror("Failed to duplicate input string");
+    return NULL;
+  }
+
+  char **arguments = malloc((ARG_MAX + 1) *sizeof(char *));
   if (!arguments) {
     free(copy);
     perror("Failed to allocate memory for arguments");
     return NULL;
   }
+  
   int i = 0;
   char *token = strtok(copy, TOKEN_DELIMITERS);
   // Loop through the command and put each token in arguments
@@ -82,20 +90,37 @@ char **tokeniseUserInput(char *s) {
 }
 
 
-void freeStringArray(char **arguments) {
-  // Nothing to free
-  if (!arguments) {
-    return;  
-  }
-  // Free each string
-  for (int i = 0; arguments[i] != NULL; i++) {
-    free(arguments[i]);
-  }
-  // Free the array itself
-  free(arguments);
-  arguments = NULL;
+void freeArguments(char **arguments) {
+    // Early return if arguments is already NULL
+    if (arguments == NULL) {
+        return;
+    }
+
+    // Free each string
+    for (int i = 0; arguments[i] != NULL; i++) {
+        free(arguments[i]);
+    }
+
+    // Free the array itself
+    free(arguments);
 }
 
+
+void freeHistory(char **history) {
+  if (!history) {
+    return;
+  }
+  
+  for (int i = 0; i < MAX_NUM_HISTORY; i++) {
+    if (history[i] != NULL) {
+      // Free strings
+      free(history[i]);
+      history[i] = NULL;
+    }
+  }
+  // Free empty array
+  free(history); 
+}
 
 int compareStrings(char *input, char *arg) {
   return (strcmp(input, arg) == 0);  

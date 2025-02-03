@@ -90,6 +90,12 @@ int main() {
     if (fgets(userInputBuffer, MAX_INPUT_LEN, stdin) == NULL) {
       if (feof(stdin)) {
 	printf("\n");
+	// Free arguments once per loop
+	if (arguments != NULL) {
+	  freeArguments(arguments);
+	  arguments = NULL;
+	}
+	
 	break;
       }
     }
@@ -119,35 +125,42 @@ int main() {
       arguments = tokeniseUserInput(userInputBuffer);
     }
 
-    
     // Internal Commands:
 
     // Exit the program
     if (compareStrings(arguments[0], "exit")) {
+      freeArguments(arguments);
+      arguments = NULL;
       break;
     }
+    
     // Echo the command
     else if (compareStrings(arguments[0], "echo")) {
       echo(arguments);
     }
+    
     // Print path
     else if ((compareStrings(arguments[0], "pwd")) ||	\
 	     compareStrings(arguments[0], "getpath")) {
       pwd(currentDirectory);
     }
+
     // Change directory
     else if ((compareStrings(arguments[0], "cd")) ||	\
 	     compareStrings(arguments[0], "setpath")) {
       cd(arguments);
     }
+    
     // Print History
     else if (compareStrings(arguments[0], "history")) {
       printHistory(history);
     }
+    
     // Erase History
     else if (compareStrings(arguments[0], "delhist")) {
       deleteHistory(history);
     }
+    
     // Command isnt in the list of internals, therefore
     // it is either external or does not exist
     else {
@@ -155,8 +168,8 @@ int main() {
     }
 
     // Free arguments that is malloced in tokeniseUserInput()
-    freeStringArray(arguments);   
-
+    freeArguments(arguments);   
+    arguments = NULL;
   }
   while (1);
 
@@ -168,8 +181,7 @@ int main() {
   writeHistoryToFile(history, historyFilePath);
 
   // Free malloc'd variables
-  freeStringArray(arguments);
-  freeStringArray(history);
+  freeHistory(history);
   free(currentDirectory);
   free(initialDirectory);
   free(historyFilePath);

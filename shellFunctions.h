@@ -19,4 +19,5 @@ int validHistoryInvocation(char *, int);
 int getHistoryIndexForInvocation(char *, int);
 
 // Memory management
-void freeStringArray(char **);
+void freeArguments(char **);
+void freeHistory(char **);
