@@ -19,7 +19,7 @@ This simplified shell implements the following commands:
 * `pwd`,  `getpath` <br>
 * `cd`, `setpath` <br>
 * `exit` <br>
-* `histry`<br>
+* `history`<br>
 * `!!`,<br>
 * `!<n>`, where `n` is the nth newest command <br>
 * `!-<n>`, where `n` is the nth oldest command<br>
