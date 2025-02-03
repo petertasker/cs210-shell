@@ -82,12 +82,12 @@ char **tokeniseUserInput(char *s) {
 }
 
 
-void freeArguments(char **arguments) {
+void freeStringArray(char **arguments) {
   // Nothing to free
   if (!arguments) {
     return;  
   }
-  // Free each token
+  // Free each string
   for (int i = 0; arguments[i] != NULL; i++) {
     free(arguments[i]);
   }
@@ -166,22 +166,6 @@ void addToHistory(char **history, char *command) {
   
   // Add new command
   history[0] = strdup(command);
-}
-
-
-void freeHistory(char **history) {
-  if (!history) {
-    return;
-  }
-  
-  for (int i = 0; i < MAX_NUM_HISTORY; i++) {
-    if (history[i]) {
-      // Free strings
-      free(history[i]); 
-    }
-  }
-  // Free empty array
-  free(history); 
 }
 
   

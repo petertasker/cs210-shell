@@ -8,14 +8,15 @@ char **tokeniseUserInput(char *);
 int compareStrings(char *, char *);
 void externalCommands(char **);
 void trimString(char *);
-void freeArguments(char **);
 
 // History management
 void addToHistory(char **, char*);
-void freeHistory(char **);
 void writeHistoryToFile(char **, char*);
 void readHistoryFromFile(char **, char*);
 void deleteHistory(char**);
 char **invokeHistory(char **, char *);
 int validHistoryInvocation(char *, int);
 int getHistoryIndexForInvocation(char *, int);
+
+// Memory management
+void freeStringArray(char **);

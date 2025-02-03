@@ -154,7 +154,7 @@ int main() {
     }
 
     // Free arguments that is malloced in tokeniseUserInput()
-    freeArguments(arguments);   
+    freeStringArray(arguments);   
 
   }
   while (1);
@@ -167,8 +167,8 @@ int main() {
   writeHistoryToFile(history, historyFilePath);
 
   // Free malloc'd variables
-  freeArguments(arguments);
-  freeHistory(history);
+  freeStringArray(arguments);
+  freeStringArray(history);
   free(currentDirectory);
   free(initialDirectory);
   free(historyFilePath);
