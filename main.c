@@ -185,7 +185,7 @@ int main() {
   free(currentDirectory);
   free(initialDirectory);
   free(historyFilePath);
-  
+  free(aliasFilePath);
   // Important to free the copy as it points to userInputBuffer[0]
   free(userInputBufferCopy); 
 
