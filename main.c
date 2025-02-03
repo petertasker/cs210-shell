@@ -135,7 +135,8 @@ int main() {
     }
     
     // Echo the command
-    else if (compareStrings(arguments[0], "echo")) {
+    else if (compareStrings(arguments[0], "echo") ||	\
+	     compareStrings(arguments[0], "regurgitate")) {
       echo(arguments);
     }
     
@@ -144,7 +145,7 @@ int main() {
 	     compareStrings(arguments[0], "getpath")) {
       pwd(currentDirectory);
     }
-
+    
     // Change directory
     else if ((compareStrings(arguments[0], "cd")) ||	\
 	     compareStrings(arguments[0], "setpath")) {
