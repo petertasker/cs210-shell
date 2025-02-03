@@ -143,6 +143,10 @@ int main() {
     else if (compareStrings(arguments[0], "history")) {
       printHistory(history);
     }
+    // Erase History
+     else if (compareStrings(arguments[0], "delhist")) {
+      deleteHistory(history);
+    }
     // Command isnt in the list of internals, therefore
     // it is either external or does not exist
     else {

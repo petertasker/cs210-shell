@@ -233,6 +233,12 @@ void readHistoryFromFile(char **history, char *path) {
     }
     fclose(fptr);
 }
+void deleteHistory(char **history){
+  for (int i = MAX_NUM_HISTORY; i >= 0; i--) {
+    history[i] = NULL;
+      free(history[i]);
+  }
+}
 
 
 char **invokeHistory(char **history, char *command) {
