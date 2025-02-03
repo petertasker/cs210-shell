@@ -9,6 +9,9 @@
 // Suffix of history file
 #define HISTORY_FILE "/.hist.list"
 
+// Suffix of alias file
+#define ALIAS_FILE "/.aliases"
+
 // Delimiters used for tokenisation
 #define TOKEN_DELIMITERS " \t\n;&><|"
 

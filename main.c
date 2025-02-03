@@ -60,14 +60,15 @@ int main() {
   // Initialise arguments
   char **arguments = NULL;
 
-
-
   // Initialise history
   char **history = initialiseHistory();
 
   // Find .hist.list
-  char *historyFilePath = concatHistoryFile(initialDirectory);
-  
+  char *historyFilePath = concatFilePath(initialDirectory, HISTORY_FILE);
+
+  // Find .aliases
+  char *aliasFilePath = concatFilePath(initialDirectory, ALIAS_FILE);
+
   // Load local history
   readHistoryFromFile(history, historyFilePath);
 

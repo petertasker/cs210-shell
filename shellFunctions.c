@@ -115,6 +115,7 @@ void externalCommands(char **args) {
   
   // pid = 0 is the child process
   if (pid == 0) {
+     
     // Execute first argument as a command, with all other arguments
     // as *that* command's arguments
     if (execvp(args[0], args) == -1) {
@@ -272,7 +273,6 @@ int validHistoryInvocation(char *command, int currentHistorySize) {
   return getHistoryIndexForInvocation(commandSubstr , currentHistorySize);
 }
 
-
 int getHistoryIndexForInvocation(char *command, int currentHistorySize) {
   int historyIndex = 0;
 
@@ -294,3 +294,4 @@ int getHistoryIndexForInvocation(char *command, int currentHistorySize) {
 
   return historyIndex-1;
 }
+
