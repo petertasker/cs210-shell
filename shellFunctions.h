@@ -21,3 +21,8 @@ int getHistoryIndexForInvocation(char *, int);
 // Memory management
 void freeArguments(char **);
 void freeHistory(char **);
+
+// Alias management
+void printAliases();
+void bindAlias(char **);
+void unbindAlias(char **);

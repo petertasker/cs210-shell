@@ -1,3 +1,5 @@
+// History is capped at 20, but that value can be modified in constants.c
+// Aliases are malloced on the fly because there is no alias cap.
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -39,7 +41,7 @@ int main() {
   // Load local history
   readHistoryFromFile(history, historyFilePath);
 
-  
+  char **aliases = NULL; // Change this to read from file <----------  
   // Main shell loop
   do {
 
@@ -87,7 +89,9 @@ int main() {
 	continue;
       }
     }
-    
+
+    // else if alias is triggered <----------
+    // turn arguments into [1:] of the alias command
     else {  
       arguments = tokeniseUserInput(userInputBuffer);
     }
@@ -127,6 +131,15 @@ int main() {
     // Erase History
     else if (compareStrings(arguments[0], "delhist")) {
       deleteHistory(history);
+    }
+
+    // Bind/ View aliases <------------------------------ implement these two functions
+    else if (compareStrings(arguments[0], "alias")) {
+      bindAlias(arguments);
+    }
+
+    else if (compareStrings(arguments[0], "unalias")) {
+      unbindAlias(arguments);
     }
     
     // Command isnt in the list of internals, therefore
