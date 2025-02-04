@@ -1,37 +1,3 @@
-/* ✓ Find the user home directory from the environment */ 
-/* ✓ Set current working directory to user home directory */
-/* ✓ Save the current path */
-/* ✓ Load history */
-/* Load aliases */
-/* ✓ Do while shell has not terminated */
-/* ✓ Display prompt */
-/* ✓ Read and parse user input */
-/* While the command is a history invocation or alias then replace it with the */
-/* appropriate command from history or the aliased command respectively */
-/* ✓ If command is built-in invoke appropriate function */
-/* ✓ Else execute command as an external process */
-/* ✓ End while */
-/* ✓ Save history */
-/* Save aliases */
-/* ✓ Restore original path */
-/* ✓ Exit */
-
-/*
-Internal Commands:
-✓ cd
-✓ getpath
-✓ setpath
-✓ history
-✓ !!
-✓ !<no>
-✓ !<no> -
-x alias
-x alias <name> <command>
-x unalias
-*/
-
-// Weird Issue: Using an ANSI character such as up arrow overwrites the line
-// that the shell input is taken. This is not a funtional problem
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -39,6 +5,7 @@ x unalias
 #include <linux/limits.h>     // PATH_MAX
 #include "shellFunctions.h"   // Some shell functions that we define
 #include "internalCommands.h" // All internal commands
+
 #include "initialise.h"       // Variables created before do-while loop
 #include "constants.h"        // Constants
 
@@ -143,7 +110,7 @@ int main() {
     // Print path
     else if ((compareStrings(arguments[0], "pwd")) ||	\
 	     compareStrings(arguments[0], "getpath")) {
-      pwd(currentDirectory);
+      pwd(currentDirectory, arguments);
     }
     
     // Change directory

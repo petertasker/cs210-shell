@@ -7,7 +7,7 @@
 #define MAX_NUM_HISTORY 20
 
 // Suffix of history file
-#define HISTORY_FILE "/.hist.list"
+#define HISTORY_FILE "/.hist_list"
 
 // Suffix of alias file
 #define ALIAS_FILE "/.aliases"

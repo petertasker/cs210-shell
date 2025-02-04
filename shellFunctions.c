@@ -262,15 +262,20 @@ char **invokeHistory(char **history, char *command) {
     printf("There are no entries in history\n");
     return NULL;
   }
-  
+  /*
+    index = -1 -> index[0]
+    index = -2 -> error
+    index >= 0 -> good
+
+   */
   int index = validHistoryInvocation(command, currentHistorySize);
 
   if (index == -1) {
     return tokeniseUserInput(history[0]);
   }
   if (index >= 0) {
-
-    if (index >= currentHistorySize ||history[index][0] == '\0') {
+    
+    if (index >= currentHistorySize || history[index][0] == '\0') {
         fprintf(stderr, "Failed to invoke history: history %d doesn't exist!\n", index);
         return NULL;
     }
@@ -294,13 +299,24 @@ int validHistoryInvocation(char *command, int currentHistorySize) {
 
   // If command is "!-<no>"
   if (commandSubstr[0] == '-') {
-        int inputIndex = atoi(commandSubstr + 1);
-        if (inputIndex <= 0 || inputIndex >= currentHistorySize) {
-            fprintf(stderr, "Failed to invoke history: invalid history index\n");
-            return 0;
-        }
-        return currentHistorySize - inputIndex-1;
+    // !--<n> not allowed
+    if (!isdigit(commandSubstr[1])) {
+      fprintf(stderr, "Failed to invoke history: !-- not accepted\n");
+      return -2;
     }
+
+    if (commandSubstr[1] == '0') {
+      fprintf(stderr, "Failed to invoke history: cannot invoke -0\n");
+      return -2;
+    }
+    
+    int inputIndex = atoi(commandSubstr + 1);
+    if (inputIndex <= -1 || inputIndex >= currentHistorySize) {
+      fprintf(stderr, "Failed to invoke history: invalid history index\n");
+      return -2;
+    }
+    return currentHistorySize - inputIndex;
+  }
 
 
   // Return the index of history
