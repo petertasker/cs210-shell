@@ -1,3 +1,5 @@
 Getpath: error message for params
 Setpath: error message for no params
 CD: cding to file: error message must contain file name
+off by one: !-1 should invoke oldest command
+delhist: this is fully functional but should warn you that youre deleting something empty
