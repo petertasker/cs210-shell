@@ -176,6 +176,13 @@ void addToHistory(char **history, char *command) {
   if (compareStrings(command, "exit") || command[0] == '!') {
     return;
   }
+  // If command == most recent history entry, return
+  if (history[0]) {
+    if (compareStrings(command, history[0])) {
+      return;
+      }
+  }
+    
 
   // Erase memory of old command
   free(history[MAX_NUM_HISTORY - 1]);
