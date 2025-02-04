@@ -79,18 +79,14 @@ char **initialiseHistory() {
 }
 
 
-char* concatFilePath(char *initialDirectory, char *fileName){
-  // Concatenate file of where the executable was ran with
-  // ".hist.list"
-  // Note that (./.hist.list) does't work because the program
-  // changes the user's directory to %HOME%, which isn't
-  // where the file is to be saved or loaded
-  size_t len = strlen(initialDirectory) + strlen(fileName) + 1;
+char* concatFilePath(char *fileName){
+  // Concatenate file path with %HOME% prefix and filename suffix
+  size_t len = strlen(getHomeDirectory()) + strlen(fileName) + 1;
   char *path = malloc(len);
   if (!path) {
     perror("Failed to allocate memory for history path");
   }
   // Concatenate
-  snprintf(path, len, "%s%s", initialDirectory, fileName);
+  snprintf(path, len, "%s%s", getHomeDirectory(), fileName);
   return path;
 }

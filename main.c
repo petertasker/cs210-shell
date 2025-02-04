@@ -64,10 +64,10 @@ int main() {
   char **history = initialiseHistory();
 
   // Find .hist.list
-  char *historyFilePath = concatFilePath(initialDirectory, HISTORY_FILE);
-
+  char *historyFilePath = concatFilePath(HISTORY_FILE);
+  
   // Find .aliases
-  char *aliasFilePath = concatFilePath(initialDirectory, ALIAS_FILE);
+  char *aliasFilePath = concatFilePath(ALIAS_FILE);
 
   // Load local history
   readHistoryFromFile(history, historyFilePath);
