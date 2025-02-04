@@ -176,10 +176,6 @@ void addToHistory(char **history, char *command) {
   if (compareStrings(command, "exit") || command[0] == '!') {
     return;
   }
-  // Don't have history invocations in history
-  if (command[0] == '!') {
-    return;
-  }
 
   // Erase memory of old command
   free(history[MAX_NUM_HISTORY - 1]);
@@ -243,17 +239,23 @@ void deleteHistory(char **history){
 
 
 char **invokeHistory(char **history, char *command) {
-
+  
   // Gets how many commands are in history
   int currentHistorySize = 0;
   for (int i = 0; i < MAX_NUM_HISTORY; i++) {
-        if (history[i] != NULL && history[i][0] != '\0') {
-            currentHistorySize++;
-        } else {
-            break; // Breaks out if reach empty location
-        }
+    if (history[i] != NULL && history[i][0] != '\0') {
+      currentHistorySize++;
+    } else {
+      break; // Breaks out if reach empty location
     }
+  }
 
+  // If there are no entries in history
+  if (!currentHistorySize) {
+    printf("There are no entries in history\n");
+    return NULL;
+  }
+  
   int index = validHistoryInvocation(command, currentHistorySize);
 
   if (index == -1) {

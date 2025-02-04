@@ -107,20 +107,20 @@ int main() {
     if (compareStrings(userInputBuffer, "")) {
       continue;
     }
-
+    
     // Add command to history
     addToHistory(history, userInputBuffer);
-
     
     // Tokenise the arguments into an array of strings
     // either from history or from the input buffer
-    if (userInputBuffer[0] == '!') {
+    if (userInputBuffer[0] == '!') { 
       arguments = invokeHistory(history, userInputBuffer);	
       // If arguments is NULL an error has been thrown
       if (arguments == NULL) {
 	continue;
       }
     }
+    
     else {  
       arguments = tokeniseUserInput(userInputBuffer);
     }

@@ -1,0 +1,3 @@
+Getpath: error message for params
+Setpath: error message for no params
+CD: cding to file: error message must contain file name
