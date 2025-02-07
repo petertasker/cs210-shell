@@ -22,16 +22,17 @@ int main() {
   
   // Directory of the place which the shell was ran
   char *initialDirectory = saveInitialDirectory();
-
   // Initialise working directory
   char *currentDirectory = initialiseDirectory();
 
   // Initialise arguments
   char **arguments = NULL;
-
+  // Initialise aliases
+  char **aliases = NULL;
+  
   // Initialise history
   char **history = initialiseHistory();
-
+  
   // Find .hist.list
   char *historyFilePath = concatFilePath(HISTORY_FILE);
   
@@ -40,8 +41,8 @@ int main() {
 
   // Load local history
   readHistoryFromFile(history, historyFilePath);
-
-  char **aliases = NULL; // Change this to read from file <----------  
+  // readAliasesFromFile
+  
   // Main shell loop
   do {
 
@@ -135,11 +136,11 @@ int main() {
 
     // Bind/ View aliases <------------------------------ implement these two functions
     else if (compareStrings(arguments[0], "alias")) {
-      bindAlias(arguments);
+      bindAlias(aliases, arguments);
     }
 
     else if (compareStrings(arguments[0], "unalias")) {
-      unbindAlias(arguments);
+      unbindAlias(aliases, arguments);
     }
     
     // Command isnt in the list of internals, therefore

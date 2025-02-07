@@ -51,3 +51,11 @@ void printHistory(char **history) {
     }
   }
 }
+
+void bindAlias(char **aliases, char **args) {
+  
+}
+
+void unbindAlias(char **aliases, char **args) {
+  
+}
