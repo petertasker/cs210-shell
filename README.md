@@ -34,17 +34,7 @@ A Unix type system (e.g. Linux or macOS) is required to run as we use Unix syste
 
 ## Installation
 
-Clone the repository and compile the project:
+Clone the repository or download the ZIP and run:
 ```bash
-git clone https://github.com/petertasker/cs210-shell.git
-cd cs210-shell
-```
-We recommend you use the gcc compiler
-```bash
-gcc main.c shellFunctions.c internalCommands.c initialise.c -o main
-```
-
-Once compiled, run using
-```bash
-./main
+make
 ```
