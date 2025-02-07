@@ -3,8 +3,7 @@ CC = gcc
 CFLAGS = -Wall -pedantic
 TARGET = shell
 
-all:
-	$(TARGET)
+all: $(TARGET)
 
 $(TARGET): $(SOURCES)
 	$(CC) $(CFLAGS) -o $(TARGET) $(SOURCES)
