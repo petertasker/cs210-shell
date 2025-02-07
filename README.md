@@ -34,7 +34,11 @@ A Unix type system (e.g. Linux or macOS) is required to run as we use Unix syste
 
 ## Installation
 
-Clone the repository or download the ZIP and run:
+Clone the repository or download the ZIP and use:
 ```bash
 make
+```
+One made, run the shell using
+```bash
+./shell
 ```
