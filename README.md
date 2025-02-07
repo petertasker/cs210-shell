@@ -38,7 +38,3 @@ Clone the repository or download the ZIP and use:
 ```bash
 make
 ```
-One made, run the shell using
-```bash
-./shell
-```
