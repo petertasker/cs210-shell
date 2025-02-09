@@ -1,3 +1,4 @@
+
 # Ignore emacs backup files
 *~
 *#
@@ -5,6 +6,6 @@ gmon.out
 valgrind-out.txt
 .hist.list
 .nfs*
-*
+shell
 TODO.txt
 !makefile
