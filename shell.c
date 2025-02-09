@@ -7,7 +7,7 @@
 #include <linux/limits.h>     // PATH_MAX
 #include "shell_library.h"   // Some shell functions that we define
 #include "built_in_commands.h" // All internal commands
-
+#include "linked_list.h"
 #include "initialise.h"       // Variables created before do-while loop
 #include "constants.h"        // Constants
 
@@ -27,7 +27,7 @@ int main() {
   char **arguments = NULL;
 
   // Initialise aliases
-  Node head_aliases = NULL;
+  Node *head_aliases = NULL;
   
   // Initialise history
   char **history = initialiseHistory();

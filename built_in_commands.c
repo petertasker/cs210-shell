@@ -1,9 +1,13 @@
-/* Implementation of some built-in shell functions */
+/**
+   Implementation of some built-in shell functions
+*/
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
 #include "shell_library.h"
 #include "built_in_commands.h"
+#include "linked_list.h"
 #include "constants.h"
 
 void echo(char **args) {
@@ -55,11 +59,11 @@ void printHistory(char **history) {
 }
 
 
-void bindAlias(char **aliases, char **args) {
+void bindAlias(Node **head, char **args) {
   
 }
 
 
-void unbindAlias(char **aliases, char **args) {
+void unbindAlias(Node **head, char **args) {
   
 }

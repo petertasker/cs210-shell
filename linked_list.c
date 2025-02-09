@@ -5,24 +5,27 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-
-
-typedef struct Node {
-    int data;
-    struct Node *next;
-} Node;
+#include <string.h>
+#include "linked_list.h"
 
 
 /**
    Create a new node
 */
-Node* createNode(String value) {
+Node* createNode(char *value) {
   Node *newNode = (Node *)malloc(sizeof(Node));
   if (!newNode) {
     printf("Memory allocation failed!\n");
     return NULL;
   }
-  newNode->data = value;
+
+  newNode->value = strdup(value);  // Allocate memory for the string and copy it
+  if (!newNode->value) {
+    printf("String duplication failed!\n");
+    free(newNode);  // Free memory allocated for the node
+    return NULL;
+  }
+
   newNode->next = NULL;
   return newNode;
 }
@@ -31,7 +34,7 @@ Node* createNode(String value) {
 /**
    Insert node at the end of a list
 */
-void insertNode(Node **head, String value) {
+void insertNode(Node **head, char *value) {
   Node *newNode = createNode(value);
   if (!newNode) return;
 
@@ -51,20 +54,21 @@ void insertNode(Node **head, String value) {
 /**
    Delete a node by value
 */
-void deleteNode(Node **head, String value) {
+void deleteNode(Node **head, char *value) {
   if (*head == NULL) return;
 
   Node *temp = *head, *prev = NULL;
 
   // If head node itself holds the value
-  if (temp != NULL && temp->data == value) {
+  if (temp != NULL && strcmp(temp->value, value) == 0) {
     *head = temp->next;
-    free(temp);
+    free(temp->value);  // Free the value memory
+    free(temp);         // Free the node memory
     return;
   }
 
   // Search for the node to delete
-  while (temp != NULL && temp->data != value) {
+  while (temp != NULL && strcmp(temp->value, value) != 0) {
     prev = temp;
     temp = temp->next;
   }
@@ -74,7 +78,8 @@ void deleteNode(Node **head, String value) {
 
   // Unlink the node and free memory
   prev->next = temp->next;
-  free(temp);
+  free(temp->value);  // Free the value memory
+  free(temp);         // Free the node memory
 }
 
 
@@ -84,7 +89,7 @@ void deleteNode(Node **head, String value) {
 void printList(Node *head) {
   Node *temp = head;
   while (temp != NULL) {
-    printf("%d -> ", temp->data);
+    printf("%s -> ", temp->value);
     temp = temp->next;
   }
   printf("NULL\n");
@@ -99,6 +104,7 @@ void freeList(Node **head) {
   while (*head) {
     temp = *head;
     *head = (*head)->next;
-    free(temp);
+    free(temp->value);  // Free the value memory
+    free(temp);         // Free the node memory
   }
 }

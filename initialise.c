@@ -4,7 +4,7 @@
 #include <string.h>
 #include <linux/limits.h>
 
-#include "shellFunctions.h"
+#include "shell_library.h"
 #include "constants.h"
 
 
