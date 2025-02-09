@@ -17,16 +17,15 @@ int main() {
 
   // Create input buffer and also a copy of the initial
   // pointer so the buffer can reset every cycle of the loop
-  char *userInputBuffer = createBuffer();
-  char *userInputBufferCopy = userInputBuffer;
+  char *buffer_user_input = createBuffer();
+  char *buffer_user_input_ptr = buffer_user_input;
   
-  // Directory of the place which the shell was ran
-  char *initialDirectory = saveInitialDirectory();
-  // Initialise working directory
-  char *currentDirectory = initialiseDirectory();
+  char *directory_initial = saveInitialDirectory();
+  char *directory_current = initialiseDirectory();
 
   // Initialise arguments
   char **arguments = NULL;
+
   // Initialise aliases
   char **aliases = NULL;
   
@@ -34,30 +33,30 @@ int main() {
   char **history = initialiseHistory();
   
   // Find .hist.list
-  char *historyFilePath = concatFilePath(HISTORY_FILE);
+  char *file_path_history = concatFilePath(HISTORY_FILE);
   
   // Find .aliases
-  char *aliasFilePath = concatFilePath(ALIAS_FILE);
+  char *file_path_alias = concatFilePath(ALIAS_FILE);
 
   // Load local history
-  readHistoryFromFile(history, historyFilePath);
+  readHistoryFromFile(history, file_path_history);
   // readAliasesFromFile
   
   // Main shell loop
   do {
 
     // Get current working directory
-    getWorkingDirectory(currentDirectory);
+    getWorkingDirectory(directory_current);
     
     // Reset buffer pointer
-    userInputBuffer = userInputBufferCopy; 
+    buffer_user_input = buffer_user_input_ptr; 
 
     // Display shell-like interface
-    printf("%s $", currentDirectory);
+    printf("%s $", directory_current);
     
     // Call fgets for user input and instantly check if it is NULL,
     // this means that the user inputted EOF (<CTRL> + D)
-    if (fgets(userInputBuffer, MAX_INPUT_LEN, stdin) == NULL) {
+    if (fgets(buffer_user_input, MAX_INPUT_LEN, stdin) == NULL) {
       if (feof(stdin)) {
 	printf("\n");
 	// Free arguments once per loop
@@ -71,20 +70,20 @@ int main() {
     }
     
     // Trim leading whitespace and NULL terminator
-    trimString(userInputBuffer);
+    trimString(buffer_user_input);
     
     // Edge case: user has inputted nothing
-    if (compareStrings(userInputBuffer, "")) {
+    if (compareStrings(buffer_user_input, "")) {
       continue;
     }
     
     // Add command to history
-    addToHistory(history, userInputBuffer);
+    addToHistory(history, buffer_user_input);
     
     // Tokenise the arguments into an array of strings
     // either from history or from the input buffer
-    if (userInputBuffer[0] == '!') { 
-      arguments = invokeHistory(history, userInputBuffer);	
+    if (buffer_user_input[0] == '!') { 
+      arguments = invokeHistory(history, buffer_user_input);	
       // If arguments is NULL an error has been thrown
       if (arguments == NULL) {
 	continue;
@@ -94,7 +93,7 @@ int main() {
     // else if alias is triggered <----------
     // turn arguments into [1:] of the alias command
     else {  
-      arguments = tokeniseUserInput(userInputBuffer);
+      arguments = tokeniseUserInput(buffer_user_input);
     }
 
     // Internal Commands:
@@ -115,7 +114,7 @@ int main() {
     // Print path
     else if ((compareStrings(arguments[0], "pwd")) ||	\
 	     compareStrings(arguments[0], "getpath")) {
-      pwd(currentDirectory, arguments);
+      pwd(directory_current, arguments);
     }
     
     // Change directory
@@ -157,19 +156,18 @@ int main() {
 
 
   // Replenish directory
-  setWorkingDirectory(initialDirectory);
+  setWorkingDirectory(directory_initial);
 
   // Save session history to file
-  writeHistoryToFile(history, historyFilePath);
+  writeHistoryToFile(history, file_path_history);
 
   // Free malloc'd variables
   freeHistory(history);
-  free(currentDirectory);
-  free(initialDirectory);
-  free(historyFilePath);
-  free(aliasFilePath);
-  // Important to free the copy as it points to userInputBuffer[0]
-  free(userInputBufferCopy); 
+  free(directory_current);
+  free(directory_initial);
+  free(file_path_history);
+  free(file_path_alias);
+  free(buffer_user_input_ptr); 
 
   printf("Exiting...\n");
   return 0;

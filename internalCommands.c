@@ -14,14 +14,14 @@ void echo(char **args) {
 }
 
 
-void pwd(char *currentDirectory, char **args) {
+void pwd(char *path, char **args) {
   // Only one argument
   if (args[1] != NULL) {
     fprintf(stdout, "Failed to print directory: too many arguments provided\n");
     return;
   }
   
-  printf("%s\n", currentDirectory);
+  printf("%s\n", path);
 }
 
 
@@ -42,6 +42,7 @@ void cd(char **args) {
   }
 }
 
+
 void printHistory(char **history) {
   printf("History:\n");
   // Print all slots that are not NULL
@@ -52,9 +53,11 @@ void printHistory(char **history) {
   }
 }
 
+
 void bindAlias(char **aliases, char **args) {
   
 }
+
 
 void unbindAlias(char **aliases, char **args) {
   

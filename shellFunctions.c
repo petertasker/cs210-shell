@@ -1,5 +1,3 @@
-
-
 /* Some internal functions which help out the main file */
 
 #include <stdio.h>        // printf, perror
@@ -236,6 +234,7 @@ void readHistoryFromFile(char **history, char *path) {
     fclose(fptr);
 }
 
+
 void deleteHistory(char **history){
   for (int i = 0; i < MAX_NUM_HISTORY; i++) {
     if (history[i]) {
@@ -248,17 +247,17 @@ void deleteHistory(char **history){
 char **invokeHistory(char **history, char *command) {
   
   // Gets how many commands are in history
-  int currentHistorySize = 0;
+  int current_history_size = 0;
   for (int i = 0; i < MAX_NUM_HISTORY; i++) {
     if (history[i] != NULL && history[i][0] != '\0') {
-      currentHistorySize++;
+      current_history_size++;
     } else {
       break; // Breaks out if reach empty location
     }
   }
 
   // If there are no entries in history
-  if (!currentHistorySize) {
+  if (!current_history_size) {
     printf("There are no entries in history\n");
     return NULL;
   }
@@ -268,14 +267,14 @@ char **invokeHistory(char **history, char *command) {
     index >= 0 -> good
 
    */
-  int index = validHistoryInvocation(command, currentHistorySize);
+  int index = validHistoryInvocation(command, current_history_size);
 
   if (index == -1) {
     return tokeniseUserInput(history[0]);
   }
   if (index >= 0) {
     
-    if (index >= currentHistorySize || history[index][0] == '\0') {
+    if (index >= current_history_size || history[index][0] == '\0') {
         fprintf(stderr, "Failed to invoke history: history %d doesn't exist!\n", index);
         return NULL;
     }
@@ -288,42 +287,42 @@ char **invokeHistory(char **history, char *command) {
 }
 
 
-int validHistoryInvocation(char *command, int currentHistorySize) {
+int validHistoryInvocation(char *command, int current_history_size) {
   // Skip the first character (!)
-  char *commandSubstr = command + 1;
+  char *command_substring = command + 1;
 
   // If command is "!!"
-  if (commandSubstr[0] == '!' && commandSubstr[1] == '\0') {
+  if (command_substring[0] == '!' && command_substring[1] == '\0') {
     return -1;
   }
 
   // If command is "!-<no>"
-  if (commandSubstr[0] == '-') {
+  if (command_substring[0] == '-') {
     // !--<n> not allowed
-    if (!isdigit(commandSubstr[1])) {
+    if (!isdigit(command_substring[1])) {
       fprintf(stderr, "Failed to invoke history: !-- not accepted\n");
       return -2;
     }
 
-    if (commandSubstr[1] == '0') {
+    if (command_substring[1] == '0') {
       fprintf(stderr, "Failed to invoke history: cannot invoke -0\n");
       return -2;
     }
     
-    int inputIndex = atoi(commandSubstr + 1);
-    if (inputIndex <= -1 || inputIndex >= currentHistorySize) {
+    int inputIndex = atoi(command_substring + 1);
+    if (inputIndex <= -1 || inputIndex >= current_history_size) {
       fprintf(stderr, "Failed to invoke history: invalid history index\n");
       return -2;
     }
-    return currentHistorySize - inputIndex;
+    return current_history_size - inputIndex;
   }
 
 
   // Return the index of history
-  return getHistoryIndexForInvocation(commandSubstr , currentHistorySize);
+  return getHistoryIndexForInvocation(command_substring , current_history_size);
 }
 
-int getHistoryIndexForInvocation(char *command, int currentHistorySize) {
+int getHistoryIndexForInvocation(char *command, int current_history_size) {
   int historyIndex = 0;
 
   // Check if each character is a digit
@@ -337,11 +336,11 @@ int getHistoryIndexForInvocation(char *command, int currentHistorySize) {
   }
 
   // Number out of range
-  if (historyIndex < 1 || historyIndex > currentHistorySize) {
-    fprintf(stderr, "Failed to invoke history: out of range. Valid range is 1 to %d.\n", currentHistorySize);
+  if (historyIndex < 1 || historyIndex > current_history_size) {
+    fprintf(stderr, "Failed to invoke history: out of range. Valid range is 1 to %d.\n", current_history_size);
     return -2;
   }
 
-  return historyIndex-1;
+  return historyIndex - 1;
 }
 

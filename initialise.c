@@ -1,4 +1,6 @@
 
+
+
 /* Initalise some variables used in the main loop */
 #include <stdio.h>
 #include <stdlib.h>
@@ -7,6 +9,14 @@
 
 #include "shellFunctions.h"
 #include "constants.h"
+
+typedef struct Node {
+  String line;
+  struct Node *next;
+} Node;
+
+
+
 
 char *createBuffer() {
   // Create user input buffer
@@ -33,14 +43,14 @@ char *saveInitialDirectory() {
 
 char *initialiseDirectory() {
   // Current working directory
-  char *currentDirectory = malloc(PATH_MAX * sizeof(char));
-  if (!currentDirectory) {
+  char *directory_current = malloc(PATH_MAX * sizeof(char));
+  if (!directory_current) {
     perror("Failed to allocate memory for cwd");
   }
   // Initialise in the home directory
-  strcpy(currentDirectory, getHomeDirectory());
-  setWorkingDirectory(currentDirectory);
-  return currentDirectory;
+  strcpy(directory_current, getHomeDirectory());
+  setWorkingDirectory(directory_current);
+  return directory_current;
 }
 
 
