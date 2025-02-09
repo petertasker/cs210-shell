@@ -1,6 +1,3 @@
-
-
-
 /* Initalise some variables used in the main loop */
 #include <stdio.h>
 #include <stdlib.h>
@@ -9,13 +6,6 @@
 
 #include "shellFunctions.h"
 #include "constants.h"
-
-typedef struct Node {
-  String line;
-  struct Node *next;
-} Node;
-
-
 
 
 char *createBuffer() {
