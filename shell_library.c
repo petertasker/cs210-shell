@@ -1,12 +1,16 @@
-/* Some internal functions which help out the main file */
+/**
+   A library of functions which are used inside the main shell
+   script and the assisting files
+*/
 
-#include <stdio.h>        // printf, perror
-#include <stdlib.h>       // getenv, malloc, free
-#include <string.h>       // strtok
-#include <unistd.h>       // chdir, getcwd, getuid, execvp
-#include <sys/types.h>    // getpwuid
-#include <pwd.h>          // struct passwd, getpwuid
-#include <linux/limits.h> // PATH_MAX, ARG_MAX
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <unistd.h>
+#include <sys/types.h>
+#include <pwd.h>
+#include <linux/limits.h>
 #include <unistd.h>
 #include <wait.h>
 #include <ctype.h>
@@ -15,6 +19,10 @@
 #include "shell_library.h"
 #include "constants.h"
 
+
+/**
+   Get the home directory
+*/
 char* getHomeDirectory(void) {
   // Check if the HOME enviroment variable is set
   char *home = getenv("HOME");
@@ -35,6 +43,10 @@ char* getHomeDirectory(void) {
 }
 
 
+
+/**
+   Get the current working directory
+*/
 void getWorkingDirectory(char *buffer) {
   // Replace the old path with the new path
   buffer = getcwd(buffer, PATH_MAX);
@@ -43,7 +55,9 @@ void getWorkingDirectory(char *buffer) {
   }
 }
 
-
+/**
+   Set the current working directory
+*/
 void setWorkingDirectory(char *arg) {
   // chdir CHanges the working DIRectory  
   if (chdir(arg) != 0) {
@@ -52,7 +66,14 @@ void setWorkingDirectory(char *arg) {
 }
 
 
-char **tokeniseUserInput(char *s) {
+/**
+   Tokenise a string using a series of delimeters
+   the string is either:
+       Input from stdin,
+       An invocation of history, or
+       An invocation of an alias
+*/
+char **tokeniseString(char *s) {
   // Make a local copy so the base userInputBuffer
   // can go directly to addToHistory
 
@@ -88,6 +109,9 @@ char **tokeniseUserInput(char *s) {
 }
 
 
+/**
+   Free the arguments of the command input
+*/
 void freeArguments(char **arguments) {
     // Early return if arguments is already NULL
     if (arguments == NULL) {
@@ -104,6 +128,12 @@ void freeArguments(char **arguments) {
 }
 
 
+/**
+   Free the memory allocated to the statically
+   allocated array History
+
+   Destruction followed by linked list implementation TBD
+*/
 void freeHistory(char **history) {
   if (!history) {
     return;
@@ -120,11 +150,24 @@ void freeHistory(char **history) {
   free(history); 
 }
 
+
+/**
+   Returns 1 if strings match
+*/
 int compareStrings(char *input, char *arg) {
   return (strcmp(input, arg) == 0);  
 }
 
 
+/**
+   Pipe external commands
+
+   Forks into a child process, and sleeps
+   until the child gets killed or kills
+   itself
+
+   "Command not found" handling is found here
+*/
 void externalCommands(char **args) {  
   // Create a new process with fork and give it an ID (child)
   // and a parent ID
@@ -156,6 +199,10 @@ void externalCommands(char **args) {
 }
 
 
+/**
+   Trim leading and trailing whitespace from a string
+   Also trims newline characters
+*/
 void trimString(char *s) {
   // Create copy of original pointer address
   char *original = s;
@@ -169,6 +216,11 @@ void trimString(char *s) {
 }
 
 
+/**
+   Add to a statically allocated history array
+
+   Desctruction TBD
+*/
 void addToHistory(char **history, char *command) {
   // Don't have exit or invocations in history
   if (compareStrings(command, "exit") || command[0] == '!') {
@@ -195,7 +247,12 @@ void addToHistory(char **history, char *command) {
   history[0] = strdup(command);
 }
 
-  
+
+/**
+   Write history to file
+
+   Destruction TBD
+*/
 void writeHistoryToFile(char **history, char *path) {
   FILE *fptr;
   fptr = fopen(path, "w");
@@ -215,6 +272,11 @@ void writeHistoryToFile(char **history, char *path) {
 }
 
 
+/**
+   Read history from file
+
+   Destruction TBD
+*/
 void readHistoryFromFile(char **history, char *path) {
 
     FILE *fptr = fopen(path, "r");
@@ -235,6 +297,11 @@ void readHistoryFromFile(char **history, char *path) {
 }
 
 
+/**
+   Delete all indexes of history
+
+   Destruction TBD
+*/
 void deleteHistory(char **history){
   for (int i = 0; i < MAX_NUM_HISTORY; i++) {
     if (history[i]) {
@@ -243,6 +310,12 @@ void deleteHistory(char **history){
   }
 }
 
+
+/**
+   Invoke history from history array
+   
+   Destruction TBD
+*/
 
 char **invokeHistory(char **history, char *command) {
   
@@ -270,7 +343,7 @@ char **invokeHistory(char **history, char *command) {
   int index = validHistoryInvocation(command, current_history_size);
 
   if (index == -1) {
-    return tokeniseUserInput(history[0]);
+    return tokeniseString(history[0]);
   }
   if (index >= 0) {
     
@@ -280,13 +353,20 @@ char **invokeHistory(char **history, char *command) {
     }
 
     // Else ..
-    return tokeniseUserInput(history[index]);
+    return tokeniseString(history[index]);
   }
 
   return NULL;
 }
 
 
+/**
+   Returns -2 if invocation is not valid
+   Returns -1 if invocation is index[0]
+   Returns a valid positive integer
+
+   Destruction TBD
+*/
 int validHistoryInvocation(char *command, int current_history_size) {
   // Skip the first character (!)
   char *command_substring = command + 1;
@@ -317,11 +397,14 @@ int validHistoryInvocation(char *command, int current_history_size) {
     return current_history_size - inputIndex;
   }
 
-
   // Return the index of history
   return getHistoryIndexForInvocation(command_substring , current_history_size);
 }
 
+
+/**
+   Get the history index
+*/
 int getHistoryIndexForInvocation(char *command, int current_history_size) {
   int historyIndex = 0;
 

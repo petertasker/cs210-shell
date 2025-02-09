@@ -4,7 +4,7 @@ void setWorkingDirectory(char *);
 void getWorkingDirectory(char *);
 
 // Input parsing
-char **tokeniseUserInput(char *);
+char **tokeniseString(char *);
 int compareStrings(char *, char *);
 void externalCommands(char **);
 void trimString(char *);

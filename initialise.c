@@ -1,13 +1,19 @@
-/* Initalise some variables used in the main loop */
+/**
+   Variables that are initialised before the main loop
+*/
+
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <linux/limits.h>
-
 #include "shell_library.h"
 #include "constants.h"
 
 
+/**
+   Create buffer for stdin
+*/
 char *createBuffer() {
   // Create user input buffer
   char *buf = malloc((MAX_INPUT_LEN + 1) * sizeof(char));
@@ -19,6 +25,10 @@ char *createBuffer() {
 }
 
 
+/**
+   Save the working directory that the shell
+   was ran in, to be restored later
+*/
 char *saveInitialDirectory() {  
   // Working directory of the place which the shell was ran
   char *dir = malloc(PATH_MAX * sizeof(char));
@@ -31,6 +41,9 @@ char *saveInitialDirectory() {
 }
 
 
+/**
+   Set initial directory to home
+*/
 char *initialiseDirectory() {
   // Current working directory
   char *directory_current = malloc(PATH_MAX * sizeof(char));
@@ -44,6 +57,12 @@ char *initialiseDirectory() {
 }
 
 
+/**
+   Create string array of size MAX_NUM_HISTORY to store
+   history commands
+   
+   linked list implementation tbd.
+*/
 char **initialiseHistory() {
   // Allocate array of pointers for history
   char **history = malloc(MAX_NUM_HISTORY * sizeof(char*));
@@ -79,6 +98,9 @@ char **initialiseHistory() {
 }
 
 
+/**
+   Concatenate the home path with a file name suffix
+*/
 char* concatFilePath(char *fileName){
   // Concatenate file path with %HOME% prefix and filename suffix
   size_t len = strlen(getHomeDirectory()) + strlen(fileName) + 1;

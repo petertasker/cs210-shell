@@ -93,7 +93,7 @@ int main() {
     // else if alias is triggered <----------
     // turn arguments into [1:] of the alias command
     else {  
-      arguments = tokeniseUserInput(buffer_user_input);
+      arguments = tokeniseString(buffer_user_input);
     }
 
     // Internal Commands:
@@ -148,7 +148,7 @@ int main() {
       externalCommands(arguments);
     }
 
-    // Free arguments that is malloced in tokeniseUserInput()
+    // Free arguments that is malloced in tokeniseString()
     freeArguments(arguments);   
     arguments = NULL;
   }
