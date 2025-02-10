@@ -85,7 +85,7 @@ char **tokeniseString(char *str) {
     return NULL;
   }
 
-  char **arguments = malloc((ARG_MAX + 1) *sizeof(char *));
+  char **arguments = malloc((ARG_MAX + 1) * sizeof(char *));
   if (!arguments) {
     free(copy_str);
     perror("Failed to allocate memory for arguments");
@@ -200,55 +200,61 @@ void trimString(char *s) {
 */
 Node* addToHistory(Node* head_history, char **tokens) {
     if (!tokens || !*tokens) {
+        printf("No tokens to add to history.\n");
         return head_history;
     }
-    
+
     // Deep copy command (first token)
     char* command = strdup(tokens[0]);
     if (!command) {
-        perror("Failed to allocate memory for command");
-        return head_history;
+      perror("Failed to allocate memory for command");
+      return head_history;
     }
-
+    
     // Count number of arguments
     int arg_count = 0;
     while (tokens[arg_count]) {
-        arg_count++;
+      arg_count++;
     }
 
     // Allocate memory for arguments array
-    char** arguments = calloc((arg_count + 1), sizeof(char*));
-    if (!arguments) {
-        perror("Failed to allocate memory for arguments");
-        free(command);
-        return head_history;
-    }
+    char** args = NULL;
 
-    // Copy each argument
-    for (int i = 1; i < arg_count; i++) {
-        arguments[i] = strdup(tokens[i]);
-        if (!arguments[i]) {
-            perror("Failed to allocate memory for an argument");
-            for (int j = 0; j < i; j++) {
-                free(arguments[j]);
-            }
-            free(arguments);
-            free(command);
-            return head_history;
-        }
+    if (arg_count > 1) {
+      // Allocate memory for arguments array if there are arguments
+      args = malloc((arg_count) * sizeof(char*));
+      if (!args) {
+	perror("Failed to allocate memory for arguments");
+	free(command);
+	return head_history;
+      }
+
+      // Copy each argument
+      for (int i = 1; i < arg_count; i++) {
+	args[i - 1] = strdup(tokens[i]);
+	if (!args[i - 1]) {
+	  perror("Failed to allocate memory for an argument");
+	  for (int j = 0; j < (i - 1); j++) {
+	    free(args[j]);
+	  }
+	  free(args);
+	  free(command);
+	  return head_history;
+	}
+	printf("%s ", args[i - 1]);
+      }
+      printf("\n");
+
+      args[arg_count - 1] = NULL;  // NULL-terminate the array
     }
-    arguments[arg_count] = NULL;  // NULL-terminate the array
 
     // Insert into history
-    head_history = insertNodeAtBeginning(head_history, command, arguments);
-
-    return head_history;
+    return insertNodeAtBeginning(head_history, command, args);
 }
+
 
 /**
    Delete all indexes of history
-
-   Destruction TBD
 */
 void clearHistory(Node* head_history) {
   clearList(head_history);

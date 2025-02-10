@@ -118,7 +118,7 @@ void printList(Node *head) {
     
     // Print each argument
     if (current->arguments) {
-      for (int i = 1; current->arguments[i] != NULL; i++) {
+      for (int i = 0; current->arguments[i] != NULL; i++) {
 	printf(" %s", current->arguments[i]);
       }
     }
@@ -153,25 +153,30 @@ void clearList(Node* head) {
 
 /**
    Write a doubly linked list's contents into a file
- */
+*/
 void writeListToFile(Node* head, char *path) {
-  printf("Path: %s\n",path);
-  if (head == NULL) {
+  printf("Path: %s\n", path);
+  if (head == NULL || path == NULL) {
     return;
   }
+
   FILE *file = fopen(path, "w");
-  if (!file) {
-    fprintf(stderr, "Failed to open file");
+  if (file == NULL) {
+    fprintf(stderr, "Failed to open file %s\n", path);
+    return;
   }
+  
   Node *current = head;
   while (current != NULL) {
-    // Write command
-    fprintf(file, "%s", current->command);
-    
-    // Write each argument
-    if (current->arguments) {
+    // Write command (with NULL check)
+    if (current->command != NULL) {
+      fprintf(file, "%s", current->command);
+    }
+
+    // Write each argument (with NULL checks)
+    if (current->arguments != NULL) {
       for (int i = 0; current->arguments[i] != NULL; i++) {
-        fprintf(file, " %s", current->arguments[i]);
+	fprintf(file, " %s", current->arguments[i]);
       }
     }
     fprintf(file, "\n");
