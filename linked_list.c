@@ -12,6 +12,8 @@
 #include "linked_list.h"
 #include "constants.h"
 #include "shell_library.h"
+
+
 /**
    Create a new node
 */
@@ -111,7 +113,7 @@ void printList(Node *head) {
     return;
   }
 
-  int index = 0;
+  int index = 1;
   
   // Find the last node (tail)
   Node *current = head;
@@ -123,19 +125,19 @@ void printList(Node *head) {
   // Traverse backward and print each node
   while (current != NULL) {
     // Print command
-    printf("%s", current->command);
-
+    printf("%2d. %s", index, current->command);
+    
     // Print each argument
     if (current->arguments) {
       for (int i = 0; current->arguments[i] != NULL; i++) {
-        printf("%d. %s", index, current->arguments[i]);
-	index--;
+        printf(" %s", current->arguments[i]);
       }
     }
     printf("\n");
     
     // Move to the previous node
     current = current->previous;
+    index--;
   }
 }
 
