@@ -79,7 +79,7 @@ char **initialiseHistory() {
   for (int i = 0; i < MAX_NUM_HISTORY; i++) {
     history[i] = malloc((MAX_INPUT_LEN + 1) * sizeof(char));
     if (!history[i]) {
-      
+
       // Clean up previously allocated memory
       for (int j = 0; j < i; j++) {
 	free(history[j]);
@@ -95,6 +95,77 @@ char **initialiseHistory() {
   }
 
   return history;
+}
+
+char **initialiseAliasNames(){
+
+  char **aliasNames = malloc(INITIAL_ALIAS_CAPACITY * sizeof(char*));
+  if (!aliasNames) {
+    perror("Failed to allocate memory for alias names array");
+    return NULL;
+  }
+
+  // Initialize all pointers to NULL
+  for (int i = 0; i < INITIAL_ALIAS_CAPACITY; i++) {
+    aliasNames[i] = NULL;
+  }
+
+  // Allocate char arrays for each index of history
+  for (int i = 0; i < INITIAL_ALIAS_CAPACITY; i++) {
+    aliasNames[i] = malloc((MAX_INPUT_LEN + 1) * sizeof(char));
+    if (!aliasNames[i]) {
+
+      // Clean up previously allocated memory
+      for (int j = 0; j < i; j++) {
+        free(aliasNames[j]);
+      }
+
+      free(aliasNames);
+      perror("Failed to allocate memory for aliasNames");
+      return NULL;
+    }
+
+    // Initialize each string as empty
+    aliasNames[i][0] = '\0';
+  }
+
+  return aliasNames;
+}
+
+char **initialiseAliasCommands(){
+
+  char **aliasCommands = malloc(INITIAL_ALIAS_CAPACITY * sizeof(char*));
+  if (!aliasCommands) {
+    perror("Failed to allocate memory for alias commands array");
+    return NULL;
+  }
+
+  // Initialize all pointers to NULL
+  for (int i = 0; i < INITIAL_ALIAS_CAPACITY; i++) {
+    aliasCommands[i] = NULL;
+  }
+
+  // Allocate char arrays for each index of history
+  for (int i = 0; i < INITIAL_ALIAS_CAPACITY; i++) {
+    aliasCommands[i] = malloc((MAX_INPUT_LEN + 1) * sizeof(char));
+    if (!aliasCommands[i]) {
+
+      // Clean up previously allocated memory
+      for (int j = 0; j < i; j++) {
+        free(aliasCommands[j]);
+      }
+
+      free(aliasCommands);
+      perror("Failed to allocate memory for aliasCommands");
+      return NULL;
+    }
+
+    // Initialize each string as empty
+    aliasCommands[i][0] = '\0';
+  }
+
+  return aliasCommands;
+
 }
 
 

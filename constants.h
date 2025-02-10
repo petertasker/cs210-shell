@@ -3,6 +3,9 @@
 // Max length of user input
 #define MAX_INPUT_LEN 511
 
+// Initial capacity of alias arrayLists
+#define INITIAL_ALIAS_CAPACITY 20
+
 // Max number of history entries
 #define MAX_NUM_HISTORY 20
 
