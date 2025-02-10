@@ -10,16 +10,37 @@ char *getHomeDirectory();
 void setWorkingDirectory(char *);
 void getWorkingDirectory(char *);
 
-// Input parsing
+/**
+   Input parsing
+*/
 char **tokeniseString(char *);
-int compareStrings(char *, char *);
-void externalCommands(char **);
 void trimString(char *);
-void freeArguments(char **);
-char **duplicateArguments(char **);
-int compareStringArrays(char **, char**);
-// History management
+
+
+/**
+   History management
+*/
 Node* addToHistory(Node*, char**);
 char **invokeHistory(Node*, char *);
+
+
+/**
+   Comparison functions
+*/
+int compareStrings(char *, char *);
+int compareStringArrays(char **, char**);
+
+
+/**
+   Argument management
+*/
+void freeArguments(char **);
+char **duplicateArguments(char **);
+
+
+/**
+   External command handling
+*/
+void externalCommands(char **);
 
 #endif
