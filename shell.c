@@ -79,23 +79,23 @@ int main() {
     if (compareStrings(buffer_user_input, "")) {
       continue;
     }
-
     
-    arguments = tokeniseString(buffer_user_input);
+ 
+    if (buffer_user_input[0] == '!') {
+      arguments = invokeHistory(head_history, buffer_user_input);
+      if (arguments == NULL) {
+	// Skip if history command cannot be invoked
+	continue;  
+      }
+    }
+    else {
+      arguments = tokeniseString(buffer_user_input);
+    }
+
     
     // Add command to history list
     head_history = addToHistory(head_history, arguments);
     
-    // Tokenise the arguments into an array of strings
-    // either from history or from the input buffer
-    if (buffer_user_input[0] == '!') { 
-      arguments = invokeHistory(head_history, buffer_user_input);	
-      // If arguments is NULL an error has been thrown
-      if (arguments == NULL) {
-	continue;
-      }
-    }
-
 
     /**
        Internal Commands:

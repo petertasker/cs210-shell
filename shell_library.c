@@ -204,6 +204,12 @@ Node* addToHistory(Node* head_history, char **tokens) {
         return head_history;
     }
 
+    if (compareStrings(*tokens, "exit")) {
+      return head_history;
+    }
+
+    
+
     // Deep copy command (first token)
     char* command = strdup(tokens[0]);
     if (!command) {
@@ -255,6 +261,15 @@ Node* addToHistory(Node* head_history, char **tokens) {
    
    Destruction TBD
 */
-char **invokeHistory(Node *head_history, char *command) {
-  return "Hello!";
+char **invokeHistory(Node *head_history, char *user_command) {
+  Node *current = head_history;
+  if (head_history == NULL) {
+    printf("No previous command in history\n");
+    return NULL;
+  }
+  if (compareStrings(user_command, "!!")) {
+    printf("Returning %s\n", current->command);
+    return NULL;
+  }
+  return NULL;
 }
