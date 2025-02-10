@@ -202,11 +202,10 @@ Node* addToHistory(Node* head_history, char **tokens) {
     return head_history;
   }
     
-  if (compareStrings(*tokens, "exit")) {
-      
+  if (compareStrings(*tokens, "exit")) {      
     return head_history;
   }
-
+    
   // Count number of arguments
   int arg_count = 0;
   while (tokens[arg_count]) {
@@ -251,53 +250,76 @@ Node* addToHistory(Node* head_history, char **tokens) {
    Invoke history from history list
 */
 char **invokeHistory(Node *head_history, char *user_command) {
-    if (head_history == NULL) {
-        printf("No previous command in history\n");
-        return NULL;
-    }
+  Node *current = head_history;
+  if (current == NULL) {
+    printf("No previous command in history\n");
+    return NULL;
+  }
 
-    // Handle !! command - return most recent command
-    if (compareStrings(user_command, "!!")) {
-        return head_history->arguments;
-    }
+  // Handle !! command - return most recent command
+  if (compareStrings(user_command, "!!")) {
+    return duplicateArguments(head_history->arguments);
+  }
 
-    // Convert string to number, skipping the '!'
-    char *endptr;
-    int n = strtol(user_command + 1, &endptr, 10);
+  // Convert string to number, skipping the '!'
+  char *endptr;
+  int n = strtol(user_command + 1, &endptr, 10);
     
-    // Check if conversion was successful
-    if (*endptr != '\0') {
-        printf("Invalid history index format\n");
-        return NULL;
-    }
+  // Check if conversion was successful
+  if (*endptr != '\0') {
+    printf("Invalid history index format\n");
+    return NULL;
+  }
 
-    Node *current = head_history;
+
     
-    if (n > 0) {
-        // Traverse forward from head (most recent) for positive n
-        n--; // Adjust n since we start at most recent
-        while (current != NULL && n > 0) {
-            current = current->next;
-            n--;
-        }
-    } else if (n < 0) {
-        // Find tail for negative n (oldest commands)
-        while (current && current->next != NULL) {
-            current = current->next;
-        }
-        // Now current points to tail
-        n = (-n) - 1; // Convert to positive and adjust
-        while (current != NULL && n > 0) {
-            current = current->previous;
-            n--;
-        }
+  if (n > 0) {
+    // Traverse forward from head (most recent) for positive n
+    n--; // Adjust n since we start at most recent
+    while (current != NULL && n > 0) {
+      current = current->next;
+      n--;
     }
-
-    // Check if we found a valid command
-    if (current == NULL) {
-        printf("History index out of range\n");
-        return NULL;
+  } else if (n < 0) {
+    // Find tail for negative n (oldest commands)
+    while (current && current->next != NULL) {
+      current = current->next;
     }
+    // Now current points to tail
+    n = (-n) - 1; // Convert to positive and adjust
+    while (current != NULL && n > 0) {
+      current = current->previous;
+      n--;
+    }
+  }
 
-    return current->arguments;
+  // Check if we found a valid command
+  if (current == NULL) {
+    printf("History index out of range\n");
+    return NULL;
+  }
+
+  return duplicateArguments(current->arguments);
+}
+
+/**
+   Duplicate arguments so when invocing
+   history, the arguments are new, and not
+   pointing to the data in the linked list
+*/
+char **duplicateArguments(char **args) {
+    if (args == NULL) return NULL;
+
+    int count = 0;
+    while (args[count] != NULL) count++;
+
+    char **copy = malloc((count + 1) * sizeof(char *));
+    if (!copy) return NULL;
+
+    for (int i = 0; i < count; i++) {
+        copy[i] = strdup(args[i]);  // Duplicate each argument
+    }
+    copy[count] = NULL; // NULL terminate the array
+
+    return copy;
 }

@@ -90,11 +90,11 @@ int main() {
     }
     else {
       arguments = tokeniseString(buffer_user_input);
+      head_history = addToHistory(head_history, arguments);
+    
     }
 
     
-    // Add command to history list
-    head_history = addToHistory(head_history, arguments);
     
 
     /**
@@ -159,11 +159,9 @@ int main() {
 
   // Save session history to file
   writeListToFile(head_history, file_path_history);
-
   // Free malloc'd variables
   head_history = clearList(head_history);
   head_history = NULL;
-  
   free(directory_current);
   free(directory_initial);
   free(file_path_history);
