@@ -57,11 +57,11 @@ void cd(char **args) {
 
 
 
-void bindAlias(Node **head, char **args) {
+void bindAlias(char **aliasNames, char **aliasCommands, char **args) {
   
 }
 
 
-void unbindAlias(Node **head, char **args) {
+void unbindAlias(char **aliasNames, char **aliasCommands, char **args) {
   
 }

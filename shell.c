@@ -31,7 +31,8 @@ int main() {
   char **arguments = NULL;
 
   // Initialise aliases
-  Node *head_aliases = NULL;
+  char **aliasNames = initialiseAliasNames();
+  char **aliasCommands = initialiseAliasCommands();
   
   // Initialise history
   Node *head_history = NULL;
@@ -137,11 +138,11 @@ int main() {
 
     // Bind/ View aliases <------------------------------ implement these two functions
     else if (compareStrings(arguments[0], "alias")) {
-      bindAlias(&head_aliases, arguments);
+      bindAlias(aliasNames, aliasCommands, arguments);
     }
 
     else if (compareStrings(arguments[0], "unalias")) {
-      unbindAlias(&head_aliases, arguments);
+      unbindAlias(aliasNames, aliasCommands, arguments);
     }
     
     // Command isnt in the list of internals, therefore
