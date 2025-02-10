@@ -15,7 +15,7 @@
 /**
    Create a new node
 */
-Node* createNode(char *command, char *arguments) {
+Node* createNode(char *command, char **arguments) {
   Node* new_node = 
     (Node*)malloc(sizeof(Node));
   new_node->command = command;
@@ -29,7 +29,7 @@ Node* createNode(char *command, char *arguments) {
 /**
    Insert a node at the beginning of a list
 */
-Node* insertNodeAtBeginning(Node* head, char *command, char *arguments) {
+Node* insertNodeAtBeginning(Node* head, char *command, char **arguments) {
     
   // Create a new node
   Node* new_node = createNode(command, arguments);
@@ -52,16 +52,40 @@ Node* insertNodeAtBeginning(Node* head, char *command, char *arguments) {
    specified position
 */
 Node* deleteNodeAtPosition(Node *head, int pos) {
-
   // If the list is empty
-  if (head == NULL)
+  if (head == NULL) {
+    return NULL;
+  }
+  printf("Empty list: head freed\n");
+  Node *current = head;
+  // If pos is 0, delete head
+  if (pos == 0) {
+    head = current->next;
+    if (head) {
+      head->previous = NULL;
+    }
+    printf("Beginning freeing of string\n");
+    // Free the strings
+    free(current->command);
+    printf("Command freed\n");
+    if (current->arguments) {
+      printf("Crashing here\n");
+      for (int i = 0; current->arguments[i] != NULL; i++) {
+	printf("Freeing %i\n", i);
+	if (!current->arguments[i]) {
+	  free(current->arguments[i]);
+	}
+	
+      }
+      free(current->arguments);
+    }
+    free(current);
     return head;
-
-  struct Node *current = head;
-
+  }
+  printf("traversal beginning\n");
   // Traverse to the node at the given position
-  for (int i = 1; current && i < pos; ++i) {
-    current = current -> next;
+  for (int i = 0; i < pos && current != NULL; i++) {
+    current = current->next;
   }
 
   // If the position is out of range
@@ -69,19 +93,23 @@ Node* deleteNodeAtPosition(Node *head, int pos) {
     return head;
 
   // Update the previous node's next pointer
-  if (current -> previous)
-    current -> previous -> next = current -> next;
+  if (current->previous)
+    current->previous->next = current->next;
 
   // Update the next node's prev pointer
-  if (current -> next)
-    current -> next -> previous = current -> previous;
+  if (current->next)
+    current->next->previous = current->previous;
 
-  // If the node to be deleted is the head node
-  if (head == current)
-    head = current -> next;
-
-  // Deallocate memory for the deleted node
+  // Free the strings
+  free(current->command);
+  if (current->arguments) {
+    for (int i = 0; current->arguments[i] != NULL; i++) {
+      free(current->arguments[i]);
+    }
+    free(current->arguments);
+  }
   free(current);
+
   return head;
 }
 
@@ -90,13 +118,27 @@ Node* deleteNodeAtPosition(Node *head, int pos) {
    Print the value of each node of a linked list
 */
 void printList(Node *head) {
-  Node *current = head;
-  while (current != NULL) {
-    printf("%s %s", current->command, current->arguments);
-    current = current->next;
-  }
-  printf("\n");
+    if (head == NULL) {
+        printf("List is empty\n");
+        return;
+    }
+    
+    Node *current = head;
+    while (current != NULL) {
+        // Print command
+        printf("%s", current->command ? current->command : "(null)");
+        
+        // Print each argument
+        if (current->arguments) {
+            for (int i = 0; current->arguments[i] != NULL; i++) {
+                printf(" %s", current->arguments[i]);
+            }
+        }
+        printf("\n");
+        current = current->next;
+    }
 }
+
 
 /**
    Clear every node of a linked list

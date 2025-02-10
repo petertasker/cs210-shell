@@ -63,12 +63,6 @@ int main() {
     if (fgets(buffer_user_input, MAX_INPUT_LEN, stdin) == NULL) {
       if (feof(stdin)) {
 	printf("\n");
-	// Free arguments once per loop
-	if (arguments != NULL) {
-	  freeArguments(arguments);
-	  arguments = NULL;
-	}
-	
 	break;
       }
     }
@@ -86,7 +80,7 @@ int main() {
     arguments = tokeniseString(buffer_user_input);
     
     // Add command to history list
-    addToHistory(head_history, arguments);
+    head_history = addToHistory(head_history, arguments);
     
     // Tokenise the arguments into an array of strings
     // either from history or from the input buffer
@@ -104,8 +98,6 @@ int main() {
     */
     // Exit the program
     if (compareStrings(arguments[0], "exit")) {
-      freeArguments(arguments);
-      arguments = NULL;
       break;
     }
     
@@ -152,9 +144,6 @@ int main() {
       externalCommands(arguments);
     }
 
-    // Free arguments that is malloced in tokeniseString()
-    freeArguments(arguments);   
-    arguments = NULL;
   }
   while (1);
 
@@ -166,6 +155,7 @@ int main() {
   //writeHistoryToFile(head_history, file_path_history);
 
   // Free malloc'd variables
+  clearHistory(head_history);
   free(directory_current);
   free(directory_initial);
   free(file_path_history);

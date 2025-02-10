@@ -44,7 +44,6 @@ char* getHomeDirectory(void) {
 }
 
 
-
 /**
    Get the current working directory
 */
@@ -55,6 +54,7 @@ void getWorkingDirectory(char *buffer) {
     perror("Failed to get working directory!");
   }
 }
+
 
 /**
    Set the current working directory
@@ -75,9 +75,6 @@ void setWorkingDirectory(char *arg) {
        An invocation of an alias
 */
 char **tokeniseString(char *s) {
-  // Make a local copy so the base userInputBuffer
-  // can go directly to addToHistory
-
   if (!s) {
     return NULL;
   }
@@ -128,16 +125,6 @@ void freeArguments(char **arguments) {
     free(arguments);
 }
 
-
-/**
-   Free the memory allocated to the statically
-   allocated array History
-
-   Destruction followed by linked list implementation TBD
-*/
-void freeHistory(Node* head_history) {
-  
-}
 
 
 /**
@@ -205,13 +192,19 @@ void trimString(char *s) {
 }
 
 
+
 /**
    Create a node of the newest command and add it to
    the beginning of history
 */
-void addToHistory(Node* head_history, char **args) {
-  // Command -> args -> list
-  head_history = insertNodeAtBeginning(head_history, "testing", "hello there");
+Node* addToHistory(Node* head_history, char **tokens) {
+  // First token
+  char* command = *tokens;
+  char **tokens_ptr = tokens;
+ 
+  head_history = insertNodeAtBeginning(head_history, command, ++tokens);
+  tokens = tokens_ptr;
+  return head_history;
 }
 
 
@@ -237,7 +230,10 @@ void readHistoryFromFile(Node* head_history, char *path) {
 
    Destruction TBD
 */
-void deleteHistory(Node* head_history) {
+void clearHistory(Node* head_history) {
+  while (head_history != NULL) {
+    head_history = deleteNodeAtPosition(head_history, 0);
+  }
 }
 
 

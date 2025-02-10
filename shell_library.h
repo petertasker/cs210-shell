@@ -14,16 +14,13 @@ void externalCommands(char **);
 void trimString(char *);
 
 // History management
-void addToHistory(Node*, char**);
+Node* addToHistory(Node*, char**);
 void writeHistoryToFile(Node*, char*);
 void readHistoryFromFile(Node*, char*);
-void deleteHistory(Node*);
+void clearHistory(Node*);
 char **invokeHistory(Node*, char *);
 
 
 void printHistory(Node*);
-
-// Memory management
-void freeArguments(char **);
 
 #endif
