@@ -16,7 +16,6 @@
    Echo input
 */
 void echo(char **args) {
-  printf("inside echo function\n");
   // Loop through every argument and print
   for (int i = 1; args[i] != NULL; i++) {
     printf("%s ", args[i]);

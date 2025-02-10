@@ -10,16 +10,16 @@ typedef struct Node {
 
 /* Inserting into lists */
 Node *createNode(char *command, char **arguments);
-Node* insertNodeAtBeginning(Node* head, char *command, char **arguments);
-Node* deleteNodeAtPosition(Node *head, int pos);
+Node *insertNodeAtBeginning(Node* head, char *command, char **arguments);
+Node *deleteNodeAtPosition(Node *head, int pos);
 
 /* List adjacent functions */
 void printList(Node *head);
-void clearList(Node *head);
+Node *clearList(Node *head);
 
 /* I/O */
 void writeListToFile(Node* head, char *path);
-Node* readListFromFile(Node* head, char *path);
+Node *readListFromFile(Node* head, char *path);
 
 
 #endif /* LINKED_LIST_H */

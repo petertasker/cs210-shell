@@ -130,10 +130,10 @@ int main() {
       printList(head_history);
     }
     
-    // Erase History
-    // else if (compareStrings(arguments[0], "delhist")) {
-    // deleteHistory(history);
-    //}
+    //Erase History
+    else if (compareStrings(arguments[0], "delhist")) {
+      head_history = clearList(head_history);
+    }
 
     // Bind/ View aliases <------------------------------ implement these two functions
     else if (compareStrings(arguments[0], "alias")) {
@@ -161,7 +161,9 @@ int main() {
   writeListToFile(head_history, file_path_history);
 
   // Free malloc'd variables
-  clearList(head_history);
+  head_history = clearList(head_history);
+  head_history = NULL;
+  
   free(directory_current);
   free(directory_initial);
   free(file_path_history);

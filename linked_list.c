@@ -56,7 +56,7 @@ Node* deleteNodeAtPosition(Node *head, int pos) {
     printf("List is empty.\n");
     return NULL;
   }
-
+  
   Node *current = head;
 
   if (pos == 0) {
@@ -110,28 +110,42 @@ void printList(Node *head) {
     printf("List is empty\n");
     return;
   }
-    
+
+  int index = 0;
+  
+  // Find the last node (tail)
   Node *current = head;
+  while (current->next != NULL) {
+    current = current->next;
+    index++;
+  }
+
+  // Traverse backward and print each node
   while (current != NULL) {
     // Print command
     printf("%s", current->command);
-    
+
     // Print each argument
     if (current->arguments) {
       for (int i = 0; current->arguments[i] != NULL; i++) {
-	printf(" %s", current->arguments[i]);
+        printf("%d. %s", index, current->arguments[i]);
+	index--;
       }
     }
     printf("\n");
-    current = current->next;
+    
+    // Move to the previous node
+    current = current->previous;
   }
 }
 
 
 /**
    Free every node of a linked list
+   make sure to set HEAD to null if you
+   do not plan on using the list again
 */
-void clearList(Node* head) {
+Node *clearList(Node* head) {
   Node *temp;
   while (head != NULL) {
     temp = head;
@@ -148,7 +162,7 @@ void clearList(Node* head) {
 
     free(temp);
   }
-  head = NULL;
+  return head;
 }
 
 
