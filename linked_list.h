@@ -2,15 +2,14 @@
 #define LINKED_LIST_H
 
 typedef struct Node {
-  char *command; // first token
-  char **arguments; // other tokens
+  char **arguments; 
   struct Node *previous;
   struct Node *next;
 } Node;
 
 /* Inserting into lists */
-Node *createNode(char *command, char **arguments);
-Node *insertNodeAtBeginning(Node* head, char *command, char **arguments);
+Node *createNode(char **arguments);
+Node *insertNodeAtBeginning(Node* head, char **arguments);
 Node *deleteNodeAtPosition(Node *head, int pos);
 
 /* List adjacent functions */

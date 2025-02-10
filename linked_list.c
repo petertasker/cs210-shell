@@ -17,10 +17,13 @@
 /**
    Create a new node
 */
-Node* createNode(char *command, char **arguments) {
-  Node* new_node = 
-    (Node*)malloc(sizeof(Node));
-  new_node->command = command;
+Node* createNode(char **arguments) {
+  Node* new_node = (Node*)malloc(sizeof(Node));
+  if (new_node == NULL) {
+    fprintf(stderr, "Failed to allocate space for new node\n");
+    return NULL;
+  }
+
   new_node->arguments = arguments;
   new_node->previous = NULL;
   new_node->next = NULL;
@@ -31,20 +34,22 @@ Node* createNode(char *command, char **arguments) {
 /**
    Insert a node at the beginning of a list
 */
-Node* insertNodeAtBeginning(Node* head, char *command, char **arguments) {
-    
+Node* insertNodeAtBeginning(Node* head, char **arguments) {
+  if (arguments == NULL) {
+    return head;
+  }
+
   // Create a new node
-  Node* new_node = createNode(command, arguments);
-    
-  // Make next of it as head
+  Node* new_node = createNode(arguments);
+  if (new_node == NULL) {
+    return head;
+  }
+
+  // Make next of new node as head
   new_node->next = head;
-    
-  // Set previous of head as new node
   if (head != NULL) {
     head->previous = new_node;
   }
-    
-  // Return new node as new head
   return new_node;
 }
 
@@ -52,9 +57,11 @@ Node* insertNodeAtBeginning(Node* head, char *command, char **arguments) {
 /**
    Delete a node from the linked list at a
    specified position
+
+   Not used in history but can be used in alias
 */
 Node* deleteNodeAtPosition(Node *head, int pos) {
-  if (head == NULL) {
+  if (head == NULL || pos < 0) {
     printf("List is empty.\n");
     return NULL;
   }
@@ -66,8 +73,7 @@ Node* deleteNodeAtPosition(Node *head, int pos) {
     if (head) {
       head->previous = NULL;
     }
-    free(current->command);
-
+    
     if (current->arguments) {
       for (int i = 0; current->arguments[i] != NULL; i++) {
         free(current->arguments[i]);
@@ -82,16 +88,18 @@ Node* deleteNodeAtPosition(Node *head, int pos) {
     current = current->next;
   }
 
-  if (current == NULL)
+  if (current == NULL) {
     return head;
+  }
 
-  if (current->previous)
+  if (current->previous) {
     current->previous->next = current->next;
-
-  if (current->next)
+  }
+  
+  if (current->next) {
     current->next->previous = current->previous;
-
-  free(current->command);
+  }
+  
   if (current->arguments) {
     for (int i = 0; current->arguments[i] != NULL; i++) {
       free(current->arguments[i]);
@@ -116,17 +124,17 @@ void printList(Node *head) {
   int index = 1;
   
   // Find the last node (tail)
-  Node *current = head;
-  while (current->next != NULL) {
-    current = current->next;
+  Node *tail = head;
+  while (tail->next != NULL) {
+    tail = tail->next;
     index++;
   }
 
   // Traverse backward and print each node
+  Node *current = tail;
   while (current != NULL) {
     // Print command
-    printf("%2d. %s", index, current->command);
-    
+    printf("%2d. ", index);
     // Print each argument
     if (current->arguments) {
       for (int i = 0; current->arguments[i] != NULL; i++) {
@@ -153,8 +161,6 @@ Node *clearList(Node* head) {
     temp = head;
     head = head->next;
     
-    free(temp->command);
-
     if (temp->arguments) {
       for (int i = 0; temp->arguments[i] != NULL; i++) {
         free(temp->arguments[i]);
@@ -164,7 +170,7 @@ Node *clearList(Node* head) {
 
     free(temp);
   }
-  return head;
+  return NULL;
 }
 
 
@@ -175,24 +181,20 @@ void writeListToFile(Node* head, char *path) {
   if (head == NULL || path == NULL) {
     return;
   }
-
+  
   FILE *file = fopen(path, "w");
   if (file == NULL) {
     fprintf(stderr, "Failed to open file %s\n", path);
     return;
   }
-  
+
   Node *current = head;
   while (current != NULL) {
-    // Write command (with NULL check)
-    if (current->command != NULL) {
-      fprintf(file, "%s", current->command);
-    }
 
-    // Write each argument (with NULL checks)
+    // Write each argument
     if (current->arguments != NULL) {
       for (int i = 0; current->arguments[i] != NULL; i++) {
-	fprintf(file, " %s", current->arguments[i]);
+        fprintf(file, "%s ", current->arguments[i]);
       }
     }
     fprintf(file, "\n");
@@ -200,6 +202,7 @@ void writeListToFile(Node* head, char *path) {
   }
   fclose(file);
 }
+
 
 
 /**
@@ -212,17 +215,17 @@ Node* readListFromFile(Node* head, char *path) {
     return NULL;
   }
 
-  char line[MAX_INPUT_LEN + 1];  // Buffer to store each line from the file
+  char line[MAX_INPUT_LEN + 1];
   while (fgets(line, sizeof(line), file)) {
-    trimString(line);  // Clean up any extra spaces or newlines
+    trimString(line);  
     if (compareStrings(line, "")) {
-      continue;  // Skip empty lines
+      continue;
     }
 
-    char **args = tokeniseString(line);  // Tokenize the line into arguments
+    char **args = tokeniseString(line); 
     if (args != NULL) {
-      head = addToHistory(head, args);  // Add the tokens to the history list
-      freeArguments(args);  // Free the argument array after use
+      head = addToHistory(head, args);  
+      freeArguments(args);  
     }
   }
 
