@@ -51,7 +51,7 @@ void getWorkingDirectory(char *buffer) {
   // Replace the old path with the new path
   buffer = getcwd(buffer, PATH_MAX);
   if (!buffer) {
-    perror("Failed to get working directory!");
+    fprintf(stdout, "Failed to get working directory!");
   }
 }
 
@@ -62,7 +62,7 @@ void getWorkingDirectory(char *buffer) {
 void setWorkingDirectory(char *arg) {
   // chdir CHanges the working DIRectory  
   if (chdir(arg) != 0) {
-    perror("Failed to change directory");
+    fprintf(stdout, "Failed to change directory");
   }
 }
 
@@ -81,14 +81,14 @@ char **tokeniseString(char *str) {
 
   char *copy_str = strdup(str);
   if (!copy_str) {
-    perror("Failed to duplicate input string");
+    fprintf(stdout, "Failed to duplicate input string");
     return NULL;
   }
 
   char **arguments = malloc((ARG_MAX + 1) * sizeof(char *));
   if (!arguments) {
     free(copy_str);
-    perror("Failed to allocate memory for arguments");
+    fprintf(stdout, "Failed to allocate memory for arguments");
     return NULL;
   }
 
@@ -152,7 +152,7 @@ void externalCommands(char **args) {
   
   // Fork failed
   if (pid == -1) {  
-    perror("fork failed");
+    fprintf(stdout, "fork failed");
     return;
   }
   

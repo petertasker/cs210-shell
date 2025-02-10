@@ -18,7 +18,7 @@ char *createBuffer() {
   // Create user input buffer
   char *buf = malloc((MAX_INPUT_LEN + 1) * sizeof(char));
   if (!buf) {
-    perror("Failed to allocate memory...");
+    fprintf(stdin, "Failed to allocate memory...");
     return NULL;
   }
   return buf;
@@ -33,7 +33,7 @@ char *saveInitialDirectory() {
   // Working directory of the place which the shell was ran
   char *dir = malloc(PATH_MAX * sizeof(char));
   if (!dir) {
-    perror("Failed to allocate memory for cwd");
+    fprintf(stdin, "Failed to allocate memory for cwd");
     return NULL;
   }
   getWorkingDirectory(dir);
@@ -48,7 +48,7 @@ char *initialiseDirectory() {
   // Current working directory
   char *directory_current = malloc(PATH_MAX * sizeof(char));
   if (!directory_current) {
-    perror("Failed to allocate memory for cwd");
+    fprintf(stdin, "Failed to allocate memory for cwd");
   }
   // Initialise in the home directory
   strcpy(directory_current, getHomeDirectory());
@@ -65,7 +65,7 @@ char* concatFilePath(char *fileName){
   size_t len = strlen(getHomeDirectory()) + strlen(fileName) + 1;
   char *path = malloc(len);
   if (!path) {
-    perror("Failed to allocate memory for history path");
+    fprintf(stdin, "Failed to allocate memory for history path");
   }
   // Concatenate
   snprintf(path, len, "%s%s", getHomeDirectory(), fileName);
