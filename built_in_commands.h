@@ -7,7 +7,6 @@
 void echo(char **args);
 void pwd(char *cwd, char **args);
 void cd(char **args);
-void printHistory(char **args);
 
 // Alias management commands
 void printAliases(void);

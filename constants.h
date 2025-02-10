@@ -1,4 +1,6 @@
-// Some constants
+/**
+   Some constants
+*/
 
 // Max length of user input
 #define MAX_INPUT_LEN 511

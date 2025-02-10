@@ -16,6 +16,7 @@
 #include <ctype.h>
 #include <errno.h>
 
+#include "linked_list.h"
 #include "shell_library.h"
 #include "constants.h"
 
@@ -43,7 +44,6 @@ char* getHomeDirectory(void) {
 }
 
 
-
 /**
    Get the current working directory
 */
@@ -51,9 +51,10 @@ void getWorkingDirectory(char *buffer) {
   // Replace the old path with the new path
   buffer = getcwd(buffer, PATH_MAX);
   if (!buffer) {
-    perror("Failed to get working directory!");
+    fprintf(stdout, "Failed to get working directory!");
   }
 }
+
 
 /**
    Set the current working directory
@@ -61,7 +62,7 @@ void getWorkingDirectory(char *buffer) {
 void setWorkingDirectory(char *arg) {
   // chdir CHanges the working DIRectory  
   if (chdir(arg) != 0) {
-    perror("Failed to change directory");
+    fprintf(stdout, "Failed to change directory");
   }
 }
 
@@ -73,38 +74,36 @@ void setWorkingDirectory(char *arg) {
        An invocation of history, or
        An invocation of an alias
 */
-char **tokeniseString(char *s) {
-  // Make a local copy so the base userInputBuffer
-  // can go directly to addToHistory
-
-  if (!s) {
-    return NULL;
-  }
-  
-  char *copy = strdup(s);
-  if (!copy) {
-    perror("Failed to duplicate input string");
+char **tokeniseString(char *str) {
+  if (!str) {
     return NULL;
   }
 
-  char **arguments = malloc((ARG_MAX + 1) *sizeof(char *));
+  char *copy_str = strdup(str);
+  if (!copy_str) {
+    fprintf(stdout, "Failed to duplicate input string");
+    return NULL;
+  }
+
+  char **arguments = malloc((ARG_MAX + 1) * sizeof(char *));
   if (!arguments) {
-    free(copy);
-    perror("Failed to allocate memory for arguments");
+    free(copy_str);
+    fprintf(stdout, "Failed to allocate memory for arguments");
     return NULL;
   }
-  
+
   int i = 0;
-  char *token = strtok(copy, TOKEN_DELIMITERS);
+  char *token = strtok(copy_str, TOKEN_DELIMITERS);
+
   // Loop through the command and put each token in arguments
   while (token && i < ARG_MAX) {
     arguments[i] = strdup(token);
     token = strtok(NULL, TOKEN_DELIMITERS);
     i++;
   }
-  
+
   arguments[i] = NULL;
-  free(copy);
+  free(copy_str);
   return arguments;
 }
 
@@ -113,42 +112,20 @@ char **tokeniseString(char *s) {
    Free the arguments of the command input
 */
 void freeArguments(char **arguments) {
-    // Early return if arguments is already NULL
-    if (arguments == NULL) {
-        return;
-    }
-
-    // Free each string
-    for (int i = 0; arguments[i] != NULL; i++) {
-        free(arguments[i]);
-    }
-
-    // Free the array itself
-    free(arguments);
-}
-
-
-/**
-   Free the memory allocated to the statically
-   allocated array History
-
-   Destruction followed by linked list implementation TBD
-*/
-void freeHistory(char **history) {
-  if (!history) {
+  // Early return if arguments is already NULL
+  if (!arguments) {
     return;
   }
-  
-  for (int i = 0; i < MAX_NUM_HISTORY; i++) {
-    if (history[i] != NULL) {
-      // Free strings
-      free(history[i]);
-      history[i] = NULL;
-    }
+
+  // Free each string
+  for (int i = 0; arguments[i] != NULL; i++) {
+    free(arguments[i]);
   }
-  // Free empty array
-  free(history); 
+
+  // Free the array itself
+  free(arguments);
 }
+
 
 
 /**
@@ -175,7 +152,7 @@ void externalCommands(char **args) {
   
   // Fork failed
   if (pid == -1) {  
-    perror("fork failed");
+    fprintf(stdout, "fork failed");
     return;
   }
   
@@ -186,8 +163,7 @@ void externalCommands(char **args) {
     // as *that* command's arguments
     if (execvp(args[0], args) == -1) {
       fprintf(stderr , "%s: command not found\n", args[0]);  
-      // here?
-      exit(1);
+      _exit(1);
       
     }
   }
@@ -216,214 +192,172 @@ void trimString(char *s) {
 }
 
 
-/**
-   Add to a statically allocated history array
 
-   Desctruction TBD
+/**
+   Create a node of the newest command and add it to
+   the beginning of history
 */
-void addToHistory(char **history, char *command) {
-  // Don't have exit or invocations in history
-  if (compareStrings(command, "exit") || command[0] == '!') {
-    return;
-  }
-  // If command == most recent history entry, return
-  if (history[0]) {
-    if (compareStrings(command, history[0])) {
-      return;
-      }
+Node* addToHistory(Node* head_history, char **tokens) {
+  if (!tokens || !*tokens) {
+    return head_history;
   }
     
+  if (compareStrings(*tokens, "exit")) {      
+    return head_history;
+  }
 
-  // Erase memory of old command
-  free(history[MAX_NUM_HISTORY - 1]);
+  // Avoid duplicates
+  if (head_history && compareStringArrays(head_history->arguments, tokens)) {
+    return head_history;
+  }
 
-  // Shift array to the right to make room for newest
-  // (This array is recent ascending)
-  for (int i = MAX_NUM_HISTORY - 1; i > 0; i--) {
-    history[i] = history[i - 1];
+  // Count number of arguments
+  int arg_count = 0;
+  while (tokens[arg_count]) {
+    arg_count++;
+  }
+
+  // Allocate memory for arguments array
+  char** args = malloc((arg_count + 1) * sizeof(char*));
+  if (!args) {
+    fprintf(stderr, "Failed to allocate memory for arguments\n");
+    return head_history;
+  }
+
+  // Copy the command itself
+  args[0] = strdup(tokens[0]);
+  if (!args[0]) {
+    fprintf(stderr, "Failed to allocate memory for command\n");
+    free(args);
+    return head_history;
+  }
+
+  // Copy additional arguments if any
+  for (int i = 1; i < arg_count; i++) {
+    args[i] = strdup(tokens[i]);
+    if (!args[i]) {
+      fprintf(stderr, "Failed to allocate memory for an argument\n");
+      for (int j = 0; j < i; j++) {
+	free(args[j]);
+      }
+      free(args);
+      return head_history;
+    }
+  }
+  args[arg_count] = NULL;  // NULL-terminate the array
+  Node* new_head = insertNodeAtBeginning(head_history, args);
+
+  // Delete oldest node if history exceeds MAX_NUM_HISTORY
+  int size = 0;
+  Node *temp = new_head;
+  while (temp) {
+    size++;
+    temp = temp->next;
+  }
+
+  if (size > MAX_NUM_HISTORY) {
+    new_head = deleteNodeAtPosition(new_head, MAX_NUM_HISTORY);
+  }
+
+  return new_head;
+}
+
+
+/**
+   Returns 1 if arrays match 
+*/
+int compareStringArrays(char **a, char **b) {
+  if (!a || !b) {
+    return 0;
   }
   
-  // Add new command
-  history[0] = strdup(command);
-}
-
-
-/**
-   Write history to file
-
-   Destruction TBD
-*/
-void writeHistoryToFile(char **history, char *path) {
-  FILE *fptr;
-  fptr = fopen(path, "w");
-  if (fptr == NULL) {
-    perror("Error opening file");
-    // Print the error number
-    printf("Error number: %d\n", errno);
-    return; // Exit if the file can't be opened
+  int i = 0;
+  while (a[i] && b[i]) {
+    // Mismatch found
+    if (!compareStrings(a[i], b[i])) {
+      return 0; 
+    }
+    i++;
   }
-  // Reuse code from internalComamands
-  for (int i = 0; i < MAX_NUM_HISTORY; i++) {
-    if (history[i] != NULL && *history[i] != '\0') {
-      fprintf(fptr, "%s\n",history[i]);
-    }
-  }   
-  fclose(fptr);
+  // Both must end at NULL
+  return a[i] == NULL && b[i] == NULL;
 }
 
 
 /**
-   Read history from file
-
-   Destruction TBD
+   Invoke history from history list
 */
-void readHistoryFromFile(char **history, char *path) {
-
-    FILE *fptr = fopen(path, "r");
-    if (fptr == NULL) {
-      perror("Error opening file");
-      return;
-    }
-    char line[MAX_INPUT_LEN + 1];
-    int i = 0;
-
-    // Copy each line of the file to history
-    while (i < MAX_NUM_HISTORY && fgets(line, sizeof(line), fptr)) {          
-      trimString(line);        
-      strcpy(history[i], line);
-      i++;
-    }
-    fclose(fptr);
-}
-
-
-/**
-   Delete all indexes of history
-
-   Destruction TBD
-*/
-void deleteHistory(char **history){
-  for (int i = 0; i < MAX_NUM_HISTORY; i++) {
-    if (history[i]) {
-      history[i][0] = '\0';
-    }
-  }
-}
-
-
-/**
-   Invoke history from history array
-   
-   Destruction TBD
-*/
-
-char **invokeHistory(char **history, char *command) {
-  
-  // Gets how many commands are in history
-  int current_history_size = 0;
-  for (int i = 0; i < MAX_NUM_HISTORY; i++) {
-    if (history[i] != NULL && history[i][0] != '\0') {
-      current_history_size++;
-    } else {
-      break; // Breaks out if reach empty location
-    }
-  }
-
-  // If there are no entries in history
-  if (!current_history_size) {
-    printf("There are no entries in history\n");
+char **invokeHistory(Node *head_history, char *user_command) {
+  Node *current = head_history;
+  if (current == NULL) {
+    printf("No previous command in history\n");
     return NULL;
   }
-  /*
-    index = -1 -> index[0]
-    index = -2 -> error
-    index >= 0 -> good
 
-   */
-  int index = validHistoryInvocation(command, current_history_size);
-
-  if (index == -1) {
-    return tokeniseString(history[0]);
+  // Handle !! command - return most recent command
+  if (compareStrings(user_command, "!!")) {
+    return duplicateArguments(head_history->arguments);
   }
-  if (index >= 0) {
+
+  // Convert string to number, skipping the '!'
+  char *endptr;
+  int n = strtol(user_command + 1, &endptr, 10);
     
-    if (index >= current_history_size || history[index][0] == '\0') {
-        fprintf(stderr, "Failed to invoke history: history %d doesn't exist!\n", index);
-        return NULL;
-    }
-
-    // Else ..
-    return tokeniseString(history[index]);
+  // Check if conversion was successful
+  if (*endptr != '\0') {
+    printf("Invalid history index format\n");
+    return NULL;
   }
 
-  return NULL;
-}
 
+    
+  if (n > 0) {
+    // Traverse forward from head (most recent) for positive n
+    n--; // Adjust n since we start at most recent
+    while (current != NULL && n > 0) {
+      current = current->next;
+      n--;
+    }
+  } else if (n < 0) {
+    // Find tail for negative n (oldest commands)
+    while (current && current->next != NULL) {
+      current = current->next;
+    }
+    // Now current points to tail
+    n = (-n) - 1; // Convert to positive and adjust
+    while (current != NULL && n > 0) {
+      current = current->previous;
+      n--;
+    }
+  }
+
+  // Check if we found a valid command
+  if (current == NULL) {
+    printf("History index out of range\n");
+    return NULL;
+  }
+
+  return duplicateArguments(current->arguments);
+}
 
 /**
-   Returns -2 if invocation is not valid
-   Returns -1 if invocation is index[0]
-   Returns a valid positive integer
-
-   Destruction TBD
+   Duplicate arguments so when invocing
+   history, the arguments are new, and not
+   pointing to the data in the linked list
 */
-int validHistoryInvocation(char *command, int current_history_size) {
-  // Skip the first character (!)
-  char *command_substring = command + 1;
+char **duplicateArguments(char **args) {
+    if (args == NULL) return NULL;
 
-  // If command is "!!"
-  if (command_substring[0] == '!' && command_substring[1] == '\0') {
-    return -1;
-  }
+    int count = 0;
+    while (args[count] != NULL) count++;
 
-  // If command is "!-<no>"
-  if (command_substring[0] == '-') {
-    // !--<n> not allowed
-    if (!isdigit(command_substring[1])) {
-      fprintf(stderr, "Failed to invoke history: !-- not accepted\n");
-      return -2;
+    char **copy = malloc((count + 1) * sizeof(char *));
+    if (!copy) return NULL;
+
+    for (int i = 0; i < count; i++) {
+        copy[i] = strdup(args[i]);  // Duplicate each argument
     }
+    copy[count] = NULL; // NULL terminate the array
 
-    if (command_substring[1] == '0') {
-      fprintf(stderr, "Failed to invoke history: cannot invoke -0\n");
-      return -2;
-    }
-    
-    int inputIndex = atoi(command_substring + 1);
-    if (inputIndex <= -1 || inputIndex >= current_history_size) {
-      fprintf(stderr, "Failed to invoke history: invalid history index\n");
-      return -2;
-    }
-    return current_history_size - inputIndex;
-  }
-
-  // Return the index of history
-  return getHistoryIndexForInvocation(command_substring , current_history_size);
+    return copy;
 }
-
-
-/**
-   Get the history index
-*/
-int getHistoryIndexForInvocation(char *command, int current_history_size) {
-  int historyIndex = 0;
-
-  // Check if each character is a digit
-  for (int i = 0; command[i] != '\0'; i++) {
-    if (!isdigit(command[i])) {
-      fprintf(stderr, "You must invoke history with either !! or !<n>\n");
-      return -2;
-    }
-    // Shift digits
-    historyIndex = historyIndex * 10 + (command[i] - '0');
-  }
-
-  // Number out of range
-  if (historyIndex < 1 || historyIndex > current_history_size) {
-    fprintf(stderr, "Failed to invoke history: out of range. Valid range is 1 to %d.\n", current_history_size);
-    return -2;
-  }
-
-  return historyIndex - 1;
-}
-

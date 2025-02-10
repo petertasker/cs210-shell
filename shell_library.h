@@ -1,4 +1,11 @@
-// Directory management
+#include "linked_list.h"
+
+#ifndef SHELL_LIBRARY_H
+#define SHELL_LIBRARY_H
+
+/**
+   Directory management
+*/
 char *getHomeDirectory();
 void setWorkingDirectory(char *);
 void getWorkingDirectory(char *);
@@ -8,17 +15,11 @@ char **tokeniseString(char *);
 int compareStrings(char *, char *);
 void externalCommands(char **);
 void trimString(char *);
-
-// History management
-void addToHistory(char **, char*);
-void writeHistoryToFile(char **, char*);
-void readHistoryFromFile(char **, char*);
-void deleteHistory(char**);
-char **invokeHistory(char **, char *);
-int validHistoryInvocation(char *, int);
-int getHistoryIndexForInvocation(char *, int);
-
-// Memory management
 void freeArguments(char **);
-void freeHistory(char **);
+char **duplicateArguments(char **);
+int compareStringArrays(char **, char**);
+// History management
+Node* addToHistory(Node*, char**);
+char **invokeHistory(Node*, char *);
 
+#endif

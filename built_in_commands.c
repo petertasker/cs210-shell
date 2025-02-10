@@ -56,19 +56,6 @@ void cd(char **args) {
 }
 
 
-/**
-   Enumerate over each history index
-*/
-void printHistory(char **history) {
-  printf("History:\n");
-  // Print all slots that are not NULL
-  for (int i = 0; i < MAX_NUM_HISTORY; i++) {
-    if (history[i] != NULL && *history[i] != '\0') {
-      printf("%d: %s\n", i+1, history[i]);
-    }
-  }
-}
-
 
 void bindAlias(char **aliasNames, char **aliasCommands, char **args) {
   
