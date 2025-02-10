@@ -12,5 +12,5 @@ Node *createNode(char *command, char **arguments);
 Node* insertNodeAtBeginning(Node* head, char *command, char **arguments);
 Node* deleteNodeAtPosition(Node *head, int pos);
 void printList(Node *head);
-void freeList(Node *head);
+void clearList(Node *head);
 #endif /* LINKED_LIST_H */

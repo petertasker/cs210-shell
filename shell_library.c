@@ -78,7 +78,7 @@ char **tokeniseString(char *s) {
   if (!s) {
     return NULL;
   }
-  
+
   char *copy = strdup(s);
   if (!copy) {
     perror("Failed to duplicate input string");
@@ -91,7 +91,7 @@ char **tokeniseString(char *s) {
     perror("Failed to allocate memory for arguments");
     return NULL;
   }
-  
+
   int i = 0;
   char *token = strtok(copy, TOKEN_DELIMITERS);
   // Loop through the command and put each token in arguments
@@ -100,7 +100,7 @@ char **tokeniseString(char *s) {
     token = strtok(NULL, TOKEN_DELIMITERS);
     i++;
   }
-  
+
   arguments[i] = NULL;
   free(copy);
   return arguments;
@@ -112,7 +112,7 @@ char **tokeniseString(char *s) {
 */
 void freeArguments(char **arguments) {
     // Early return if arguments is already NULL
-    if (arguments == NULL) {
+    if (!arguments) {
         return;
     }
 
@@ -198,13 +198,50 @@ void trimString(char *s) {
    the beginning of history
 */
 Node* addToHistory(Node* head_history, char **tokens) {
-  // First token
-  char* command = *tokens;
-  char **tokens_ptr = tokens;
- 
-  head_history = insertNodeAtBeginning(head_history, command, ++tokens);
-  tokens = tokens_ptr;
-  return head_history;
+    if (!tokens || !*tokens) {
+        return head_history;
+    }
+
+    // Deep copy command (first token)
+    char* command = strdup(tokens[0]);
+    if (!command) {
+        perror("Failed to allocate memory for command");
+        return head_history;
+    }
+
+    // Count number of arguments
+    int arg_count = 0;
+    while (tokens[arg_count]) {
+        arg_count++;
+    }
+
+    // Allocate memory for arguments array
+    char** arguments = malloc((arg_count + 1) * sizeof(char*));
+    if (!arguments) {
+        perror("Failed to allocate memory for arguments");
+        free(command);
+        return head_history;
+    }
+
+    // Copy each argument
+    for (int i = 0; i < arg_count; i++) {
+        arguments[i] = strdup(tokens[i]);
+        if (!arguments[i]) {
+            perror("Failed to allocate memory for an argument");
+            for (int j = 0; j < i; j++) {
+                free(arguments[j]);
+            }
+            free(arguments);
+            free(command);
+            return head_history;
+        }
+    }
+    arguments[arg_count] = NULL;  // NULL-terminate the array
+
+    // Insert into history
+    head_history = insertNodeAtBeginning(head_history, command, arguments);
+
+    return head_history;
 }
 
 
@@ -231,9 +268,7 @@ void readHistoryFromFile(Node* head_history, char *path) {
    Destruction TBD
 */
 void clearHistory(Node* head_history) {
-  while (head_history != NULL) {
-    head_history = deleteNodeAtPosition(head_history, 0);
-  }
+  clearList(head_history);
 }
 
 

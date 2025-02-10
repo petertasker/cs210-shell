@@ -62,6 +62,10 @@ int main() {
     // this means that the user inputted EOF (<CTRL> + D)
     if (fgets(buffer_user_input, MAX_INPUT_LEN, stdin) == NULL) {
       if (feof(stdin)) {
+	
+	freeArguments(arguments);
+	arguments = NULL;
+	
 	printf("\n");
 	break;
       }
@@ -98,6 +102,8 @@ int main() {
     */
     // Exit the program
     if (compareStrings(arguments[0], "exit")) {
+      freeArguments(arguments);
+      arguments = NULL;
       break;
     }
     
@@ -143,7 +149,8 @@ int main() {
     else {
       externalCommands(arguments);
     }
-
+    freeArguments(arguments);
+    arguments = NULL;
   }
   while (1);
 

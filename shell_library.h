@@ -15,6 +15,7 @@ void trimString(char *);
 
 // History management
 Node* addToHistory(Node*, char**);
+void freeArguments(char **);
 void writeHistoryToFile(Node*, char*);
 void readHistoryFromFile(Node*, char*);
 void clearHistory(Node*);
