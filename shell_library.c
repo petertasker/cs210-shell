@@ -205,15 +205,20 @@ Node* addToHistory(Node* head_history, char **tokens) {
   if (compareStrings(*tokens, "exit")) {      
     return head_history;
   }
-    
+
+  // Avoid duplicates
+  if (head_history && compareStringArrays(head_history->arguments, tokens)) {
+    return head_history;
+  }
+
   // Count number of arguments
   int arg_count = 0;
   while (tokens[arg_count]) {
     arg_count++;
   }
 
-  // Allocate memory for arguments array (including command)
-  char** args = malloc((arg_count + 1) * sizeof(char*));  // Command + NULL terminator
+  // Allocate memory for arguments array
+  char** args = malloc((arg_count + 1) * sizeof(char*));
   if (!args) {
     fprintf(stderr, "Failed to allocate memory for arguments\n");
     return head_history;
@@ -243,6 +248,27 @@ Node* addToHistory(Node* head_history, char **tokens) {
   Node* new_head = insertNodeAtBeginning(head_history, args);
 
   return new_head;
+}
+
+
+/**
+   Returns 1 if arrays match 
+*/
+int compareStringArrays(char **a, char **b) {
+  if (!a || !b) {
+    return 0;
+  }
+  
+  int i = 0;
+  while (a[i] && b[i]) {
+    // Mismatch found
+    if (!compareStrings(a[i], b[i])) {
+      return 0; 
+    }
+    i++;
+  }
+  // Both must end at NULL
+  return a[i] == NULL && b[i] == NULL;
 }
 
 

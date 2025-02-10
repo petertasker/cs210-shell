@@ -17,7 +17,7 @@ void externalCommands(char **);
 void trimString(char *);
 void freeArguments(char **);
 char **duplicateArguments(char **);
-
+int compareStringArrays(char **, char**);
 // History management
 Node* addToHistory(Node*, char**);
 char **invokeHistory(Node*, char *);
