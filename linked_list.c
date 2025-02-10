@@ -1,6 +1,8 @@
 /**
    Functions which are used in single list implementations
    used in aliasing and history tbd
+
+   https://www.geeksforgeeks.org/doubly-linked-list/
 */
 
 
@@ -14,98 +16,93 @@
    Create a new node
 */
 Node* createNode(char *value) {
-  Node *newNode = (Node *)malloc(sizeof(Node));
-  if (!newNode) {
-    printf("Memory allocation failed!\n");
-    return NULL;
-  }
-
-  newNode->value = strdup(value);  // Allocate memory for the string and copy it
-  if (!newNode->value) {
-    printf("String duplication failed!\n");
-    free(newNode);  // Free memory allocated for the node
-    return NULL;
-  }
-
-  newNode->next = NULL;
-  return newNode;
+  Node* new_node = 
+    (Node*)malloc(sizeof(Node));
+  new_node->value = value;
+  new_node->previous = NULL;
+  new_node->next = NULL;
+  return new_node;
 }
 
 
 /**
-   Insert node at the end of a list
+   Insert a node at the beginning of a list
 */
-void insertNode(Node **head, char *value) {
-  Node *newNode = createNode(value);
-  if (!newNode) return;
-
-  if (*head == NULL) {
-    *head = newNode;
-    return;
+Node* insertNodeAtBeginning(Node* head, char *value) {
+    
+  // Create a new node
+  Node* new_node = createNode(value);
+    
+  // Make next of it as head
+  new_node->next = head;
+    
+  // Set previous of head as new node
+  if (head != NULL) {
+    head->previous = new_node;
   }
-
-  Node *temp = *head;
-  while (temp->next != NULL) {
-    temp = temp->next;
-  }
-  temp->next = newNode;
+    
+  // Return new node as new head
+  return new_node;
 }
 
 
 /**
-   Delete a node by value
+   Delete a node from the linked list at a
+   specified position
 */
-void deleteNode(Node **head, char *value) {
-  if (*head == NULL) return;
+Node* deleteNodeAtPosition(Node *head, int pos) {
 
-  Node *temp = *head, *prev = NULL;
+  // If the list is empty
+  if (head == NULL)
+    return head;
 
-  // If head node itself holds the value
-  if (temp != NULL && strcmp(temp->value, value) == 0) {
-    *head = temp->next;
-    free(temp->value);  // Free the value memory
-    free(temp);         // Free the node memory
-    return;
+  struct Node *current = head;
+
+  // Traverse to the node at the given position
+  for (int i = 1; current && i < pos; ++i) {
+    current = current -> next;
   }
 
-  // Search for the node to delete
-  while (temp != NULL && strcmp(temp->value, value) != 0) {
-    prev = temp;
-    temp = temp->next;
-  }
+  // If the position is out of range
+  if (current == NULL)
+    return head;
 
-  // If value not found
-  if (temp == NULL) return;
+  // Update the previous node's next pointer
+  if (current -> previous)
+    current -> previous -> next = current -> next;
 
-  // Unlink the node and free memory
-  prev->next = temp->next;
-  free(temp->value);  // Free the value memory
-  free(temp);         // Free the node memory
+  // Update the next node's prev pointer
+  if (current -> next)
+    current -> next -> previous = current -> previous;
+
+  // If the node to be deleted is the head node
+  if (head == current)
+    head = current -> next;
+
+  // Deallocate memory for the deleted node
+  free(current);
+  return head;
 }
 
 
 /**
-   Print list
+   Print the value of each node of a linked list
 */
 void printList(Node *head) {
-  Node *temp = head;
-  while (temp != NULL) {
-    printf("%s -> ", temp->value);
-    temp = temp->next;
+  Node *current = head;
+  while (current != NULL) {
+    printf("%s ", current->value);
+    current = current->next;
   }
-  printf("NULL\n");
+  printf("\n");
 }
 
-
 /**
-   De-allocate memory for the list
+   Clear every node of a linked list
 */
-void freeList(Node **head) {
-  Node *temp;
-  while (*head) {
-    temp = *head;
-    *head = (*head)->next;
-    free(temp->value);  // Free the value memory
-    free(temp);         // Free the node memory
+void freeList(Node *head) {
+  Node *current = head;
+  while (current != NULL) {
+    current = deleteNodeAtPosition(current, 0);
   }
 }

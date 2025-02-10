@@ -3,12 +3,13 @@
 
 typedef struct Node {
   char* value;        
+  struct Node *previous;
   struct Node *next;
 } Node;
 
 Node *createNode(char *value);
-void insertNode(Node **head, char* value);  
-void deleteNode(Node **head, char* value);
+Node* insertNodeAtBeginning(Node* head, char *value);
+Node* deleteNodeAtPosition(Node *head, int pos);
 void printList(Node *head);
-void freeList(Node **head);
+void freeList(Node *head);
 #endif /* LINKED_LIST_H */
