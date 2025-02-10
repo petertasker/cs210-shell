@@ -43,7 +43,7 @@ int main() {
   char *file_path_alias = concatFilePath(ALIAS_FILE);
 
   // Load local history
-  //readHistoryFromFile(history, file_path_history);
+  head_history = readListFromFile(head_history, file_path_history);
   // readAliasesFromFile
   
   // Main shell loop
@@ -62,8 +62,10 @@ int main() {
     // this means that the user inputted EOF (<CTRL> + D)
     if (fgets(buffer_user_input, MAX_INPUT_LEN, stdin) == NULL) {
       if (feof(stdin)) {
-	freeArguments(arguments);
-	arguments = NULL;
+	if (arguments != NULL) {
+	  freeArguments(arguments);
+	  arguments = NULL;
+	}
 	printf("\n");
 	break;
       }
@@ -125,7 +127,7 @@ int main() {
     
     // Print History
     else if (compareStrings(arguments[0], "history")) {
-      printHistory(head_history);
+      printList(head_history);
     }
     
     // Erase History
@@ -151,8 +153,7 @@ int main() {
     arguments = NULL;
   }
   while (1);
-
-
+  
   // Replenish directory
   setWorkingDirectory(directory_initial);
 
@@ -160,7 +161,7 @@ int main() {
   writeListToFile(head_history, file_path_history);
 
   // Free malloc'd variables
-  clearHistory(head_history);
+  clearList(head_history);
   free(directory_current);
   free(directory_initial);
   free(file_path_history);

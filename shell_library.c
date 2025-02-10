@@ -240,11 +240,8 @@ Node* addToHistory(Node* head_history, char **tokens) {
 	  free(args);
 	  free(command);
 	  return head_history;
-	}
-	printf("%s ", args[i - 1]);
+	}	
       }
-      printf("\n");
-
       args[arg_count - 1] = NULL;  // NULL-terminate the array
     }
 
@@ -254,24 +251,10 @@ Node* addToHistory(Node* head_history, char **tokens) {
 
 
 /**
-   Delete all indexes of history
-*/
-void clearHistory(Node* head_history) {
-  clearList(head_history);
-}
-
-
-/**
    Invoke history from history array
    
    Destruction TBD
 */
-
 char **invokeHistory(Node *head_history, char *command) {
   return "Hello!";
-}
-
-
-void printHistory(Node *head_history) {
-  printList(head_history);
 }

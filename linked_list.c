@@ -10,8 +10,8 @@
 #include <stdlib.h>
 #include <string.h>
 #include "linked_list.h"
-
-
+#include "constants.h"
+#include "shell_library.h"
 /**
    Create a new node
 */
@@ -148,6 +148,7 @@ void clearList(Node* head) {
 
     free(temp);
   }
+  head = NULL;
 }
 
 
@@ -155,7 +156,6 @@ void clearList(Node* head) {
    Write a doubly linked list's contents into a file
 */
 void writeListToFile(Node* head, char *path) {
-  printf("Path: %s\n", path);
   if (head == NULL || path == NULL) {
     return;
   }
@@ -189,5 +189,29 @@ void writeListToFile(Node* head, char *path) {
 /**
    Read a file's contents into a doubly linked list
  */
-void readListFromFile(Node* head, char *path) {
+Node* readListFromFile(Node* head, char *path) {
+  FILE *file = fopen(path, "r");
+  if (file == NULL) {
+    fprintf(stderr, "Failed to open file %s\n", path);
+    return NULL;
+  }
+
+  char line[MAX_INPUT_LEN + 1];  // Buffer to store each line from the file
+  while (fgets(line, sizeof(line), file)) {
+    trimString(line);  // Clean up any extra spaces or newlines
+    if (compareStrings(line, "")) {
+      continue;  // Skip empty lines
+    }
+
+    char **args = tokeniseString(line);  // Tokenize the line into arguments
+    if (args != NULL) {
+      head = addToHistory(head, args);  // Add the tokens to the history list
+      freeArguments(args);  // Free the argument array after use
+    }
+  }
+
+  fclose(file);  // Close the file after reading
+  return head;
 }
+
+

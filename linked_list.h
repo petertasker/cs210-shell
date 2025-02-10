@@ -19,7 +19,7 @@ void clearList(Node *head);
 
 /* I/O */
 void writeListToFile(Node* head, char *path);
-void readListFromFile(Node* head, char *path);
+Node* readListFromFile(Node* head, char *path);
 
 
 #endif /* LINKED_LIST_H */
