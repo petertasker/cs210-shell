@@ -16,6 +16,7 @@
 #include <ctype.h>
 #include <errno.h>
 
+#include "linked_list.h"
 #include "shell_library.h"
 #include "constants.h"
 
@@ -134,20 +135,8 @@ void freeArguments(char **arguments) {
 
    Destruction followed by linked list implementation TBD
 */
-void freeHistory(char **history) {
-  if (!history) {
-    return;
-  }
+void freeHistory(Node* head_history) {
   
-  for (int i = 0; i < MAX_NUM_HISTORY; i++) {
-    if (history[i] != NULL) {
-      // Free strings
-      free(history[i]);
-      history[i] = NULL;
-    }
-  }
-  // Free empty array
-  free(history); 
 }
 
 
@@ -217,34 +206,12 @@ void trimString(char *s) {
 
 
 /**
-   Add to a statically allocated history array
-
-   Desctruction TBD
+   Create a node of the newest command and add it to
+   the beginning of history
 */
-void addToHistory(char **history, char *command) {
-  // Don't have exit or invocations in history
-  if (compareStrings(command, "exit") || command[0] == '!') {
-    return;
-  }
-  // If command == most recent history entry, return
-  if (history[0]) {
-    if (compareStrings(command, history[0])) {
-      return;
-      }
-  }
-    
-
-  // Erase memory of old command
-  free(history[MAX_NUM_HISTORY - 1]);
-
-  // Shift array to the right to make room for newest
-  // (This array is recent ascending)
-  for (int i = MAX_NUM_HISTORY - 1; i > 0; i--) {
-    history[i] = history[i - 1];
-  }
-  
-  // Add new command
-  history[0] = strdup(command);
+void addToHistory(Node* head_history, char **args) {
+  // Command -> args -> list
+  head_history = insertNodeAtBeginning(head_history, "testing", "hello there");
 }
 
 
@@ -253,47 +220,15 @@ void addToHistory(char **history, char *command) {
 
    Destruction TBD
 */
-void writeHistoryToFile(char **history, char *path) {
-  FILE *fptr;
-  fptr = fopen(path, "w");
-  if (fptr == NULL) {
-    perror("Error opening file");
-    // Print the error number
-    printf("Error number: %d\n", errno);
-    return; // Exit if the file can't be opened
-  }
-  // Reuse code from internalComamands
-  for (int i = 0; i < MAX_NUM_HISTORY; i++) {
-    if (history[i] != NULL && *history[i] != '\0') {
-      fprintf(fptr, "%s\n",history[i]);
-    }
-  }   
-  fclose(fptr);
+void writeHistoryToFile(Node* head_history, char *path) {
 }
-
 
 /**
    Read history from file
 
    Destruction TBD
 */
-void readHistoryFromFile(char **history, char *path) {
-
-    FILE *fptr = fopen(path, "r");
-    if (fptr == NULL) {
-      perror("Error opening file");
-      return;
-    }
-    char line[MAX_INPUT_LEN + 1];
-    int i = 0;
-
-    // Copy each line of the file to history
-    while (i < MAX_NUM_HISTORY && fgets(line, sizeof(line), fptr)) {          
-      trimString(line);        
-      strcpy(history[i], line);
-      i++;
-    }
-    fclose(fptr);
+void readHistoryFromFile(Node* head_history, char *path) {
 }
 
 
@@ -302,12 +237,7 @@ void readHistoryFromFile(char **history, char *path) {
 
    Destruction TBD
 */
-void deleteHistory(char **history){
-  for (int i = 0; i < MAX_NUM_HISTORY; i++) {
-    if (history[i]) {
-      history[i][0] = '\0';
-    }
-  }
+void deleteHistory(Node* head_history) {
 }
 
 
@@ -317,113 +247,10 @@ void deleteHistory(char **history){
    Destruction TBD
 */
 
-char **invokeHistory(char **history, char *command) {
-  
-  // Gets how many commands are in history
-  int current_history_size = 0;
-  for (int i = 0; i < MAX_NUM_HISTORY; i++) {
-    if (history[i] != NULL && history[i][0] != '\0') {
-      current_history_size++;
-    } else {
-      break; // Breaks out if reach empty location
-    }
-  }
-
-  // If there are no entries in history
-  if (!current_history_size) {
-    printf("There are no entries in history\n");
-    return NULL;
-  }
-  /*
-    index = -1 -> index[0]
-    index = -2 -> error
-    index >= 0 -> good
-
-   */
-  int index = validHistoryInvocation(command, current_history_size);
-
-  if (index == -1) {
-    return tokeniseString(history[0]);
-  }
-  if (index >= 0) {
-    
-    if (index >= current_history_size || history[index][0] == '\0') {
-        fprintf(stderr, "Failed to invoke history: history %d doesn't exist!\n", index);
-        return NULL;
-    }
-
-    // Else ..
-    return tokeniseString(history[index]);
-  }
-
-  return NULL;
+char **invokeHistory(Node *head_history, char *command) {
+  return "Hello!";
 }
 
-
-/**
-   Returns -2 if invocation is not valid
-   Returns -1 if invocation is index[0]
-   Returns a valid positive integer
-
-   Destruction TBD
-*/
-int validHistoryInvocation(char *command, int current_history_size) {
-  // Skip the first character (!)
-  char *command_substring = command + 1;
-
-  // If command is "!!"
-  if (command_substring[0] == '!' && command_substring[1] == '\0') {
-    return -1;
-  }
-
-  // If command is "!-<no>"
-  if (command_substring[0] == '-') {
-    // !--<n> not allowed
-    if (!isdigit(command_substring[1])) {
-      fprintf(stderr, "Failed to invoke history: !-- not accepted\n");
-      return -2;
-    }
-
-    if (command_substring[1] == '0') {
-      fprintf(stderr, "Failed to invoke history: cannot invoke -0\n");
-      return -2;
-    }
-    
-    int inputIndex = atoi(command_substring + 1);
-    if (inputIndex <= -1 || inputIndex >= current_history_size) {
-      fprintf(stderr, "Failed to invoke history: invalid history index\n");
-      return -2;
-    }
-    return current_history_size - inputIndex;
-  }
-
-  // Return the index of history
-  return getHistoryIndexForInvocation(command_substring , current_history_size);
+void printHistory(Node *head_history) {
+  printList(head_history);
 }
-
-
-/**
-   Get the history index
-*/
-int getHistoryIndexForInvocation(char *command, int current_history_size) {
-  int historyIndex = 0;
-
-  // Check if each character is a digit
-  for (int i = 0; command[i] != '\0'; i++) {
-    if (!isdigit(command[i])) {
-      fprintf(stderr, "You must invoke history with either !! or !<n>\n");
-      return -2;
-    }
-    // Shift digits
-    historyIndex = historyIndex * 10 + (command[i] - '0');
-  }
-
-  // Number out of range
-  if (historyIndex < 1 || historyIndex > current_history_size) {
-    fprintf(stderr, "Failed to invoke history: out of range. Valid range is 1 to %d.\n", current_history_size);
-    return -2;
-  }
-
-  return historyIndex - 1;
-}
-

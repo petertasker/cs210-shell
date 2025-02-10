@@ -1,15 +1,19 @@
-// History is capped at 20, but that value can be modified in constants.c
-// Aliases are malloced on the fly because there is no alias cap.
+/**
+   The main loop of the shell
+*/
+
 
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <linux/limits.h>     // PATH_MAX
+
 #include "shell_library.h"   // Some shell functions that we define
 #include "built_in_commands.h" // All internal commands
 #include "linked_list.h"
 #include "initialise.h"       // Variables created before do-while loop
 #include "constants.h"        // Constants
+
 
 int main() {
   
@@ -30,7 +34,7 @@ int main() {
   Node *head_aliases = NULL;
   
   // Initialise history
-  char **history = initialiseHistory();
+  Node *head_history = NULL;
   
   // Find .hist.list
   char *file_path_history = concatFilePath(HISTORY_FILE);
@@ -39,7 +43,7 @@ int main() {
   char *file_path_alias = concatFilePath(ALIAS_FILE);
 
   // Load local history
-  readHistoryFromFile(history, file_path_history);
+  //readHistoryFromFile(history, file_path_history);
   // readAliasesFromFile
   
   // Main shell loop
@@ -68,6 +72,7 @@ int main() {
 	break;
       }
     }
+
     
     // Trim leading whitespace and NULL terminator
     trimString(buffer_user_input);
@@ -76,28 +81,27 @@ int main() {
     if (compareStrings(buffer_user_input, "")) {
       continue;
     }
+
     
-    // Add command to history
-    addToHistory(history, buffer_user_input);
+    arguments = tokeniseString(buffer_user_input);
+    
+    // Add command to history list
+    addToHistory(head_history, arguments);
     
     // Tokenise the arguments into an array of strings
     // either from history or from the input buffer
     if (buffer_user_input[0] == '!') { 
-      arguments = invokeHistory(history, buffer_user_input);	
+      arguments = invokeHistory(head_history, buffer_user_input);	
       // If arguments is NULL an error has been thrown
       if (arguments == NULL) {
 	continue;
       }
     }
 
-    // else if alias is triggered <----------
-    // turn arguments into [1:] of the alias command
-    else {  
-      arguments = tokeniseString(buffer_user_input);
-    }
 
-    // Internal Commands:
-
+    /**
+       Internal Commands:
+    */
     // Exit the program
     if (compareStrings(arguments[0], "exit")) {
       freeArguments(arguments);
@@ -125,13 +129,13 @@ int main() {
     
     // Print History
     else if (compareStrings(arguments[0], "history")) {
-      printHistory(history);
+      printHistory(head_history);
     }
     
     // Erase History
-    else if (compareStrings(arguments[0], "delhist")) {
-      deleteHistory(history);
-    }
+    // else if (compareStrings(arguments[0], "delhist")) {
+    // deleteHistory(history);
+    //}
 
     // Bind/ View aliases <------------------------------ implement these two functions
     else if (compareStrings(arguments[0], "alias")) {
@@ -159,10 +163,9 @@ int main() {
   setWorkingDirectory(directory_initial);
 
   // Save session history to file
-  writeHistoryToFile(history, file_path_history);
+  //writeHistoryToFile(head_history, file_path_history);
 
   // Free malloc'd variables
-  freeHistory(history);
   free(directory_current);
   free(directory_initial);
   free(file_path_history);

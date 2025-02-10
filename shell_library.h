@@ -1,3 +1,7 @@
+#include "linked_list.h"
+
+#ifndef SHELL_LIBRARY_H
+#define SHELL_LIBRARY_H
 // Directory management
 char *getHomeDirectory();
 void setWorkingDirectory(char *);
@@ -10,15 +14,16 @@ void externalCommands(char **);
 void trimString(char *);
 
 // History management
-void addToHistory(char **, char*);
-void writeHistoryToFile(char **, char*);
-void readHistoryFromFile(char **, char*);
-void deleteHistory(char**);
-char **invokeHistory(char **, char *);
-int validHistoryInvocation(char *, int);
-int getHistoryIndexForInvocation(char *, int);
+void addToHistory(Node*, char**);
+void writeHistoryToFile(Node*, char*);
+void readHistoryFromFile(Node*, char*);
+void deleteHistory(Node*);
+char **invokeHistory(Node*, char *);
+
+
+void printHistory(Node*);
 
 // Memory management
 void freeArguments(char **);
-void freeHistory(char **);
 
+#endif

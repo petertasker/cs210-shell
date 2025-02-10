@@ -15,10 +15,11 @@
 /**
    Create a new node
 */
-Node* createNode(char *value) {
+Node* createNode(char *command, char *arguments) {
   Node* new_node = 
     (Node*)malloc(sizeof(Node));
-  new_node->value = value;
+  new_node->command = command;
+  new_node->arguments = arguments;
   new_node->previous = NULL;
   new_node->next = NULL;
   return new_node;
@@ -28,10 +29,10 @@ Node* createNode(char *value) {
 /**
    Insert a node at the beginning of a list
 */
-Node* insertNodeAtBeginning(Node* head, char *value) {
+Node* insertNodeAtBeginning(Node* head, char *command, char *arguments) {
     
   // Create a new node
-  Node* new_node = createNode(value);
+  Node* new_node = createNode(command, arguments);
     
   // Make next of it as head
   new_node->next = head;
@@ -91,7 +92,7 @@ Node* deleteNodeAtPosition(Node *head, int pos) {
 void printList(Node *head) {
   Node *current = head;
   while (current != NULL) {
-    printf("%s ", current->value);
+    printf("%s %s", current->command, current->arguments);
     current = current->next;
   }
   printf("\n");

@@ -58,47 +58,6 @@ char *initialiseDirectory() {
 
 
 /**
-   Create string array of size MAX_NUM_HISTORY to store
-   history commands
-   
-   linked list implementation tbd.
-*/
-char **initialiseHistory() {
-  // Allocate array of pointers for history
-  char **history = malloc(MAX_NUM_HISTORY * sizeof(char*));
-  if (!history) {
-    perror("Failed to allocate memory for history array");
-    return NULL;
-  }
-  // Initialize all pointers to NULL
-  for (int i = 0; i < MAX_NUM_HISTORY; i++) {
-    history[i] = NULL;
-  }
-
-  // Allocate char arrays for each index of history
-  for (int i = 0; i < MAX_NUM_HISTORY; i++) {
-    history[i] = malloc((MAX_INPUT_LEN + 1) * sizeof(char));
-    if (!history[i]) {
-      
-      // Clean up previously allocated memory
-      for (int j = 0; j < i; j++) {
-	free(history[j]);
-      }
-
-      free(history);
-      perror("Failed to allocate memory for history entry");
-      return NULL;
-    }
-
-    // Initialize each string as empty
-    history[i][0] = '\0';
-  }
-
-  return history;
-}
-
-
-/**
    Concatenate the home path with a file name suffix
 */
 char* concatFilePath(char *fileName){

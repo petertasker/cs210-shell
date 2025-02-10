@@ -2,13 +2,14 @@
 #define LINKED_LIST_H
 
 typedef struct Node {
-  char* value;        
+  char *command;
+  char *arguments;
   struct Node *previous;
   struct Node *next;
 } Node;
 
-Node *createNode(char *value);
-Node* insertNodeAtBeginning(Node* head, char *value);
+Node *createNode(char *command, char *arguments);
+Node* insertNodeAtBeginning(Node* head, char *command, char *arguments);
 Node* deleteNodeAtPosition(Node *head, int pos);
 void printList(Node *head);
 void freeList(Node *head);
