@@ -112,18 +112,18 @@ char **tokeniseString(char *str) {
    Free the arguments of the command input
 */
 void freeArguments(char **arguments) {
-    // Early return if arguments is already NULL
-    if (!arguments) {
-        return;
-    }
+  // Early return if arguments is already NULL
+  if (!arguments) {
+    return;
+  }
 
-    // Free each string
-    for (int i = 0; arguments[i] != NULL; i++) {
-        free(arguments[i]);
-    }
+  // Free each string
+  for (int i = 0; arguments[i] != NULL; i++) {
+    free(arguments[i]);
+  }
 
-    // Free the array itself
-    free(arguments);
+  // Free the array itself
+  free(arguments);
 }
 
 
@@ -246,6 +246,18 @@ Node* addToHistory(Node* head_history, char **tokens) {
   }
   args[arg_count] = NULL;  // NULL-terminate the array
   Node* new_head = insertNodeAtBeginning(head_history, args);
+
+  // Delete oldest node if history exceeds MAX_NUM_HISTORY
+  int size = 0;
+  Node *temp = new_head;
+  while (temp) {
+    size++;
+    temp = temp->next;
+  }
+
+  if (size > MAX_NUM_HISTORY) {
+    new_head = deleteNodeAtPosition(new_head, MAX_NUM_HISTORY);
+  }
 
   return new_head;
 }
