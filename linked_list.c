@@ -25,6 +25,7 @@ Node* createNode(char *command, char **arguments) {
   return new_node;
 }
 
+
 /**
    Insert a node at the beginning of a list
 */
@@ -113,11 +114,11 @@ void printList(Node *head) {
   Node *current = head;
   while (current != NULL) {
     // Print command
-    printf("%s", current->command ? current->command : "(null)");
-        
+    printf("%s", current->command);
+    
     // Print each argument
     if (current->arguments) {
-      for (int i = 0; current->arguments[i] != NULL; i++) {
+      for (int i = 1; current->arguments[i] != NULL; i++) {
 	printf(" %s", current->arguments[i]);
       }
     }
@@ -147,4 +148,41 @@ void clearList(Node* head) {
 
     free(temp);
   }
+}
+
+
+/**
+   Write a doubly linked list's contents into a file
+ */
+void writeListToFile(Node* head, char *path) {
+  printf("Path: %s\n",path);
+  if (head == NULL) {
+    return;
+  }
+  FILE *file = fopen(path, "w");
+  if (!file) {
+    fprintf(stderr, "Failed to open file");
+  }
+  Node *current = head;
+  while (current != NULL) {
+    // Write command
+    fprintf(file, "%s", current->command);
+    
+    // Write each argument
+    if (current->arguments) {
+      for (int i = 0; current->arguments[i] != NULL; i++) {
+        fprintf(file, " %s", current->arguments[i]);
+      }
+    }
+    fprintf(file, "\n");
+    current = current->next;
+  }
+  fclose(file);
+}
+
+
+/**
+   Read a file's contents into a doubly linked list
+ */
+void readListFromFile(Node* head, char *path) {
 }

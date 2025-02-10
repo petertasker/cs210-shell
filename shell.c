@@ -62,10 +62,8 @@ int main() {
     // this means that the user inputted EOF (<CTRL> + D)
     if (fgets(buffer_user_input, MAX_INPUT_LEN, stdin) == NULL) {
       if (feof(stdin)) {
-	
 	freeArguments(arguments);
 	arguments = NULL;
-	
 	printf("\n");
 	break;
       }
@@ -159,7 +157,7 @@ int main() {
   setWorkingDirectory(directory_initial);
 
   // Save session history to file
-  //writeHistoryToFile(head_history, file_path_history);
+  writeListToFile(head_history, file_path_history);
 
   // Free malloc'd variables
   clearHistory(head_history);

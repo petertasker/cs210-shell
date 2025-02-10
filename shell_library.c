@@ -74,26 +74,27 @@ void setWorkingDirectory(char *arg) {
        An invocation of history, or
        An invocation of an alias
 */
-char **tokeniseString(char *s) {
-  if (!s) {
+char **tokeniseString(char *str) {
+  if (!str) {
     return NULL;
   }
 
-  char *copy = strdup(s);
-  if (!copy) {
+  char *copy_str = strdup(str);
+  if (!copy_str) {
     perror("Failed to duplicate input string");
     return NULL;
   }
 
   char **arguments = malloc((ARG_MAX + 1) *sizeof(char *));
   if (!arguments) {
-    free(copy);
+    free(copy_str);
     perror("Failed to allocate memory for arguments");
     return NULL;
   }
 
   int i = 0;
-  char *token = strtok(copy, TOKEN_DELIMITERS);
+  char *token = strtok(copy_str, TOKEN_DELIMITERS);
+
   // Loop through the command and put each token in arguments
   while (token && i < ARG_MAX) {
     arguments[i] = strdup(token);
@@ -102,7 +103,7 @@ char **tokeniseString(char *s) {
   }
 
   arguments[i] = NULL;
-  free(copy);
+  free(copy_str);
   return arguments;
 }
 
@@ -201,7 +202,7 @@ Node* addToHistory(Node* head_history, char **tokens) {
     if (!tokens || !*tokens) {
         return head_history;
     }
-
+    
     // Deep copy command (first token)
     char* command = strdup(tokens[0]);
     if (!command) {
@@ -216,7 +217,7 @@ Node* addToHistory(Node* head_history, char **tokens) {
     }
 
     // Allocate memory for arguments array
-    char** arguments = malloc((arg_count + 1) * sizeof(char*));
+    char** arguments = calloc((arg_count + 1), sizeof(char*));
     if (!arguments) {
         perror("Failed to allocate memory for arguments");
         free(command);
@@ -224,7 +225,7 @@ Node* addToHistory(Node* head_history, char **tokens) {
     }
 
     // Copy each argument
-    for (int i = 0; i < arg_count; i++) {
+    for (int i = 1; i < arg_count; i++) {
         arguments[i] = strdup(tokens[i]);
         if (!arguments[i]) {
             perror("Failed to allocate memory for an argument");
@@ -243,24 +244,6 @@ Node* addToHistory(Node* head_history, char **tokens) {
 
     return head_history;
 }
-
-
-/**
-   Write history to file
-
-   Destruction TBD
-*/
-void writeHistoryToFile(Node* head_history, char *path) {
-}
-
-/**
-   Read history from file
-
-   Destruction TBD
-*/
-void readHistoryFromFile(Node* head_history, char *path) {
-}
-
 
 /**
    Delete all indexes of history
@@ -281,6 +264,7 @@ void clearHistory(Node* head_history) {
 char **invokeHistory(Node *head_history, char *command) {
   return "Hello!";
 }
+
 
 void printHistory(Node *head_history) {
   printList(head_history);

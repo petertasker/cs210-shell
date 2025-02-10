@@ -8,9 +8,18 @@ typedef struct Node {
   struct Node *next;
 } Node;
 
+/* Inserting into lists */
 Node *createNode(char *command, char **arguments);
 Node* insertNodeAtBeginning(Node* head, char *command, char **arguments);
 Node* deleteNodeAtPosition(Node *head, int pos);
+
+/* List adjacent functions */
 void printList(Node *head);
 void clearList(Node *head);
+
+/* I/O */
+void writeListToFile(Node* head, char *path);
+void readListFromFile(Node* head, char *path);
+
+
 #endif /* LINKED_LIST_H */
