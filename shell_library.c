@@ -251,13 +251,53 @@ Node* addToHistory(Node* head_history, char **tokens) {
    Invoke history from history list
 */
 char **invokeHistory(Node *head_history, char *user_command) {
-  Node *current = head_history;
-  if (head_history == NULL) {
-    printf("No previous command in history\n");
-    return NULL;
-  }
-  if (compareStrings(user_command, "!!")) {
+    if (head_history == NULL) {
+        printf("No previous command in history\n");
+        return NULL;
+    }
+
+    // Handle !! command - return most recent command
+    if (compareStrings(user_command, "!!")) {
+        return head_history->arguments;
+    }
+
+    // Convert string to number, skipping the '!'
+    char *endptr;
+    int n = strtol(user_command + 1, &endptr, 10);
+    
+    // Check if conversion was successful
+    if (*endptr != '\0') {
+        printf("Invalid history index format\n");
+        return NULL;
+    }
+
+    Node *current = head_history;
+    
+    if (n > 0) {
+        // Traverse forward from head (most recent) for positive n
+        n--; // Adjust n since we start at most recent
+        while (current != NULL && n > 0) {
+            current = current->next;
+            n--;
+        }
+    } else if (n < 0) {
+        // Find tail for negative n (oldest commands)
+        while (current && current->next != NULL) {
+            current = current->next;
+        }
+        // Now current points to tail
+        n = (-n) - 1; // Convert to positive and adjust
+        while (current != NULL && n > 0) {
+            current = current->previous;
+            n--;
+        }
+    }
+
+    // Check if we found a valid command
+    if (current == NULL) {
+        printf("History index out of range\n");
+        return NULL;
+    }
+
     return current->arguments;
-  }
-  return NULL;
 }

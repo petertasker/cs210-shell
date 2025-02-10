@@ -20,6 +20,5 @@ void freeArguments(char **);
 // History management
 Node* addToHistory(Node*, char**);
 char **invokeHistory(Node*, char *);
-void printHistory(Node*);
 
 #endif
