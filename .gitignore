@@ -9,3 +9,4 @@ valgrind-out.txt
 shell
 TODO.txt
 !makefile
+*.cmake
