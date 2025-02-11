@@ -18,7 +18,7 @@ SNode* singleCreateNode(char **arguments) {
     return NULL;
   }
   
-  new_SNode->alias_name = strdup(arguments[0]);
+  new_SNode->alias_name = strdup(arguments[1]);
   if (!new_SNode->alias_name) {
     fprintf(stderr, "Failed to allocat space for alias_name\n");
     free(new_SNode);
@@ -27,7 +27,7 @@ SNode* singleCreateNode(char **arguments) {
 
   // Count arguments
   int num_args = 0;
-  while (arguments[num_args + 1] != NULL) {
+  while (arguments[num_args + 2] != NULL) {
     num_args++;
   }
 
@@ -40,7 +40,7 @@ SNode* singleCreateNode(char **arguments) {
   }
   
   for (int i = 0; i < num_args; i++) {
-    new_SNode->arguments[i] = strdup(arguments[i + 1]);
+    new_SNode->arguments[i] = strdup(arguments[i + 2]);
     if (!new_SNode->arguments[i]) {
       for (int j = 0; j < i; j++) {
 	free(new_SNode->arguments[j]);

@@ -44,7 +44,7 @@ int main() {
   // Load local history
   head_history = doubleReadListFromFile(head_history, file_path_history);
   
-  char *dummy_args[] = {"my command", "test1", "test2", NULL};
+  char *dummy_args[] = {"alias", "aliasName", "arg1", "arg2", "arg3",  NULL};
   head_alias = singleInsertNodeAtBeginning(head_alias, dummy_args);
 
 
@@ -167,9 +167,15 @@ int main() {
 
   // Save session history to file
   doubleWriteListToFile(head_history, file_path_history);
+
+
   // Free malloc'd variables
   head_history = doubleClearList(head_history);
   head_history = NULL;
+
+  head_alias = singleClearList(head_alias);
+  head_alias = NULL;
+
   free(directory_current);
   free(directory_initial);
   free(file_path_history);
