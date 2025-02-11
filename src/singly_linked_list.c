@@ -177,7 +177,7 @@ void singleWriteListToFile(SNode* head, char *path) {
 /**
    Read a file's contents into a Singly linked list
 */
-SNode* singleReadListFromFile(SNode* head, char *path) {
+SNode* singleReadListFromFile(SNode *head, char *path) {
   FILE *file = fopen(path, "r");
   if (file == NULL) {
     fprintf(stderr, "Failed to open file %s\n", path);
@@ -202,3 +202,19 @@ SNode* singleReadListFromFile(SNode* head, char *path) {
   fclose(file);  // Close the file after reading
   return head;
 }
+
+
+/**
+   Print all nodes of a singly linked list
+*/
+void singlePrintList(SNode *head) {
+  SNode *current = head;
+  while (current != NULL) {
+    printf("%s:", current->alias_name);
+    for (int i = 0; current->arguments[i] != NULL; i++) {
+      printf(" %s", current->arguments[i]);
+    }
+    printf("\n"); 
+  }
+}
+

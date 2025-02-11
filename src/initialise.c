@@ -9,7 +9,8 @@
 #include <linux/limits.h>
 #include "shell_library.h"
 #include "constants.h"
-
+#include "singly_linked_list.h"
+#include "doubly_linked_list.h"
 
 /**
    Create buffer for stdin
@@ -125,7 +126,7 @@ void loadIntoHistory(DNode** head_history, char **tokens) {
 /**
    Load into singly linked alias array from file
 */
-void loadIntoAlias(Node** head_alias, char **tokens) {
+void loadIntoAlias(SNode** head_alias, char **tokens) {
   if (!tokens || !*tokens || !head_alias) {
     return;
   }
@@ -167,6 +168,6 @@ void loadIntoAlias(Node** head_alias, char **tokens) {
 
   args[arg_count] = NULL;  // NULL-terminate the array
   
-  *head_alias = insertNodeAtEndSingle(*head_alias, args);
+  *head_alias = singleInsertNodeAtEnd(*head_alias, args);
   
 }

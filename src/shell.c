@@ -136,10 +136,10 @@ int main() {
     
     else if (compareStrings(arguments[0], "alias")) {
       if (!arguments[1]) {
-	singlePrintList(alias_history);
+	singlePrintList(head_alias);
       }
       else {
-	bindAlias(aliasNames, aliasCommands, arguments);
+	bindAlias(head_alias, arguments);
       }
     }
 
