@@ -18,8 +18,43 @@ SNode* singleCreateNode(char **arguments) {
     return NULL;
   }
   
-  new_SNode->arguments = arguments;
+  new_SNode->alias_name = strdup(arguments[0]);
+  if (!new_SNode->alias_name) {
+    fprintf(stderr, "Failed to allocat space for alias_name\n");
+    free(new_SNode);
+    return NULL;
+  }
+
+  // Count arguments
+  int num_args = 0;
+  while (arguments[num_args + 1] != NULL) {
+    num_args++;
+  }
+
+  new_SNode->arguments = malloc((num_args + 1) * sizeof(char*));
+  if (!new_SNode->arguments) {
+    fprintf(stderr, "Failed to allocate space for arguments array\n");
+    free(new_SNode->alias_name);
+    free(new_SNode);
+    return NULL;
+  }
+  
+  for (int i = 0; i < num_args; i++) {
+    new_SNode->arguments[i] = strdup(arguments[i + 1]);
+    if (!new_SNode->arguments[i]) {
+      for (int j = 0; j < i; j++) {
+	free(new_SNode->arguments[j]);
+      }
+      free(new_SNode->alias_name);
+      free(new_SNode->arguments);
+      free(new_SNode);
+      return NULL;
+    }
+  }  
+  new_SNode->arguments[num_args] = NULL;
+  
   new_SNode->next = NULL;
+
   return new_SNode;
 }
 
@@ -95,6 +130,7 @@ SNode* singleDeleteNodeAtPosition(SNode *head, int pos) {
       for (int i = 0; current->arguments[i] != NULL; i++) {
 	free(current->arguments[i]);
       }
+      free(current->alias_name);
       free(current->arguments);
     }
     free(current);
@@ -114,6 +150,7 @@ SNode* singleDeleteNodeAtPosition(SNode *head, int pos) {
     for (int i = 0; current->arguments[i] != NULL; i++) {
       free(current->arguments[i]);
     }
+    free(current->alias_name);
     free(current->arguments);
   }
   free(current);
@@ -135,6 +172,7 @@ SNode *singleClearList(SNode* head) {
       for (int i = 0; temp->arguments[i] != NULL; i++) {
 	free(temp->arguments[i]);
       }
+      free(temp->alias_name);
       free(temp->arguments);
     }
   
@@ -177,7 +215,7 @@ void singleWriteListToFile(SNode* head, char *path) {
 /**
    Read a file's contents into a Singly linked list
 */
-SNode* singleReadListFromFile(SNode* head, char *path) {
+SNode* singleReadListFromFile(SNode *head, char *path) {
   FILE *file = fopen(path, "r");
   if (file == NULL) {
     fprintf(stderr, "Failed to open file %s\n", path);
@@ -202,3 +240,21 @@ SNode* singleReadListFromFile(SNode* head, char *path) {
   fclose(file);  // Close the file after reading
   return head;
 }
+
+
+/**
+   Print all nodes of a singly linked list
+*/
+void singlePrintList(SNode *head) {
+  SNode *current = head;
+  printf("Aliases: \n");
+  while (current != NULL) {
+    printf("%s:", current->alias_name);
+    for (int i = 0; current->arguments[i] != NULL; i++) {
+      printf(" %s", current->arguments[i]);
+    }
+    printf("\n");
+    current = current->next;
+  }
+}
+

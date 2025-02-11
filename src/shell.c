@@ -43,6 +43,10 @@ int main() {
 
   // Load local history
   head_history = doubleReadListFromFile(head_history, file_path_history);
+  
+  char *dummy_args[] = {"my command", "test1", "test2", NULL};
+  head_alias = singleInsertNodeAtBeginning(head_alias, dummy_args);
+
 
   
     
@@ -134,14 +138,15 @@ int main() {
     }
 
     
-  //   else if (compareStrings(arguments[0], "alias")) {
-  //     if (!arguments[1]) {
-	// singlePrintList(alias_history);
-  //     }
-  //     else {
-	// bindAlias(aliasNames, aliasCommands, arguments);
-  //     }
-  //   }
+    else if (compareStrings(arguments[0], "alias")) {
+      if (!arguments[1]) {
+	singlePrintList(head_alias);
+      }
+      else {
+	bindAlias(head_alias, arguments);
+      }
+    }
+
 
     //else if (compareStrings(arguments[0], "unalias")) {
     // unbindAlias(aliasNames, aliasCommands, arguments);

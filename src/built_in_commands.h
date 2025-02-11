@@ -2,7 +2,7 @@
 #define BUILT_IN_COMMANDS_H
 
 #include "doubly_linked_list.h"  // For Node type
-
+#include "singly_linked_list.h"
 /**
    Built in shell commands
 */
@@ -14,7 +14,7 @@ void cd(char **args);
    Alias management
 */
 void printAliases(void);
-void bindAlias(char **aliasNames, char **aliasCommands, char **args);
-void unbindAlias(char **aliasNames, char **aliasCommands, char **args);
+void bindAlias(SNode*, char **args);
+void unbindAlias(SNode*, char **args);
 
 #endif 

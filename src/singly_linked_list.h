@@ -3,6 +3,7 @@
 
 
 typedef struct SNode {
+  char *alias_name;
   char **arguments; 
   struct SNode *next;
 } SNode;
@@ -12,8 +13,8 @@ typedef struct SNode {
    Inserting into lists
 */
 SNode *singleCreateNode(char **arguments);
-SNode *singleCinsertNodeAtBeginning(SNode* head, char **arguments);
-SNode *singleinsertNodeAtEnd(SNode *head, char **arguments);
+SNode *singleInsertNodeAtBeginning(SNode* head, char **arguments);
+SNode *singleInsertNodeAtEnd(SNode *head, char **arguments);
 SNode *singleNodeAtPositionSingle(SNode *head, int pos);
 
 
@@ -21,7 +22,7 @@ SNode *singleNodeAtPositionSingle(SNode *head, int pos);
    List adjacent functions
 */
 SNode *singleClearList(SNode *head);
-
+void singlePrintList(SNode *head);
 
 /**
    I/O
