@@ -134,14 +134,14 @@ int main() {
     }
 
     
-    else if (compareStrings(arguments[0], "alias")) {
-      if (!arguments[1]) {
-	singlePrintList(alias_history);
-      }
-      else {
-	bindAlias(aliasNames, aliasCommands, arguments);
-      }
-    }
+  //   else if (compareStrings(arguments[0], "alias")) {
+  //     if (!arguments[1]) {
+	// singlePrintList(alias_history);
+  //     }
+  //     else {
+	// bindAlias(aliasNames, aliasCommands, arguments);
+  //     }
+  //   }
 
     //else if (compareStrings(arguments[0], "unalias")) {
     // unbindAlias(aliasNames, aliasCommands, arguments);
