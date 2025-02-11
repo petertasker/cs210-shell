@@ -147,6 +147,7 @@ int main() {
       }
     }
 
+
     //else if (compareStrings(arguments[0], "unalias")) {
     // unbindAlias(aliasNames, aliasCommands, arguments);
     //}
