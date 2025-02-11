@@ -11,6 +11,7 @@
 #include "shell_library.h"   // Some shell functions that we define
 #include "built_in_commands.h" // All internal commands
 #include "doubly_linked_list.h"
+#include "singly_linked_list.h"
 #include "initialise.h"       // Variables created before do-while loop
 #include "constants.h"        // Constants
 
@@ -32,7 +33,8 @@ int main() {
 
   // Initialise history
   DNode *head_history = NULL;
-  
+
+  SNode *head_alias = NULL;
   // Find .hist.list
   char *file_path_history = concatFilePath(HISTORY_FILE);
   
@@ -41,8 +43,9 @@ int main() {
 
   // Load local history
   head_history = doubleReadListFromFile(head_history, file_path_history);
-  // readAliasesFromFile
+
   
+    
   // Main shell loop
   do {
 
@@ -131,9 +134,14 @@ int main() {
     }
 
     
-    //else if (compareStrings(arguments[0], "alias")) {
-      //bindAlias(aliasNames, aliasCommands, arguments);
-      //}
+    else if (compareStrings(arguments[0], "alias")) {
+      if (!arguments[1]) {
+	singlePrintList(alias_history);
+      }
+      else {
+	bindAlias(aliasNames, aliasCommands, arguments);
+      }
+    }
 
     //else if (compareStrings(arguments[0], "unalias")) {
     // unbindAlias(aliasNames, aliasCommands, arguments);
