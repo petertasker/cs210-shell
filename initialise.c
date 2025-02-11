@@ -145,3 +145,53 @@ char* concatFilePath(char *fileName){
   snprintf(path, len, "%s%s", getHomeDirectory(), fileName);
   return path;
 }
+
+
+/**
+   Create a node of the newest command and add it to
+   the beginning of history
+*/
+void loadIntoHistory(Node** head_history, char **tokens) {
+  if (!tokens || !*tokens || !head_history) {
+    return;
+  }
+
+  // Count number of arguments
+  int arg_count = 0;
+  while (tokens[arg_count]) {
+    arg_count++;
+  }
+
+  // Allocate memory for arguments array
+  char** args = malloc((arg_count + 1) * sizeof(char*));
+  if (!args) {
+    fprintf(stderr, "Failed to allocate memory for arguments\n");
+    return;
+  }
+
+  // Copy the command itself
+  args[0] = strdup(tokens[0]);
+  if (!args[0]) {
+    fprintf(stderr, "Failed to allocate memory for command\n");
+    free(args);
+    return;
+  }
+
+  // Copy additional arguments if any
+  for (int i = 1; i < arg_count; i++) {
+    args[i] = strdup(tokens[i]);
+    if (!args[i]) {
+      fprintf(stderr, "Failed to allocate memory for an argument\n");
+      for (int j = 0; j < i; j++) {
+	free(args[j]);
+      }
+      free(args);
+      return;
+    }
+  }
+
+  args[arg_count] = NULL;  // NULL-terminate the array
+  
+  *head_history = insertNodeAtEnd(*head_history, args);
+  
+}

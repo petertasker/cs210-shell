@@ -14,6 +14,7 @@ typedef struct Node {
 */
 Node *createNode(char **arguments);
 Node *insertNodeAtBeginning(Node* head, char **arguments);
+Node *insertNodeAtEnd(Node *head, char **arguments);
 Node *deleteNodeAtPosition(Node *head, int pos);
 
 

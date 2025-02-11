@@ -12,7 +12,7 @@
 #include "linked_list.h"
 #include "constants.h"
 #include "shell_library.h"
-
+#include "initialise.h"
 
 /**
    Create a new node
@@ -51,6 +51,38 @@ Node* insertNodeAtBeginning(Node* head, char **arguments) {
     head->previous = new_node;
   }
   return new_node;
+}
+
+
+/**
+   Insert a node at the end of a linked list
+*/
+Node* insertNodeAtEnd(Node* head, char **arguments) {
+  if (arguments == NULL) {
+    return head;
+  }
+  
+  // Create a new node
+  Node *new_node = createNode(arguments);
+  if (new_node == NULL) {
+    return head;
+  }
+  
+  if (head == NULL) {
+    return new_node;
+  }
+  
+  Node *current = head;
+   
+  // Find end of linked list
+  while (current->next != NULL) {
+    current = current->next;
+  }
+
+  current->next = new_node;
+  new_node->previous = current;
+
+  return head;
 }
 
 
@@ -190,7 +222,6 @@ void writeListToFile(Node* head, char *path) {
 
   Node *current = head;
   while (current != NULL) {
-
     // Write each argument
     if (current->arguments != NULL) {
       for (int i = 0; current->arguments[i] != NULL; i++) {
@@ -215,6 +246,7 @@ Node* readListFromFile(Node* head, char *path) {
     return NULL;
   }
 
+  // We are reading the 
   char line[MAX_INPUT_LEN + 1];
   while (fgets(line, sizeof(line), file)) {
     trimString(line);  
@@ -224,7 +256,7 @@ Node* readListFromFile(Node* head, char *path) {
 
     char **args = tokeniseString(line); 
     if (args != NULL) {
-      head = addToHistory(head, args);  
+      loadIntoHistory(&head, args);  
       freeArguments(args);  
     }
   }

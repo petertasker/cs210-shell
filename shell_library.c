@@ -244,9 +244,11 @@ Node* addToHistory(Node* head_history, char **tokens) {
       return head_history;
     }
   }
-  args[arg_count] = NULL;  // NULL-terminate the array
-  Node* new_head = insertNodeAtBeginning(head_history, args);
 
+  args[arg_count] = NULL;  // NULL-terminate the array
+  
+  Node * new_head = insertNodeAtBeginning(head_history, args);
+  
   // Delete oldest node if history exceeds MAX_NUM_HISTORY
   int size = 0;
   Node *temp = new_head;
