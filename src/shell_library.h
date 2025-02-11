@@ -1,4 +1,5 @@
 #include "doubly_linked_list.h"
+#include "singly_linked_list.h"
 
 #ifndef SHELL_LIBRARY_H
 #define SHELL_LIBRARY_H
