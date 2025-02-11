@@ -1,4 +1,4 @@
-SOURCES = shell.c shell_library.c built_in_commands.c initialise.c linked_list.c
+SOURCES = src/shell.c src/shell_library.c src/built_in_commands.c src/initialise.c src/linked_list.c
 CC = gcc
 CFLAGS = -Wall -pedantic
 TARGET = shell
