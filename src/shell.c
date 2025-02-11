@@ -46,7 +46,6 @@ int main() {
 
   // Load local aliases 
   head_alias = singleReadListFromFile(head_alias, file_path_alias);
- 
     
   // Main shell loop
   do {
