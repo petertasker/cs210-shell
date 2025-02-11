@@ -202,10 +202,14 @@ DNode* addToHistory(DNode* head_history, char **tokens) {
     return head_history;
   }
     
-  if (compareStrings(*tokens, "exit")) {      
+  if (compareStrings(tokens[0], "exit")) {      
     return head_history;
   }
 
+  if (compareStrings(tokens[0], "alias") && tokens[1] != NULL) {
+    return head_history;
+  }
+  
   // Avoid duplicates
   if (head_history && compareStringArrays(head_history->arguments, tokens)) {
     return head_history;
