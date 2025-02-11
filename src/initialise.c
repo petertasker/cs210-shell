@@ -125,7 +125,7 @@ void loadIntoHistory(DNode** head_history, char **tokens) {
 /**
    Load into singly linked alias array from file
 */
-void loadIntoAlias(Node** head_alias, char **tokens) {
+void loadIntoAlias(SNode** head_alias, char **tokens) {
   if (!tokens || !*tokens || !head_alias) {
     return;
   }
