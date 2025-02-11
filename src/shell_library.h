@@ -1,4 +1,4 @@
-#include "linked_list.h"
+#include "doubly_linked_list.h"
 
 #ifndef SHELL_LIBRARY_H
 #define SHELL_LIBRARY_H
@@ -20,8 +20,8 @@ void trimString(char *);
 /**
    History management
 */
-Node* addToHistory(Node*, char**);
-char **invokeHistory(Node*, char *);
+DNode* addToHistory(DNode*, char**);
+char **invokeHistory(DNode*, char *);
 
 
 /**

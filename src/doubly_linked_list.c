@@ -9,7 +9,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "linked_list.h"
+#include "doubly_linked_list.h"
 #include "constants.h"
 #include "shell_library.h"
 #include "initialise.h"
@@ -17,8 +17,8 @@
 /**
    Create a new node
 */
-Node* createNode(char **arguments) {
-  Node* new_node = (Node*)malloc(sizeof(Node));
+DNode* doubleCreateNode(char **arguments) {
+  DNode* new_node = (DNode*)malloc(sizeof(DNode));
   if (new_node == NULL) {
     fprintf(stderr, "Failed to allocate space for new node\n");
     return NULL;
@@ -34,13 +34,13 @@ Node* createNode(char **arguments) {
 /**
    Insert a node at the beginning of a list
 */
-Node* insertNodeAtBeginning(Node* head, char **arguments) {
+DNode* doubleInsertNodeAtBeginning(DNode* head, char **arguments) {
   if (arguments == NULL) {
     return head;
   }
 
   // Create a new node
-  Node* new_node = createNode(arguments);
+  DNode* new_node = doubleCreateNode(arguments);
   if (new_node == NULL) {
     return head;
   }
@@ -57,13 +57,13 @@ Node* insertNodeAtBeginning(Node* head, char **arguments) {
 /**
    Insert a node at the end of a linked list
 */
-Node* insertNodeAtEnd(Node* head, char **arguments) {
+DNode* doubleInsertNodeAtEnd(DNode* head, char **arguments) {
   if (arguments == NULL) {
     return head;
   }
   
   // Create a new node
-  Node *new_node = createNode(arguments);
+  DNode *new_node = doubleCreateNode(arguments);
   if (new_node == NULL) {
     return head;
   }
@@ -72,7 +72,7 @@ Node* insertNodeAtEnd(Node* head, char **arguments) {
     return new_node;
   }
   
-  Node *current = head;
+  DNode *current = head;
    
   // Find end of linked list
   while (current->next != NULL) {
@@ -86,19 +86,13 @@ Node* insertNodeAtEnd(Node* head, char **arguments) {
 }
 
 
-/**
-   Delete a node from the linked list at a
-   specified position
-
-   Not used in history but can be used in alias
-*/
-Node* deleteNodeAtPosition(Node *head, int pos) {
+DNode* doubleDeleteNodeAtPosition(DNode *head, int pos) {
   if (head == NULL || pos < 0) {
     printf("List is empty.\n");
     return NULL;
   }
   
-  Node *current = head;
+  DNode *current = head;
 
   if (pos == 0) {
     head = current->next;
@@ -147,7 +141,7 @@ Node* deleteNodeAtPosition(Node *head, int pos) {
 /**
    Print the value of each node of a linked list
 */
-void printList(Node *head) {
+void doublePrintList(DNode *head) {
   if (head == NULL) {
     printf("List is empty\n");
     return;
@@ -156,14 +150,14 @@ void printList(Node *head) {
   int index = 1;
   
   // Find the last node (tail)
-  Node *tail = head;
+  DNode *tail = head;
   while (tail->next != NULL) {
     tail = tail->next;
     index++;
   }
 
   // Traverse backward and print each node
-  Node *current = tail;
+  DNode *current = tail;
   while (current != NULL) {
     // Print command
     printf("%2d. ", index);
@@ -187,8 +181,8 @@ void printList(Node *head) {
    make sure to set HEAD to null if you
    do not plan on using the list again
 */
-Node *clearList(Node* head) {
-  Node *temp;
+DNode *doubleClearList(DNode* head) {
+  DNode *temp;
   while (head != NULL) {
     temp = head;
     head = head->next;
@@ -209,7 +203,7 @@ Node *clearList(Node* head) {
 /**
    Write a doubly linked list's contents into a file
 */
-void writeListToFile(Node* head, char *path) {
+void doubleWriteListToFile(DNode* head, char *path) {
   if (head == NULL || path == NULL) {
     return;
   }
@@ -220,7 +214,7 @@ void writeListToFile(Node* head, char *path) {
     return;
   }
 
-  Node *current = head;
+  DNode *current = head;
   while (current != NULL) {
     // Write each argument
     if (current->arguments != NULL) {
@@ -239,7 +233,7 @@ void writeListToFile(Node* head, char *path) {
 /**
    Read a file's contents into a doubly linked list
  */
-Node* readListFromFile(Node* head, char *path) {
+DNode* doubleReadListFromFile(DNode* head, char *path) {
   FILE *file = fopen(path, "r");
   if (file == NULL) {
     fprintf(stderr, "Failed to open file %s\n", path);

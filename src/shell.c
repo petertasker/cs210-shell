@@ -10,7 +10,7 @@
 
 #include "shell_library.h"   // Some shell functions that we define
 #include "built_in_commands.h" // All internal commands
-#include "linked_list.h"
+#include "doubly_linked_list.h"
 #include "initialise.h"       // Variables created before do-while loop
 #include "constants.h"        // Constants
 
@@ -30,12 +30,8 @@ int main() {
   // Initialise arguments
   char **arguments = NULL;
 
-  // Initialise aliases
-  char **aliasNames = initialiseAliasNames();
-  char **aliasCommands = initialiseAliasCommands();
-  
   // Initialise history
-  Node *head_history = NULL;
+  DNode *head_history = NULL;
   
   // Find .hist.list
   char *file_path_history = concatFilePath(HISTORY_FILE);
@@ -44,7 +40,7 @@ int main() {
   char *file_path_alias = concatFilePath(ALIAS_FILE);
 
   // Load local history
-  head_history = readListFromFile(head_history, file_path_history);
+  head_history = doubleReadListFromFile(head_history, file_path_history);
   // readAliasesFromFile
   
   // Main shell loop
@@ -94,8 +90,6 @@ int main() {
       head_history = addToHistory(head_history, arguments);
     
     }
-
-    
     
 
     /**
@@ -128,22 +122,22 @@ int main() {
     
     // Print History
     else if (compareStrings(arguments[0], "history")) {
-      printList(head_history);
+      doublePrintList(head_history);
     }
     
     //Erase History
     else if (compareStrings(arguments[0], "delhist")) {
-      head_history = clearList(head_history);
+      head_history = doubleClearList(head_history);
     }
 
-    // Bind/ View aliases <------------------------------ implement these two functions
-    else if (compareStrings(arguments[0], "alias")) {
-      bindAlias(aliasNames, aliasCommands, arguments);
-    }
+    
+    //else if (compareStrings(arguments[0], "alias")) {
+      //bindAlias(aliasNames, aliasCommands, arguments);
+      //}
 
-    else if (compareStrings(arguments[0], "unalias")) {
-      unbindAlias(aliasNames, aliasCommands, arguments);
-    }
+    //else if (compareStrings(arguments[0], "unalias")) {
+    // unbindAlias(aliasNames, aliasCommands, arguments);
+    //}
     
     // Command isnt in the list of internals, therefore
     // it is either external or does not exist
@@ -159,9 +153,9 @@ int main() {
   setWorkingDirectory(directory_initial);
 
   // Save session history to file
-  writeListToFile(head_history, file_path_history);
+  doubleWriteListToFile(head_history, file_path_history);
   // Free malloc'd variables
-  head_history = clearList(head_history);
+  head_history = doubleClearList(head_history);
   head_history = NULL;
   free(directory_current);
   free(directory_initial);

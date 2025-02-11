@@ -1,7 +1,7 @@
 #ifndef BUILT_IN_COMMANDS_H
 #define BUILT_IN_COMMANDS_H
 
-#include "linked_list.h"  // For Node type
+#include "doubly_linked_list.h"  // For Node type
 
 /**
    Built in shell commands

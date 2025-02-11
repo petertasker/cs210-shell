@@ -8,7 +8,7 @@
 #include <unistd.h>
 #include "shell_library.h"
 #include "built_in_commands.h"
-#include "linked_list.h"
+#include "doubly_linked_list.h"
 #include "constants.h"
 
 

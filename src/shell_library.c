@@ -16,7 +16,7 @@
 #include <ctype.h>
 #include <errno.h>
 
-#include "linked_list.h"
+#include "doubly_linked_list.h"
 #include "shell_library.h"
 #include "constants.h"
 
@@ -197,7 +197,7 @@ void trimString(char *s) {
    Create a node of the newest command and add it to
    the beginning of history
 */
-Node* addToHistory(Node* head_history, char **tokens) {
+DNode* addToHistory(DNode* head_history, char **tokens) {
   if (!tokens || !*tokens) {
     return head_history;
   }
@@ -247,18 +247,18 @@ Node* addToHistory(Node* head_history, char **tokens) {
 
   args[arg_count] = NULL;  // NULL-terminate the array
   
-  Node * new_head = insertNodeAtBeginning(head_history, args);
+  DNode *new_head = doubleInsertNodeAtBeginning(head_history, args);
   
   // Delete oldest node if history exceeds MAX_NUM_HISTORY
   int size = 0;
-  Node *temp = new_head;
+  DNode *temp = new_head;
   while (temp) {
     size++;
     temp = temp->next;
   }
 
   if (size > MAX_NUM_HISTORY) {
-    new_head = deleteNodeAtPosition(new_head, MAX_NUM_HISTORY);
+    new_head = doubleDeleteNodeAtPosition(new_head, MAX_NUM_HISTORY);
   }
 
   return new_head;
@@ -289,8 +289,8 @@ int compareStringArrays(char **a, char **b) {
 /**
    Invoke history from history list
 */
-char **invokeHistory(Node *head_history, char *user_command) {
-  Node *current = head_history;
+char **invokeHistory(DNode *head_history, char *user_command) {
+  DNode *current = head_history;
   if (current == NULL) {
     printf("No previous command in history\n");
     return NULL;
