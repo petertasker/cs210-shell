@@ -18,16 +18,16 @@
    Create a new Single list node
 */
 SNode* singleCreateNode(char **arguments) {
-  SNode* new_SNode = (SNode*)malloc(sizeof(SNode));
-  if (new_SNode == NULL) {
+  SNode* new_node = (SNode*)malloc(sizeof(SNode));
+  if (new_node == NULL) {
     fprintf(stderr, "Failed to allocate space for new SNode\n");
     return NULL;
   }
   
-  new_SNode->alias_name = strdup(arguments[1]);
-  if (!new_SNode->alias_name) {
+  new_node->alias_name = strdup(arguments[1]);
+  if (!new_node->alias_name) {
     fprintf(stderr, "Failed to allocat space for alias_name\n");
-    free(new_SNode);
+    free(new_node);
     return NULL;
   }
 
@@ -37,31 +37,31 @@ SNode* singleCreateNode(char **arguments) {
     num_args++;
   }
 
-  new_SNode->arguments = malloc((num_args + 1) * sizeof(char*));
-  if (!new_SNode->arguments) {
+  new_node->arguments = malloc((num_args + 1) * sizeof(char*));
+  if (!new_node->arguments) {
     fprintf(stderr, "Failed to allocate space for arguments array\n");
-    free(new_SNode->alias_name);
-    free(new_SNode);
+    free(new_node->alias_name);
+    free(new_node);
     return NULL;
   }
   
   for (int i = 0; i < num_args; i++) {
-    new_SNode->arguments[i] = strdup(arguments[i + 2]);
-    if (!new_SNode->arguments[i]) {
+    new_node->arguments[i] = strdup(arguments[i + 2]);
+    if (!new_node->arguments[i]) {
       for (int j = 0; j < i; j++) {
-	free(new_SNode->arguments[j]);
+	free(new_node->arguments[j]);
       }
-      free(new_SNode->alias_name);
-      free(new_SNode->arguments);
-      free(new_SNode);
+      free(new_node->alias_name);
+      free(new_node->arguments);
+      free(new_node);
       return NULL;
     }
   }  
-  new_SNode->arguments[num_args] = NULL;
+  new_node->arguments[num_args] = NULL;
   
-  new_SNode->next = NULL;
+  new_node->next = NULL;
 
-  return new_SNode;
+  return new_node;
 }
 
 
@@ -74,14 +74,14 @@ SNode* singleInsertNodeAtBeginning(SNode* head, char **arguments) {
   }
   
   // Create a new SNode
-  SNode* new_SNode = singleCreateNode(arguments);
-  if (new_SNode == NULL) {
+  SNode* new_node = singleCreateNode(arguments);
+  if (new_node == NULL) {
     return head;
   }
   
   // Make next of new SNode as head
-  new_SNode->next = head;
-  return new_SNode;
+  new_node->next = head;
+  return new_node;
 }
 
 
@@ -94,13 +94,13 @@ SNode* singleInsertNodeAtEnd(SNode* head, char **arguments) {
   }
     
   // Create a new SNode
-  SNode *new_SNode = singleCreateNode(arguments);
-  if (new_SNode == NULL) {
+  SNode *new_node = singleCreateNode(arguments);
+  if (new_node == NULL) {
     return head;
   }
     
   if (head == NULL) {
-    return new_SNode;
+    return new_node;
   }
     
   SNode *current = head;
@@ -110,7 +110,7 @@ SNode* singleInsertNodeAtEnd(SNode* head, char **arguments) {
     current = current->next;
   }
   
-  current->next = new_SNode;
+  current->next = new_node;
     
   
   return head;

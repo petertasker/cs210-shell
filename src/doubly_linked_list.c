@@ -85,6 +85,11 @@ DNode* doubleInsertNodeAtEnd(DNode* head, char **arguments) {
 }
 
 
+/**
+   Delete a node from a specific position
+
+   https://www.geeksforgeeks.org/delete-a-node-in-a-doubly-linked-list/
+*/
 DNode* doubleDeleteNodeAtPosition(DNode *head, int pos) {
   if (head == NULL || pos < 0) {
     printf("List is empty.\n");
