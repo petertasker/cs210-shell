@@ -1,3 +1,9 @@
+/**
+   Implementation of a singly-linked list
+
+   Many of these are from GeeksforGeeks tutorials
+*/
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -114,48 +120,57 @@ SNode* singleInsertNodeAtEnd(SNode* head, char **arguments) {
 /**
    Delete a Node from a singly-linked list at a
    specified position
+
+   especially useful - https://www.geeksforgeeks.org/delete-a-linked-list-node-at-a-given-position/
 */
 SNode* singleDeleteNodeAtPosition(SNode *head, int pos) {
-  if (head == NULL || pos < 0) {
-    printf("List is empty.\n");
-    return NULL;
-  }
+    if (head == NULL || pos < 0) {
+        printf("List is empty or invalid position.\n");
+        return NULL;
+    }
+
+    SNode *current = head;
+    SNode *prev = NULL;
     
-  SNode *current = head;
-  
-  if (pos == 0) {
-    head = current->next;
-      
+    // Special case: deleting first node
+    if (pos == 0) {
+        head = current->next;
+        if (current->arguments) {
+            for (int i = 0; current->arguments[i] != NULL; i++) {
+                free(current->arguments[i]);
+            }
+            free(current->alias_name);
+            free(current->arguments);
+        }
+        free(current);
+        return head;
+    }
+
+    // Move to the node to be deleted
+    for (int i = 0; i < pos && current != NULL; i++) {
+        prev = current;
+        current = current->next;
+    }
+
+    // If position is beyond list length
+    if (current == NULL) {
+        return head;
+    }
+
+    // Link the previous node to the next node, bypassing current
+    prev->next = current->next;
+
+    // Free the node and its contents
     if (current->arguments) {
-      for (int i = 0; current->arguments[i] != NULL; i++) {
-	free(current->arguments[i]);
-      }
-      free(current->alias_name);
-      free(current->arguments);
+        for (int i = 0; current->arguments[i] != NULL; i++) {
+            free(current->arguments[i]);
+        }
+        free(current->alias_name);
+        free(current->arguments);
     }
     free(current);
-    return head;
-  }
-  
-  for (int i = 0; i < pos && current != NULL; i++) {
-    current = current->next;
-  }
-  
-  if (current == NULL) {
-    return head;
-  }
 
-    
-  if (current->arguments) {
-    for (int i = 0; current->arguments[i] != NULL; i++) {
-      free(current->arguments[i]);
-    }
-    free(current->alias_name);
-    free(current->arguments);
-  }
-  free(current);
-  
-  return head;
+    return head;
 }
 
 

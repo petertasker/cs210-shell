@@ -31,7 +31,7 @@ void echo(char **args) {
 void pwd(char *path, char **args) {
   // Only one argument
   if (args[1] != NULL) {
-    fprintf(stdout, "Failed to print directory: too many arguments provided\n");
+    fprintf(stderr, "Failed to print directory: too many arguments provided\n");
     return;
   }
   
@@ -45,25 +45,44 @@ void pwd(char *path, char **args) {
 void cd(char **args) {
   // Not enough args
   if (args[1] == NULL) {
-    fprintf(stdout, "Failed to change directory: no arguments provided\n");
+    fprintf(stderr, "Failed to change directory: no arguments provided\n");
     return;
   }
   // Too many args
   else if (args[2] != NULL) {
-    fprintf(stdout, "Failed to change directory: too many arguments provided\n");
+    fprintf(stderr, "Failed to change directory: too many arguments provided\n");
     return;
   }
   setWorkingDirectory(args[1]);
 }
 
+
 /**
    Add an alias to a singly linked list
-   with the structure:
-     alias name
-     args[]
-*/
-void bindAlias(SNode *head, char **args) {
 
+   If an alias exists with the same alias name,
+   overwrite it
+*/
+SNode *bindAlias(SNode *head, char **args) {
+
+  if (!args || !args[1]) {
+    fprintf(stderr, "Failed to bind alias: to few arguments provided\n");
+    return head;
+  }
+
+  SNode *current = head;
+  int index = 0;
+
+  while (current != NULL) {
+    if (compareStrings(current->alias_name, args[1])) {
+      head = singleDeleteNodeAtPosition(head, index);
+      break;
+    }
+
+    current = current->next;
+    index++;
+  }
+  return singleInsertNodeAtBeginning(head, args);
 }
 
 

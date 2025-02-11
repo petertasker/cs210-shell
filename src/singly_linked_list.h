@@ -15,7 +15,7 @@ typedef struct SNode {
 SNode *singleCreateNode(char **arguments);
 SNode *singleInsertNodeAtBeginning(SNode* head, char **arguments);
 SNode *singleInsertNodeAtEnd(SNode *head, char **arguments);
-SNode *singleNodeAtPositionSingle(SNode *head, int pos);
+SNode *singleDeleteNodeAtPosition(SNode *head, int pos);
 
 
 /**

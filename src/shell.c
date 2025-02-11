@@ -45,13 +45,8 @@ int main() {
   head_history = doubleReadListFromFile(head_history, file_path_history);
 
   // Load local aliases 
-  head_alias = singleReadListFile(head_alias, file_path_alias);
-  
-  char *dummy_args[] = {"alias", "aliasName", "arg1", "arg2", "arg3",  NULL};
-  head_alias = singleInsertNodeAtBeginning(head_alias, dummy_args);
-
-
-  
+  head_alias = singleReadListFromFile(head_alias, file_path_alias);
+ 
     
   // Main shell loop
   do {
@@ -146,7 +141,7 @@ int main() {
 	singlePrintList(head_alias);
       }
       else {
-	bindAlias(head_alias, arguments);
+	head_alias = bindAlias(head_alias, arguments);
       }
     }
 
@@ -168,11 +163,9 @@ int main() {
   // Replenish directory
   setWorkingDirectory(directory_initial);
 
-  // Save session history to file
+  // Save session variables to file
   doubleWriteListToFile(head_history, file_path_history);
-
-  // Save session alias to file
-  singleWriteListToFile(head_alias, file_path_alias);
+  //singleWriteListToFile(head_alias, file_path_alias);
 	
   // Free malloc'd variables
   head_history = doubleClearList(head_history);

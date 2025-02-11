@@ -1,8 +1,7 @@
 /**
-   Functions which are used in single list implementations
-   used in aliasing and history tbd
+   Implementation of a doubly-linked list
 
-   https://www.geeksforgeeks.org/doubly-linked-list/
+   Many of these are from GeeksforGeeks tutorials
 */
 
 
