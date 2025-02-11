@@ -45,7 +45,7 @@ int main() {
   head_history = doubleReadListFromFile(head_history, file_path_history);
 
   // Load local aliases 
-  head_alias = singleReadListFile(head_alias, file_path_alias);
+  head_alias = singleReadListFromFile(head_alias, file_path_alias);
   
   char *dummy_args[] = {"alias", "aliasName", "arg1", "arg2", "arg3",  NULL};
   head_alias = singleInsertNodeAtBeginning(head_alias, dummy_args);
