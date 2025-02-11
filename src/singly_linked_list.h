@@ -13,7 +13,7 @@ typedef struct SNode {
    Inserting into lists
 */
 SNode *singleCreateNode(char **arguments);
-SNode *singleCinsertNodeAtBeginning(SNode* head, char **arguments);
+SNode *singleInsertNodeAtBeginning(SNode* head, char **arguments);
 SNode *singleInsertNodeAtEnd(SNode *head, char **arguments);
 SNode *singleNodeAtPositionSingle(SNode *head, int pos);
 

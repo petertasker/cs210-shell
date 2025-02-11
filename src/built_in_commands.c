@@ -9,6 +9,7 @@
 #include "shell_library.h"
 #include "built_in_commands.h"
 #include "doubly_linked_list.h"
+#include "singly_linked_list.h"
 #include "constants.h"
 
 
@@ -55,13 +56,20 @@ void cd(char **args) {
   setWorkingDirectory(args[1]);
 }
 
+/**
+   Add an alias to a singly linked list
+   with the structure:
+     alias name
+     args[]
+*/
+void bindAlias(SNode *head, char **args) {
 
-
-void bindAlias(char **aliasNames, char **aliasCommands, char **args) {
-  
 }
 
 
-void unbindAlias(char **aliasNames, char **aliasCommands, char **args) {
-  
+/**
+   Unbind an alias
+ */
+void unbindAlias(SNode *head, char **args) {
+
 }

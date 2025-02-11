@@ -43,6 +43,10 @@ int main() {
 
   // Load local history
   head_history = doubleReadListFromFile(head_history, file_path_history);
+  
+  char *dummy_args[] = {"my command", "test1", "test2", NULL};
+  head_alias = singleInsertNodeAtBeginning(head_alias, dummy_args);
+
 
   
     
