@@ -88,10 +88,8 @@ SNode *bindAlias(SNode *head, char **args) {
 
 /**
    Unbind an alias
- */
+*/
 void unbindAlias(SNode *head, char **args) {
-  // args = [unbind][mycommand]
-
   if (args[1] == NULL) {
     fprintf(stderr, "Failed to unbind alias: too few arguments prodived\n");
     return;

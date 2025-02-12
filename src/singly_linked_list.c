@@ -11,7 +11,7 @@
 #include "constants.h"
 #include "shell_library.h"
 #include "initialise.h"
-
+#include "built_in_commands.h"
 
 
 /**
@@ -23,16 +23,17 @@ SNode* singleListCreateNode(char **arguments) {
     fprintf(stderr, "Failed to allocate space for new SNode\n");
     return NULL;
   }
-  
+
+  int num_args = 0;
   new_node->alias_name = strdup(arguments[1]);
+  
   if (!new_node->alias_name) {
     fprintf(stderr, "Failed to allocat space for alias_name\n");
     free(new_node);
     return NULL;
   }
-
+  
   // Count arguments
-  int num_args = 0;
   while (arguments[num_args + 2] != NULL) {
     num_args++;
   }
@@ -248,7 +249,7 @@ void singleListWriteToFile(SNode* head, char *path) {
   
   SNode *current = head;
   while (current != NULL) {
-    fprintf(file, "%s ", current->alias_name);
+    fprintf(file, "alias %s ", current->alias_name);
     // Write each argument
     if (current->arguments != NULL) {
       for (int i = 0; current->arguments[i] != NULL; i++) {
@@ -283,7 +284,7 @@ SNode* singleListReadFromFile(SNode *head, char *path) {
   
     char **args = tokeniseString(line); 
     if (args != NULL) {
-      //loadIntoAlias(&head, args); <---- Broken  
+      head = bindAlias(head, args); 
       freeArguments(args);  
     }
   }

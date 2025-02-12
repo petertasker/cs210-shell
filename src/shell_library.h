@@ -38,7 +38,7 @@ int compareStringArrays(char **, char**);
 // Always returns NULL
 char **freeArguments(char **);
 char **duplicateArguments(char **);
-
+void prependStringToArguments(char*, char**);
 
 /**
    External command handling
