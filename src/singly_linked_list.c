@@ -243,8 +243,7 @@ SNode *singleListFree(SNode* head) {
 void singleListWriteToFile(SNode* head, char *path) {
   if (head == NULL || path == NULL) {
     return;
-  }
-    
+  }    
   FILE *file = fopen(path, "w");
   if (file == NULL) {
     fprintf(stderr, "Failed to open file %s\n", path);

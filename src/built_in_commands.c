@@ -90,15 +90,10 @@ SNode *bindAlias(SNode *head, char **args) {
    Unbind an alias
 */
 void unbindAlias(SNode *head, char **args) {
-  if (args[1] == NULL) {
-    fprintf(stderr, "Failed to unbind alias: too few arguments prodived\n");
-    return;
-  }
-  
-   if (args[2] != NULL) {
+  if (args[2] != NULL) {
     fprintf(stderr, "Failed to unbind alias: too many arguments provided\n");
     return;
   }
 
-   singleListDeleteNodeByKey(head, args[1]);
+  singleListDeleteNodeByKey(head, args[1]);
 }
