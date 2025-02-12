@@ -125,15 +125,23 @@ SNode* singleListInsertNodeAtEnd(SNode* head, char **arguments) {
 
    https://www.geeksforgeeks.org/c-program-for-deleting-a-node-in-a-linked-list/
  */
-void singleListDeleteNodeByKey(SNode *head, char *key) {
-
+SNode *singleListDeleteNodeByKey(SNode *head, char *key) {
+  if (head == NULL || key == NULL) {
+    return head;
+  }
+  
   SNode *current = head;
   SNode *previous = NULL;
   
   if (compareStrings(current->alias_name, key)) {
-    current = current->next;
+    SNode *new_head = current->next;
+    free(current->alias_name);
+    for (int i = 0; current->arguments[i] != NULL; i++) {
+      free(current->arguments[i]);
+    }
+    free(current->arguments);
     free(current);
-    return;
+    return new_head;
   }
 
   while (current != NULL && !(compareStrings(current->alias_name, key))) {
@@ -143,7 +151,7 @@ void singleListDeleteNodeByKey(SNode *head, char *key) {
 
   if (current == NULL) {
     fprintf(stderr, "Failed to unbind alias: alias not found.\n");
-    return;
+    return head;
   }
 
   previous->next = current->next;
@@ -151,9 +159,10 @@ void singleListDeleteNodeByKey(SNode *head, char *key) {
   for (int i = 0; current->arguments[i] != NULL; i++) {
     free(current->arguments[i]);
   }
-  
+  free(current->arguments);
   free(current);
-  
+
+  return head;
 }
 
 

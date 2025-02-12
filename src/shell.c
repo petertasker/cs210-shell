@@ -141,7 +141,7 @@ int main() {
 
     // Unbind alias
     else if (compareStrings(arguments[0], "unalias")) {
-      unbindAlias(head_alias, arguments);
+      head_alias = unbindAlias(head_alias, arguments);
     }
     
     else {
