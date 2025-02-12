@@ -65,7 +65,7 @@ void cd(char **args) {
 */
 SNode *bindAlias(SNode *head, char **args) {
 
-  if (!args || !args[1]) {
+  if (!args || !args[2]) {
     fprintf(stderr, "Failed to bind alias: to few arguments provided\n");
     return head;
   }
