@@ -117,6 +117,41 @@ SNode* singleListInsertNodeAtEnd(SNode* head, char **arguments) {
 }
 
 
+
+/**
+   Delete a Node from a singly-linked list at a
+   specified key (unbind by alias name)
+
+   https://www.geeksforgeeks.org/c-program-for-deleting-a-node-in-a-linked-list/
+ */
+void singleListDeleteNodeByKey(SNode *head, char *key) {
+
+  SNode *current = head;
+  SNode *previous = NULL;
+  
+  if (compareStrings(current->alias_name, key)) {
+    current = current->next;
+    free(current);
+    return;
+  }
+
+  while (current != NULL && !(compareStrings(current->alias_name, key))) {
+    previous = current;
+    current = current->next;
+  }
+
+  if (current == NULL) {
+    fprintf(stderr, "Failed to unbind alias: alias not found.\n");
+    return;
+  }
+
+  previous->next = current->next;
+
+  free(current);
+  
+}
+
+
 /**
    Delete a Node from a singly-linked list at a
    specified position
@@ -248,12 +283,12 @@ SNode* singleListReadFromFile(SNode *head, char *path) {
   
     char **args = tokeniseString(line); 
     if (args != NULL) {
-      //loadIntoAlias(&head, args);  
+      //loadIntoAlias(&head, args); <---- Broken  
       freeArguments(args);  
     }
   }
   
-  fclose(file);  // Close the file after reading
+  fclose(file);
   return head;
 }
 

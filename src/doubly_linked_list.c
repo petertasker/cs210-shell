@@ -256,7 +256,7 @@ DNode* doubleListReadFromFile(DNode* head, char *path) {
       freeArguments(args);  
     }
   }
-
+  
   fclose(file);  // Close the file after reading
   return head;
 }

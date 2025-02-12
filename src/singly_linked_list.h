@@ -16,6 +16,7 @@ SNode *singleListCreateNode(char **arguments);
 SNode *singleListInsertNodeAtBeginning(SNode* head, char **arguments);
 SNode *singleListInsertNodeAtEnd(SNode *head, char **arguments);
 SNode *singleListDeleteNodeAtPosition(SNode *head, int pos);
+void singleListDeleteNodeByKey(SNode *head, char *key);
 
 
 /**

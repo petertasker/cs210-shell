@@ -138,10 +138,11 @@ int main() {
 	head_alias = bindAlias(head_alias, arguments);
       }
     }
+
     // Unbind alias
-    //else if (compareStrings(arguments[0], "unalias")) {
-    // unbindAlias(aliasNames, aliasCommands, arguments);
-    //}
+    else if (compareStrings(arguments[0], "unalias")) {
+      unbindAlias(head_alias, arguments);
+    }
     
     else {
       externalCommands(arguments);
