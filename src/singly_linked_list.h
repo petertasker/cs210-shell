@@ -12,23 +12,23 @@ typedef struct SNode {
 /**
    Inserting into lists
 */
-SNode *singleCreateNode(char **arguments);
-SNode *singleInsertNodeAtBeginning(SNode* head, char **arguments);
-SNode *singleInsertNodeAtEnd(SNode *head, char **arguments);
-SNode *singleDeleteNodeAtPosition(SNode *head, int pos);
+SNode *singleListCreateNode(char **arguments);
+SNode *singleListInsertNodeAtBeginning(SNode* head, char **arguments);
+SNode *singleListInsertNodeAtEnd(SNode *head, char **arguments);
+SNode *singleListDeleteNodeAtPosition(SNode *head, int pos);
 
 
 /**
    List adjacent functions
 */
-SNode *singleClearList(SNode *head);
-void singlePrintList(SNode *head);
+SNode *singleListFree(SNode *head);
+void singleListPrint(SNode *head);
 
 /**
    I/O
  */
-void singleWriteListToFile(SNode* head, char *path);
-SNode *singleReadListFromFile(SNode* head, char *path);
+void singleListWriteToFile(SNode* head, char *path);
+SNode *singleListReadFromFile(SNode* head, char *path);
 
 
 #endif /* SINGLE_LINKED_LIST_H */

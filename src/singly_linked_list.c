@@ -17,7 +17,7 @@
 /**
    Create a new Single list node
 */
-SNode* singleCreateNode(char **arguments) {
+SNode* singleListCreateNode(char **arguments) {
   SNode* new_node = (SNode*)malloc(sizeof(SNode));
   if (new_node == NULL) {
     fprintf(stderr, "Failed to allocate space for new SNode\n");
@@ -68,13 +68,13 @@ SNode* singleCreateNode(char **arguments) {
 /**
    Insert a Node at the beginning of a singly-linked list
 */
-SNode* singleInsertNodeAtBeginning(SNode* head, char **arguments) {
+SNode* singleListInsertNodeAtBeginning(SNode* head, char **arguments) {
   if (arguments == NULL) {
     return head;
   }
   
   // Create a new SNode
-  SNode* new_node = singleCreateNode(arguments);
+  SNode* new_node = singleListCreateNode(arguments);
   if (new_node == NULL) {
     return head;
   }
@@ -88,13 +88,13 @@ SNode* singleInsertNodeAtBeginning(SNode* head, char **arguments) {
 /**
    Insert a Node at the end of a singly-linked list
 */
-SNode* singleInsertNodeAtEnd(SNode* head, char **arguments) {
+SNode* singleListInsertNodeAtEnd(SNode* head, char **arguments) {
   if (arguments == NULL) {
     return head;
   }
     
   // Create a new SNode
-  SNode *new_node = singleCreateNode(arguments);
+  SNode *new_node = singleListCreateNode(arguments);
   if (new_node == NULL) {
     return head;
   }
@@ -123,7 +123,7 @@ SNode* singleInsertNodeAtEnd(SNode* head, char **arguments) {
 
    especially useful - https://www.geeksforgeeks.org/delete-a-linked-list-node-at-a-given-position/
 */
-SNode* singleDeleteNodeAtPosition(SNode *head, int pos) {
+SNode* singleListDeleteNodeAtPosition(SNode *head, int pos) {
     if (head == NULL || pos < 0) {
         printf("List is empty or invalid position.\n");
         return NULL;
@@ -177,7 +177,7 @@ SNode* singleDeleteNodeAtPosition(SNode *head, int pos) {
 /**
    Clear and free a singly-linked list
 */
-SNode *singleClearList(SNode* head) {
+SNode *singleListFree(SNode* head) {
   SNode *temp;
   while (head != NULL) {
     temp = head;
@@ -200,7 +200,7 @@ SNode *singleClearList(SNode* head) {
 /**
    Write a Singly linked list contents into a file
 */
-void singleWriteListToFile(SNode* head, char *path) {
+void singleListWriteToFile(SNode* head, char *path) {
   if (head == NULL || path == NULL) {
     return;
   }
@@ -213,6 +213,7 @@ void singleWriteListToFile(SNode* head, char *path) {
   
   SNode *current = head;
   while (current != NULL) {
+    fprintf(file, "%s ", current->alias_name);
     // Write each argument
     if (current->arguments != NULL) {
       for (int i = 0; current->arguments[i] != NULL; i++) {
@@ -230,7 +231,7 @@ void singleWriteListToFile(SNode* head, char *path) {
 /**
    Read a file's contents into a Singly linked list
 */
-SNode* singleReadListFromFile(SNode *head, char *path) {
+SNode* singleListReadFromFile(SNode *head, char *path) {
   FILE *file = fopen(path, "r");
   if (file == NULL) {
     fprintf(stderr, "Failed to open file %s\n", path);
@@ -260,7 +261,7 @@ SNode* singleReadListFromFile(SNode *head, char *path) {
 /**
    Print all nodes of a singly linked list
 */
-void singlePrintList(SNode *head) {
+void singleListPrint(SNode *head) {
   SNode *current = head;
   printf("Aliases: \n");
   while (current != NULL) {

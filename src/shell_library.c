@@ -111,10 +111,10 @@ char **tokeniseString(char *str) {
 /**
    Free the arguments of the command input
 */
-void freeArguments(char **arguments) {
+char **freeArguments(char **arguments) {
   // Early return if arguments is already NULL
   if (!arguments) {
-    return;
+    return NULL;
   }
 
   // Free each string
@@ -124,6 +124,8 @@ void freeArguments(char **arguments) {
 
   // Free the array itself
   free(arguments);
+
+  return NULL;
 }
 
 
@@ -251,7 +253,7 @@ DNode* addToHistory(DNode* head_history, char **tokens) {
 
   args[arg_count] = NULL;  // NULL-terminate the array
   
-  DNode *new_head = doubleInsertNodeAtBeginning(head_history, args);
+  DNode *new_head = doubleListInsertNodeAtBeginning(head_history, args);
   
   // Delete oldest node if history exceeds MAX_NUM_HISTORY
   int size = 0;
@@ -262,7 +264,7 @@ DNode* addToHistory(DNode* head_history, char **tokens) {
   }
 
   if (size > MAX_NUM_HISTORY) {
-    new_head = doubleDeleteNodeAtPosition(new_head, MAX_NUM_HISTORY);
+    new_head = doubleListDeleteNodeAtPosition(new_head, MAX_NUM_HISTORY);
   }
 
   return new_head;

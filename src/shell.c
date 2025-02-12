@@ -6,14 +6,14 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <linux/limits.h>     // PATH_MAX
+#include <linux/limits.h>
 
-#include "shell_library.h"   // Some shell functions that we define
-#include "built_in_commands.h" // All internal commands
+#include "shell_library.h"
+#include "built_in_commands.h"
 #include "doubly_linked_list.h"
 #include "singly_linked_list.h"
-#include "initialise.h"       // Variables created before do-while loop
-#include "constants.h"        // Constants
+#include "initialise.h"
+#include "constants.h"
 
 
 int main() {
@@ -24,43 +24,40 @@ int main() {
   // pointer so the buffer can reset every cycle of the loop
   char *buffer_user_input = createBuffer();
   char *buffer_user_input_ptr = buffer_user_input;
+
+  // String array used for tokenising the command input
+  char **arguments = NULL;
   
+  // Save pre-session directory and
+  // set session directory to HOME
   char *directory_initial = saveInitialDirectory();
   char *directory_current = initialiseDirectory();
 
-  // Initialise arguments
-  char **arguments = NULL;
-
-  // Initialise history
-  DNode *head_history = NULL;
-
-  SNode *head_alias = NULL;
-  // Find .hist.list
+  // Set read / write file paths
   char *file_path_history = concatFilePath(HISTORY_FILE);
-  
-  // Find .aliases
   char *file_path_alias = concatFilePath(ALIAS_FILE);
+  
+  // Load history into doubly-linked list
+  DNode *head_history = NULL;
+  head_history = doubleListReadFromFile(head_history, file_path_history);
 
-  // Load local history
-  head_history = doubleReadListFromFile(head_history, file_path_history);
+  // Load aliases into singly-linked list
+  SNode *head_alias = NULL;
+  head_alias = singleListReadFromFile(head_alias, file_path_alias);
+  
 
-  // Load local aliases 
-  head_alias = singleReadListFromFile(head_alias, file_path_alias);
-    
   // Main shell loop
   do {
-
-    // Get current working directory
+    
     getWorkingDirectory(directory_current);
     
     // Reset buffer pointer
     buffer_user_input = buffer_user_input_ptr; 
-
+    
     // Display shell-like interface
     printf("%s $", directory_current);
     
-    // Call fgets for user input and instantly check if it is NULL,
-    // this means that the user inputted EOF (<CTRL> + D)
+    // Check user input for EOF (<CTRL> + D) and escape if so
     if (fgets(buffer_user_input, MAX_INPUT_LEN, stdin) == NULL) {
       if (feof(stdin)) {
 	if (arguments != NULL) {
@@ -72,7 +69,6 @@ int main() {
       }
     }
 
-    
     // Trim leading whitespace and NULL terminator
     trimString(buffer_user_input);
     
@@ -80,16 +76,16 @@ int main() {
     if (compareStrings(buffer_user_input, "")) {
       continue;
     }
-    
- 
+
+    // Invoke history
     if (buffer_user_input[0] == '!') {
       arguments = invokeHistory(head_history, buffer_user_input);
       if (arguments == NULL) {
-	// Skip if history command cannot be invoked
 	continue;  
       }
     }
     else {
+      // Take stdin as the command
       arguments = tokeniseString(buffer_user_input);
       head_history = addToHistory(head_history, arguments);
     
@@ -101,8 +97,7 @@ int main() {
     */
     // Exit the program
     if (compareStrings(arguments[0], "exit")) {
-      freeArguments(arguments);
-      arguments = NULL;
+      arguments = freeArguments(arguments);
       break;
     }
     
@@ -126,53 +121,52 @@ int main() {
     
     // Print History
     else if (compareStrings(arguments[0], "history")) {
-      doublePrintList(head_history);
+      doubleListPrint(head_history);
     }
     
-    //Erase History
+    // Erase History
     else if (compareStrings(arguments[0], "delhist")) {
-      head_history = doubleClearList(head_history);
+      head_history = doubleListFree(head_history);
     }
-
     
+    // Bind alias / view aliases
     else if (compareStrings(arguments[0], "alias")) {
       if (!arguments[1]) {
-	singlePrintList(head_alias);
+	singleListPrint(head_alias);
       }
       else {
 	head_alias = bindAlias(head_alias, arguments);
       }
     }
-
-
+    // Unbind alias
     //else if (compareStrings(arguments[0], "unalias")) {
     // unbindAlias(aliasNames, aliasCommands, arguments);
     //}
     
-    // Command isnt in the list of internals, therefore
-    // it is either external or does not exist
     else {
       externalCommands(arguments);
     }
-    freeArguments(arguments);
-    arguments = NULL;
+    
+    arguments = freeArguments(arguments);
+
   }
   while (1);
   
-  // Replenish directory
+  // Replenish directory to pre-session
   setWorkingDirectory(directory_initial);
 
-  // Save session variables to file
-  doubleWriteListToFile(head_history, file_path_history);
-  //singleWriteListToFile(head_alias, file_path_alias);
+  // Save session lists to file
+  doubleListWriteToFile(head_history, file_path_history);
+  singleListWriteToFile(head_alias, file_path_alias);
 	
-  // Free malloc'd variables
-  head_history = doubleClearList(head_history);
+  // Free lists
+  head_history = doubleListFree(head_history);
   head_history = NULL;
 
-  head_alias = singleClearList(head_alias);
+  head_alias = singleListFree(head_alias);
   head_alias = NULL;
 
+  // Free strings
   free(directory_current);
   free(directory_initial);
   free(file_path_history);

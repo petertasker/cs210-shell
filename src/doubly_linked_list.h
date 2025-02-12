@@ -10,26 +10,26 @@ typedef struct DNode {
 
 
 /**
-   Inserting into doubly-linked lists
+   List manipulation
 */
-DNode *doubleCreateNode(char **arguments);
-DNode *doubleInsertNodeAtBeginning(DNode* head, char **arguments);
-DNode *doubleInsertNodeAtEnd(DNode *head, char **arguments);
-DNode *doubleDeleteNodeAtPosition(DNode *head, int pos);
+DNode *doubleListCreateNode(char **arguments);
+DNode *doubleListInsertNodeAtBeginning(DNode* head, char **arguments);
+DNode *doubleListInsertNodeAtEnd(DNode *head, char **arguments);
+DNode *doubleListDeleteNodeAtPosition(DNode *head, int pos);
 
 
 /**
    List adjacent functions
 */
-void doublePrintList(DNode *head);
-DNode *doubleClearList(DNode *head);
+void doubleListPrint(DNode *head);
+DNode *doubleListFree(DNode *head);
 
 
 /**
    I/O
  */
-void doubleWriteListToFile(DNode* head, char *path);
-DNode *doubleReadListFromFile(DNode* head, char *path);
+void doubleListWriteToFile(DNode* head, char *path);
+DNode *doubleListReadFromFile(DNode* head, char *path);
 
 
 #endif /* LINKED_LIST_H */

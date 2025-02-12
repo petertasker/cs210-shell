@@ -119,7 +119,7 @@ void loadIntoHistory(DNode** head_history, char **tokens) {
 
   args[arg_count] = NULL;  // NULL-terminate the array
   
-  *head_history = doubleInsertNodeAtEnd(*head_history, args);
+  *head_history = doubleListInsertNodeAtEnd(*head_history, args);
   
 }
 
@@ -168,6 +168,6 @@ void loadIntoAlias(SNode** head_alias, char **tokens) {
 
   args[arg_count] = NULL;  // NULL-terminate the array
   
-  *head_alias = singleInsertNodeAtEnd(*head_alias, args);
+  *head_alias = singleListInsertNodeAtEnd(*head_alias, args);
   
 }

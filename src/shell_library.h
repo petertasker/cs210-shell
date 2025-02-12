@@ -35,7 +35,8 @@ int compareStringArrays(char **, char**);
 /**
    Argument management
 */
-void freeArguments(char **);
+// Always returns NULL
+char **freeArguments(char **);
 char **duplicateArguments(char **);
 
 

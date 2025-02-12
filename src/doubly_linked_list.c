@@ -16,7 +16,7 @@
 /**
    Create a new node
 */
-DNode* doubleCreateNode(char **arguments) {
+DNode* doubleListCreateNode(char **arguments) {
   DNode* new_node = (DNode*)malloc(sizeof(DNode));
   if (new_node == NULL) {
     fprintf(stderr, "Failed to allocate space for new node\n");
@@ -33,13 +33,13 @@ DNode* doubleCreateNode(char **arguments) {
 /**
    Insert a node at the beginning of a list
 */
-DNode* doubleInsertNodeAtBeginning(DNode* head, char **arguments) {
+DNode* doubleListInsertNodeAtBeginning(DNode* head, char **arguments) {
   if (arguments == NULL) {
     return head;
   }
 
   // Create a new node
-  DNode* new_node = doubleCreateNode(arguments);
+  DNode* new_node = doubleListCreateNode(arguments);
   if (new_node == NULL) {
     return head;
   }
@@ -56,13 +56,13 @@ DNode* doubleInsertNodeAtBeginning(DNode* head, char **arguments) {
 /**
    Insert a node at the end of a linked list
 */
-DNode* doubleInsertNodeAtEnd(DNode* head, char **arguments) {
+DNode* doubleListInsertNodeAtEnd(DNode* head, char **arguments) {
   if (arguments == NULL) {
     return head;
   }
   
   // Create a new node
-  DNode *new_node = doubleCreateNode(arguments);
+  DNode *new_node = doubleListCreateNode(arguments);
   if (new_node == NULL) {
     return head;
   }
@@ -90,7 +90,7 @@ DNode* doubleInsertNodeAtEnd(DNode* head, char **arguments) {
 
    https://www.geeksforgeeks.org/delete-a-node-in-a-doubly-linked-list/
 */
-DNode* doubleDeleteNodeAtPosition(DNode *head, int pos) {
+DNode* doubleListDeleteNodeAtPosition(DNode *head, int pos) {
   if (head == NULL || pos < 0) {
     printf("List is empty.\n");
     return NULL;
@@ -145,7 +145,7 @@ DNode* doubleDeleteNodeAtPosition(DNode *head, int pos) {
 /**
    Print the value of each node of a linked list
 */
-void doublePrintList(DNode *head) {
+void doubleListPrint(DNode *head) {
   if (head == NULL) {
     printf("List is empty\n");
     return;
@@ -181,11 +181,9 @@ void doublePrintList(DNode *head) {
 
 
 /**
-   Free every node of a linked list
-   make sure to set HEAD to null if you
-   do not plan on using the list again
+   Clear and free a doubly-linked list
 */
-DNode *doubleClearList(DNode* head) {
+DNode *doubleListFree(DNode* head) {
   DNode *temp;
   while (head != NULL) {
     temp = head;
@@ -207,7 +205,7 @@ DNode *doubleClearList(DNode* head) {
 /**
    Write a doubly linked list's contents into a file
 */
-void doubleWriteListToFile(DNode* head, char *path) {
+void doubleListWriteToFile(DNode* head, char *path) {
   if (head == NULL || path == NULL) {
     return;
   }
@@ -237,7 +235,7 @@ void doubleWriteListToFile(DNode* head, char *path) {
 /**
    Read a file's contents into a doubly linked list
  */
-DNode* doubleReadListFromFile(DNode* head, char *path) {
+DNode* doubleListReadFromFile(DNode* head, char *path) {
   FILE *file = fopen(path, "r");
   if (file == NULL) {
     fprintf(stderr, "Failed to open file %s\n", path);

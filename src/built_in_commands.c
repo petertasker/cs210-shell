@@ -75,14 +75,14 @@ SNode *bindAlias(SNode *head, char **args) {
 
   while (current != NULL) {
     if (compareStrings(current->alias_name, args[1])) {
-      head = singleDeleteNodeAtPosition(head, index);
+      head = singleListDeleteNodeAtPosition(head, index);
       break;
     }
 
     current = current->next;
     index++;
   }
-  return singleInsertNodeAtBeginning(head, args);
+  return singleListInsertNodeAtBeginning(head, args);
 }
 
 
