@@ -100,5 +100,5 @@ void unbindAlias(SNode *head, char **args) {
     return;
   }
 
-  singleListDeleteNodeByKey(head, args[1]);
+   singleListDeleteNodeByKey(head, args[1]);
 }

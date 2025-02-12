@@ -147,7 +147,11 @@ void singleListDeleteNodeByKey(SNode *head, char *key) {
   }
 
   previous->next = current->next;
-
+  free(current->alias_name);
+  for (int i = 0; current->arguments[i] != NULL; i++) {
+    free(current->arguments[i]);
+  }
+  
   free(current);
   
 }
