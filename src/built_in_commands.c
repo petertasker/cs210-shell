@@ -98,3 +98,16 @@ SNode *unbindAlias(SNode *head, char **args) {
   return singleListDeleteNodeByKey(head, args[1]);
   
 }
+
+
+char **invokeAlias(SNode *head, char *input) {
+  SNode *current = head;
+  while (current != NULL) {
+    if (compareStrings(current->alias_name, input)) {
+      printf("Invoking alias...\n");
+      return duplicateArguments(current->arguments);
+    }
+    current = current->next;
+  }
+  return NULL;
+}

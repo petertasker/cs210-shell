@@ -14,7 +14,7 @@ void cd(char **args);
    Alias management
 */
 void printAliases(void);
-SNode *bindAlias(SNode*, char **args);
-SNode *unbindAlias(SNode*, char **args);
-
+SNode *bindAlias(SNode *, char **args);
+SNode *unbindAlias(SNode *, char **args);
+char **invokeAlias(SNode *head, char *input);
 #endif 

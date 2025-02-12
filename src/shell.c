@@ -85,10 +85,13 @@ int main() {
       }
     }
     else {
-      // Take stdin as the command
-      arguments = tokeniseString(buffer_user_input);
+      // Check if input is an alias
+      arguments = invokeAlias(head_alias, buffer_user_input);
+      if (arguments == NULL) {
+	// Take stdin as the command
+	arguments = tokeniseString(buffer_user_input);
+      }
       head_history = addToHistory(head_history, arguments);
-    
     }
     
 
