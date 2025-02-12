@@ -23,10 +23,13 @@ This simplified shell implements the following commands:
 * `!!`,<br>
 * `!<n>`, where `n` is the nth newest command <br>
 * `!-<n>`, where `n` is the nth oldest command<br>
+* `alias`<br>
+* `alias <aliasName> <arg1> <arg2> ...`<br>
+* `unalias <aliasName>`<br>
 
 Other features:
 * External command piping
-* An ability to bind and unbind aliases TBD.
+* Saving / loading history to disk
 
 ## Requirements
 
