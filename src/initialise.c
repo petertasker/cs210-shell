@@ -122,3 +122,19 @@ void loadIntoHistory(DNode** head_history, char **tokens) {
   *head_history = doubleListInsertNodeAtEnd(*head_history, args);
   
 }
+
+
+char *saveInitialPath() {
+  char *initial_path = getenv("PATH");
+  if (!initial_path) {
+    fprintf(stderr, "Failed to get initial PATH\n");
+    return NULL;
+  }
+  initial_path = strdup(initial_path);
+  if (!initial_path) {
+    fprintf(stderr, "Failed to duplicate PATH\n");
+    return NULL;
+  }
+
+  return initial_path;
+}

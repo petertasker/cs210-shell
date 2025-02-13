@@ -20,22 +20,7 @@ char *originalPath = NULL;
 
 int main() {
 
-   // Save the original PATH for restoration
-    originalPath = getenv("PATH");
-    if (originalPath == NULL) {
-        fprintf(stderr, "Failed to get the original PATH\n");
-        return 1;
-    }
-
-    // Make a copy of the original PATH for restoration
-    originalPath = strdup(originalPath);
-    if (originalPath == NULL) {
-        perror("strdup");
-        return 1;
-    }
-
-  atexit(printPathOnExit);
-
+  
   system("clear");
 
   // Create input buffer and also a copy of the initial
@@ -51,6 +36,12 @@ int main() {
   char *directory_initial = saveInitialDirectory();
   char *directory_current = initialiseDirectory();
 
+  // Save pre-session PATH
+  char *path_initial = saveInitialPath();  
+  if (path_initial == NULL) {
+    return 1;
+  }
+  
   // Set read / write file paths
   char *file_path_history = concatFilePath(HISTORY_FILE);
   char *file_path_alias = concatFilePath(ALIAS_FILE);
@@ -111,68 +102,14 @@ int main() {
       }
       head_history = addToHistory(head_history, arguments);
     }
-
-
-    /**
-       Internal Commands:
-    */
+ 
     // Exit the program
     if (compareStrings(arguments[0], "exit")) {
       arguments = freeArguments(arguments);
       break;
     }
-
-    // Echo the command
-    else if (compareStrings(arguments[0], "echo") ||	\
-	     compareStrings(arguments[0], "regurgitate")) {
-      echo(arguments);
-    }
-
-    // Print current directory
-    else if (compareStrings(arguments[0], "pwd")) {
-      pwd(directory_current, arguments);
-    }
-
-    // Print path
-    else if (compareStrings(arguments[0], "getpath")){
-     getpath(arguments);
-    }
-
-    // Change directory
-    else if (compareStrings(arguments[0], "cd")) {
-    cd(arguments);
-    }
-
-    // Change path
-    else if (compareStrings(arguments[0], "setpath")) {
-    setpath(arguments);
-    }
-    // Print History
-    else if (compareStrings(arguments[0], "history")) {
-      doubleListPrint(head_history);
-    }
-
-    // Erase History
-    else if (compareStrings(arguments[0], "delhist")) {
-      head_history = doubleListFree(head_history);
-    }
-
-    // Bind alias / view aliases
-    else if (compareStrings(arguments[0], "alias")) {
-      if (!arguments[1]) {
-	singleListPrint(head_alias);
-      }
-      else {
-	head_alias = bindAlias(head_alias, arguments);
-      }
-    }
-
-    // Unbind alias
-    else if (compareStrings(arguments[0], "unalias")) {
-      head_alias = unbindAlias(head_alias, arguments);
-    }
-
-    else {
+    
+    if (!runInternalCommands(arguments, head_history, head_alias)) {
       externalCommands(arguments);
     }
 
@@ -183,7 +120,8 @@ int main() {
 
   // Replenish directory to pre-session
   setWorkingDirectory(directory_initial);
-
+  exitRestorePath(path_initial);
+  path_initial = NULL;
   // Save session lists to file
   doubleListWriteToFile(head_history, file_path_history);
   singleListWriteToFile(head_alias, file_path_alias);

@@ -135,7 +135,7 @@ char **freeArguments(char **arguments) {
   if (!arguments) {
     return NULL;
   }
-
+  
   // Free each string
   for (int i = 0; arguments[i] != NULL; i++) {
     free(arguments[i]);
@@ -387,18 +387,16 @@ char **duplicateArguments(char **args) {
     return copy;
 }
 
-// Restores original path and prints
-void printPathOnExit() {
-    if (originalPath != NULL) {
-        // Restore the original PATH
-        if (setenv("PATH", originalPath, 1) == -1) {
-            perror("setenv");
-        } else {
-            printf("Restored PATH: %s\n", originalPath);
-        }
-
-        // Free the allocated memory for originalPath
-        free(originalPath);
-    }
+/**
+   Restore original PATH
+*/
+void exitRestorePath(char *path) {
+  // Restore the original PATH
+  if (setenv("PATH", path, 1) == -1) {
+    perror("setenv");
+    return;
+  }
+  
+  printf("Restored PATH: %s\n", path);
+  free(path);
 }
-

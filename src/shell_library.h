@@ -4,9 +4,6 @@
 #ifndef SHELL_LIBRARY_H
 #define SHELL_LIBRARY_H
 
-// Declare originalPath as an extern variable
-extern char *originalPath;
-
 /**
    Directory management
 */
@@ -38,7 +35,6 @@ int compareStringArrays(char **, char**);
 /**
    Argument management
 */
-// Always returns NULL
 char **freeArguments(char **);
 char **duplicateArguments(char **);
 void prependStringToArguments(char*, char**);
@@ -48,7 +44,9 @@ void prependStringToArguments(char*, char**);
 */
 void externalCommands(char **);
 
-
-void printPathOnExit();
+/**
+   Path
+*/
+void exitRestorePath(char *);
 
 #endif

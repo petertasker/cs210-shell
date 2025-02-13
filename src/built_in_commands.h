@@ -7,11 +7,10 @@
    Built in shell commands
 */
 void echo(char **args);
-void pwd(char *cwd, char **args);
 void getpath(char **args);
 void cd(char **args);
 void setpath(char **args);
-
+int runInternalCommands(char **arguments, DNode *head_history, SNode *head_alias);
 /**
    Alias management
 */
