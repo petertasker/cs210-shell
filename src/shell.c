@@ -20,14 +20,14 @@ char *originalPath = NULL;
 
 int main() {
 
-   // Save the original PATH
+   // Save the original PATH for restoration
     originalPath = getenv("PATH");
     if (originalPath == NULL) {
         fprintf(stderr, "Failed to get the original PATH\n");
         return 1;
     }
 
-    // Make a copy of the original PATH
+    // Make a copy of the original PATH for restoration
     originalPath = strdup(originalPath);
     if (originalPath == NULL) {
         perror("strdup");
@@ -128,11 +128,12 @@ int main() {
       echo(arguments);
     }
 
-    // Print path
+    // Print current directory
     else if (compareStrings(arguments[0], "pwd")) {
       pwd(directory_current, arguments);
     }
 
+    // Print path
     else if (compareStrings(arguments[0], "getpath")){
      getpath(arguments);
     }
@@ -142,6 +143,7 @@ int main() {
     cd(arguments);
     }
 
+    // Change path
     else if (compareStrings(arguments[0], "setpath")) {
     setpath(arguments);
     }

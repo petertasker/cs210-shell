@@ -41,9 +41,8 @@ void pwd(char *path, char **args) {
 /**
    Print current path
 */
-
 void getpath(char **args) {
-
+    // Checks to see if parameters are present
     if (args[1] != NULL) {
     fprintf(stderr, "Error: getpath does not accept parameters\n");
     return;
@@ -77,17 +76,22 @@ void cd(char **args) {
   setWorkingDirectory(args[1]);
 }
 
+/**
+   Change current path
+*/
 void setpath(char **args) {
+
+    // Checks if no parameters are present
     if (args[1] == NULL) {
         fprintf(stderr, "setpath: missing argument\n");
         return;
     }
-
+    // Checks if too many parameters are present
     if (args[2] != NULL) {
         fprintf(stderr, "setpath: too many arguments\n");
         return;
     }
-
+    // perror if setenv fails
     if (setenv("PATH", args[1], 1) == -1) {
         perror("setpath");
         return;

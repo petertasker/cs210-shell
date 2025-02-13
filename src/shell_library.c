@@ -387,6 +387,7 @@ char **duplicateArguments(char **args) {
     return copy;
 }
 
+// Restores original path and prints
 void printPathOnExit() {
     if (originalPath != NULL) {
         // Restore the original PATH
