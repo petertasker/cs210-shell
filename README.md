@@ -15,18 +15,20 @@ Written By:
 ## Overview
 
 This simplified shell implements the following commands:
-* `echo` - print to the screen<br>
-* `getpath` - get enviroment PATH <br>
-* `setpath` - set enviroment PATH <br>
-* `cd` - change directory <br>
-* `history` - print most recent history<br>
-* `!!` - invoke most recent command <br>
-* `!<n>` - invoke the `n`th newest command <br>
-* `!-<n>` - invoke the `n`th oldest command <br>
-* `alias` - print all aliases <br>
-* `alias <aliasName> <arg1> <arg2> ...` - bind an alias <br>
-* `unalias <aliasName>` - unbind an alias <br>
-* `exit` - exit the shell <br>
+| Command        | Description |
+|---------------|-------------|
+| `echo`        | Print to the screen |
+| `getpath`     | Get environment `PATH` |
+| `setpath`     | Set environment `PATH` |
+| `cd`          | Change directory |
+| `history`     | Print most recent history |
+| `!!`          | Invoke the most recent command |
+| `!<n>`        | Invoke the `n`th newest command |
+| `!-<n>`       | Invoke the `n`th oldest command |
+| `alias`       | Print all aliases |
+| `alias <aliasName> <arg1> <arg2> ...` | Bind an alias |
+| `unalias <aliasName>` | Unbind an alias |
+| `exit`        | Exit the shell |
 
 Other features:
 * External command piping
