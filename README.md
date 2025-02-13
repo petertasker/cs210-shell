@@ -15,22 +15,24 @@ Written By:
 ## Overview
 
 This simplified shell implements the following commands:
-* `echo` <br>
-* `pwd`,  `getpath` <br>
-* `cd`, `setpath` <br>
-* `exit` <br>
-* `history`<br>
-* `!!`,<br>
-* `!<n>`, where `n` is the nth newest command <br>
-* `!-<n>`, where `n` is the nth oldest command<br>
-* `alias`<br>
-* `alias <aliasName> <arg1> <arg2> ...`<br>
-* `unalias <aliasName>`<br>
+* `echo` - print to the screen<br>
+* `getpath` - get enviroment PATH <br>
+* `setpath` - set enviroment PATH <br>
+* `cd` - change directory <br>
+* `history` - print most recent history<br>
+* `!!` - invoke most recent command <br>
+* `!<n>` - invoke the `n`th newest command <br>
+* `!-<n>` - invoke the `n`th oldest command <br>
+* `alias` - print all aliases <br>
+* `alias <aliasName> <arg1> <arg2> ...` - bind an alias <br>
+* `unalias <aliasName>` - unbind an alias <br>
+* `exit` - exit the shell <br>
 
 Other features:
 * External command piping
 * Saving / loading history to disk
-
+* Restoration of PATH and directory after session
+  
 ## Requirements
 
 A Unix type system (e.g. Linux or macOS) is required to run as we use Unix system calls.
