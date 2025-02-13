@@ -135,7 +135,6 @@ char **invokeAlias(SNode *head, char *input) {
   SNode *current = head;
   while (current != NULL) {
     if (compareStrings(current->alias_name, input)) {
-      printf("Invoking alias...\n");
       return duplicateArguments(current->arguments);
     }
     current = current->next;
@@ -143,64 +142,3 @@ char **invokeAlias(SNode *head, char *input) {
   return NULL;
 }
 
-/**
-   Internal Commands:
-*/
-int runInternalCommands(char **arguments, DNode *head_history, SNode *head_alias) {
-  // Echo the command
-  if (compareStrings(arguments[0], "echo") ||		\
-      compareStrings(arguments[0], "regurgitate")) {
-    echo(arguments);
-    return 1;
-  }
-
-  // Print path
-  if (compareStrings(arguments[0], "getpath")) {
-    getpath(arguments);
-    return 1;
-  }
-
-   
-  // Change path
-  if (compareStrings(arguments[0], "setpath")) {
-    setpath(arguments);
-    return 1;
-  }
-
-  // Change directory
-  if (compareStrings(arguments[0], "cd")) {
-    cd(arguments);
-    return 1;
-  }
-
-  // Print History
-  if (compareStrings(arguments[0], "history")) {
-    doubleListPrint(head_history);
-    return 1;
-  }
-
-  // Erase History
-  if (compareStrings(arguments[0], "delhist")) {
-    head_history = doubleListFree(head_history);
-    return 1;
-  }
-
-  // Bind alias / view aliases
-  if (compareStrings(arguments[0], "alias")) {
-    if (!arguments[1]) {
-      singleListPrint(head_alias);
-    }
-    else {
-      head_alias = bindAlias(head_alias, arguments);
-    }
-    return 1;
-  }
-
-  // Unbind alias
-  if (compareStrings(arguments[0], "unalias")) {
-    head_alias = unbindAlias(head_alias, arguments);
-    return 1;
-  }
-
-  return 0;
-}

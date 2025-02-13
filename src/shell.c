@@ -103,16 +103,64 @@ int main() {
       head_history = addToHistory(head_history, arguments);
     }
  
+     /**
+       Internal Commands:
+    */
     // Exit the program
     if (compareStrings(arguments[0], "exit")) {
       arguments = freeArguments(arguments);
       break;
     }
-    
-    if (!runInternalCommands(arguments, head_history, head_alias)) {
-      externalCommands(arguments);
+
+    // Echo the command
+    else if (compareStrings(arguments[0], "echo") ||	\
+	     compareStrings(arguments[0], "regurgitate")) {
+      echo(arguments);
     }
 
+    // Print path
+    else if (compareStrings(arguments[0], "getpath")){
+     getpath(arguments);
+    }
+
+    // Change directory
+    else if (compareStrings(arguments[0], "cd")) {
+    cd(arguments);
+    }
+
+    // Change path
+    else if (compareStrings(arguments[0], "setpath")) {
+    setpath(arguments);
+    }
+    // Print History
+    else if (compareStrings(arguments[0], "history")) {
+      doubleListPrint(head_history);
+    }
+
+    // Erase History
+    else if (compareStrings(arguments[0], "delhist")) {
+      head_history = doubleListFree(head_history);
+    }
+
+    // Bind alias / view aliases
+    else if (compareStrings(arguments[0], "alias")) {
+      if (!arguments[1]) {
+	singleListPrint(head_alias);
+      }
+      else {
+	head_alias = bindAlias(head_alias, arguments);
+      }
+    }
+
+    // Unbind alias
+    else if (compareStrings(arguments[0], "unalias")) {
+      head_alias = unbindAlias(head_alias, arguments);
+    }
+
+    else {
+      externalCommands(arguments);
+    }
+    
     arguments = freeArguments(arguments);
 
   }

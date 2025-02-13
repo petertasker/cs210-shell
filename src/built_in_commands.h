@@ -3,6 +3,7 @@
 
 #include "doubly_linked_list.h"  // For Node type
 #include "singly_linked_list.h"
+
 /**
    Built in shell commands
 */
@@ -10,7 +11,8 @@ void echo(char **args);
 void getpath(char **args);
 void cd(char **args);
 void setpath(char **args);
-int runInternalCommands(char **arguments, DNode *head_history, SNode *head_alias);
+
+
 /**
    Alias management
 */
