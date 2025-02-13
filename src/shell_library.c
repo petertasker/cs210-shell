@@ -9,6 +9,7 @@
 #include <string.h>
 #include <unistd.h>
 #include <sys/types.h>
+#include <sys/stat.h>
 #include <pwd.h>
 #include <linux/limits.h>
 #include <unistd.h>
@@ -60,10 +61,28 @@ void getWorkingDirectory(char *buffer) {
    Set the current working directory
 */
 void setWorkingDirectory(char *arg) {
-  // chdir CHanges the working DIRectory  
-  if (chdir(arg) != 0) {
-    fprintf(stdout, "Failed to change directory");
-  }
+  struct stat path_stat;
+
+    // Check if the path exists and get its type
+    if (stat(arg, &path_stat) != 0) {
+        // Path does not exist
+        fprintf(stdout, "%s: No such file or directory\n", arg);
+        return;
+    }
+
+    // Check if the path is a directory
+    if (!S_ISDIR(path_stat.st_mode)) {
+        // Path is not a directory
+        fprintf(stdout, "%s: Not a directory\n", arg);
+        return;
+    }
+
+    // Change the working directory
+    if (chdir(arg) != 0) {
+        // chdir failed for some other reason
+        fprintf(stdout, "%s: Failed to change directory\n", arg);
+    }
+
 }
 
 
@@ -164,7 +183,7 @@ void externalCommands(char **args) {
     // Execute first argument as a command, with all other arguments
     // as *that* command's arguments
     if (execvp(args[0], args) == -1) {
-      fprintf(stderr , "%s: command not found\n", args[0]);  
+      fprintf(stderr , "%s: command not found\n", args[0]);
       _exit(1);
       
     }
@@ -369,3 +388,18 @@ char **duplicateArguments(char **args) {
 
     return copy;
 }
+
+void printPathOnExit() {
+    if (originalPath != NULL) {
+        // Restore the original PATH
+        if (setenv("PATH", originalPath, 1) == -1) {
+            perror("setenv");
+        } else {
+            printf("Restored PATH: %s\n", originalPath);
+        }
+
+        // Free the allocated memory for originalPath
+        free(originalPath);
+    }
+}
+

@@ -152,19 +152,13 @@ void doubleListPrint(DNode *head) {
   }
 
   int index = 1;
-  
-  // Find the last node (tail)
-  DNode *tail = head;
-  while (tail->next != NULL) {
-    tail = tail->next;
-    index++;
-  }
+  DNode *current = head;
 
-  // Traverse backward and print each node
-  DNode *current = tail;
+  // Traverse forward and print each node
   while (current != NULL) {
-    // Print command
+    // Print index
     printf("%2d. ", index);
+
     // Print each argument
     if (current->arguments) {
       for (int i = 0; current->arguments[i] != NULL; i++) {
@@ -172,10 +166,10 @@ void doubleListPrint(DNode *head) {
       }
     }
     printf("\n");
-    
-    // Move to the previous node
-    current = current->previous;
-    index--;
+
+    // Move to the next node
+    current = current->next;
+    index++;
   }
 }
 

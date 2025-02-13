@@ -15,9 +15,27 @@
 #include "initialise.h"
 #include "constants.h"
 
+char *originalPath = NULL;
+
 
 int main() {
-  
+
+   // Save the original PATH
+    originalPath = getenv("PATH");
+    if (originalPath == NULL) {
+        fprintf(stderr, "Failed to get the original PATH\n");
+        return 1;
+    }
+
+    // Make a copy of the original PATH
+    originalPath = strdup(originalPath);
+    if (originalPath == NULL) {
+        perror("strdup");
+        return 1;
+    }
+
+  atexit(printPathOnExit);
+
   system("clear");
 
   // Create input buffer and also a copy of the initial
@@ -27,7 +45,7 @@ int main() {
 
   // String array used for tokenising the command input
   char **arguments = NULL;
-  
+
   // Save pre-session directory and
   // set session directory to HOME
   char *directory_initial = saveInitialDirectory();
@@ -36,7 +54,7 @@ int main() {
   // Set read / write file paths
   char *file_path_history = concatFilePath(HISTORY_FILE);
   char *file_path_alias = concatFilePath(ALIAS_FILE);
-  
+
   // Load history into doubly-linked list
   DNode *head_history = NULL;
   head_history = doubleListReadFromFile(head_history, file_path_history);
@@ -44,19 +62,19 @@ int main() {
   // Load aliases into singly-linked list
   SNode *head_alias = NULL;
   head_alias = singleListReadFromFile(head_alias, file_path_alias);
-  
+
 
   // Main shell loop
   do {
-    
+
     getWorkingDirectory(directory_current);
-    
+
     // Reset buffer pointer
-    buffer_user_input = buffer_user_input_ptr; 
-    
+    buffer_user_input = buffer_user_input_ptr;
+
     // Display shell-like interface
     printf("%s $", directory_current);
-    
+
     // Check user input for EOF (<CTRL> + D) and escape if so
     if (fgets(buffer_user_input, MAX_INPUT_LEN, stdin) == NULL) {
       if (feof(stdin)) {
@@ -71,7 +89,7 @@ int main() {
 
     // Trim leading whitespace and NULL terminator
     trimString(buffer_user_input);
-    
+
     // Edge case: user has inputted nothing
     if (compareStrings(buffer_user_input, "")) {
       continue;
@@ -81,7 +99,7 @@ int main() {
     if (buffer_user_input[0] == '!') {
       arguments = invokeHistory(head_history, buffer_user_input);
       if (arguments == NULL) {
-	continue;  
+	continue;
       }
     }
     else {
@@ -93,7 +111,7 @@ int main() {
       }
       head_history = addToHistory(head_history, arguments);
     }
-    
+
 
     /**
        Internal Commands:
@@ -103,35 +121,40 @@ int main() {
       arguments = freeArguments(arguments);
       break;
     }
-    
+
     // Echo the command
     else if (compareStrings(arguments[0], "echo") ||	\
 	     compareStrings(arguments[0], "regurgitate")) {
       echo(arguments);
     }
-    
+
     // Print path
-    else if ((compareStrings(arguments[0], "pwd")) ||	\
-	     compareStrings(arguments[0], "getpath")) {
+    else if (compareStrings(arguments[0], "pwd")) {
       pwd(directory_current, arguments);
     }
-    
-    // Change directory
-    else if ((compareStrings(arguments[0], "cd")) ||	\
-	     compareStrings(arguments[0], "setpath")) {
-      cd(arguments);
+
+    else if (compareStrings(arguments[0], "getpath")){
+     getpath(arguments);
     }
-    
+
+    // Change directory
+    else if (compareStrings(arguments[0], "cd")) {
+    cd(arguments);
+    }
+
+    else if (compareStrings(arguments[0], "setpath")) {
+    setpath(arguments);
+    }
     // Print History
     else if (compareStrings(arguments[0], "history")) {
       doubleListPrint(head_history);
     }
-    
+
     // Erase History
     else if (compareStrings(arguments[0], "delhist")) {
       head_history = doubleListFree(head_history);
     }
-    
+
     // Bind alias / view aliases
     else if (compareStrings(arguments[0], "alias")) {
       if (!arguments[1]) {
@@ -146,23 +169,23 @@ int main() {
     else if (compareStrings(arguments[0], "unalias")) {
       head_alias = unbindAlias(head_alias, arguments);
     }
-    
+
     else {
       externalCommands(arguments);
     }
-    
+
     arguments = freeArguments(arguments);
 
   }
   while (1);
-  
+
   // Replenish directory to pre-session
   setWorkingDirectory(directory_initial);
 
   // Save session lists to file
   doubleListWriteToFile(head_history, file_path_history);
   singleListWriteToFile(head_alias, file_path_alias);
-	
+
   // Free lists
   head_history = doubleListFree(head_history);
   head_history = NULL;
@@ -175,10 +198,10 @@ int main() {
   free(directory_initial);
   free(file_path_history);
   free(file_path_alias);
-  free(buffer_user_input_ptr); 
+  free(buffer_user_input_ptr);
 
   printf("Exiting...\n");
   return 0;
-  
-  
+
+
 }

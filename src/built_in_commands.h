@@ -8,7 +8,9 @@
 */
 void echo(char **args);
 void pwd(char *cwd, char **args);
+void getpath(char **args);
 void cd(char **args);
+void setpath(char **args);
 
 /**
    Alias management

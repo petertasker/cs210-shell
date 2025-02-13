@@ -38,6 +38,27 @@ void pwd(char *path, char **args) {
   printf("%s\n", path);
 }
 
+/**
+   Print current path
+*/
+
+void getpath(char **args) {
+
+    if (args[1] != NULL) {
+    fprintf(stderr, "Error: getpath does not accept parameters\n");
+    return;
+  }
+    // Get the PATH environment variable
+    char *path = getenv("PATH");
+    if (path == NULL) {
+        fprintf(stderr, "PATH environment variable not found\n");
+        return;
+    }
+
+    // Print the PATH
+    printf("PATH: %s\n", path);
+}
+
 
 /**
    Change working directory
@@ -55,6 +76,26 @@ void cd(char **args) {
   }
   setWorkingDirectory(args[1]);
 }
+
+void setpath(char **args) {
+    if (args[1] == NULL) {
+        fprintf(stderr, "setpath: missing argument\n");
+        return;
+    }
+
+    if (args[2] != NULL) {
+        fprintf(stderr, "setpath: too many arguments\n");
+        return;
+    }
+
+    if (setenv("PATH", args[1], 1) == -1) {
+        perror("setpath");
+        return;
+    }
+
+    printf("PATH set to: %s\n", args[1]);
+}
+
 
 
 /**
