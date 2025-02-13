@@ -94,13 +94,19 @@ int main() {
       }
     }
     else {
-      // Check if input is an alias
-      arguments = invokeAlias(head_alias, buffer_user_input);
-      if (arguments == NULL) {
-	// Take stdin as the command
+      char **alias_arguments = invokeAlias(head_alias, buffer_user_input);
+      // Alias not found
+      if (alias_arguments == NULL) {
 	arguments = tokeniseString(buffer_user_input);
+	head_history = addToHistory(head_history, arguments);
       }
-      head_history = addToHistory(head_history, arguments);
+      // Alias found
+      else {
+	arguments = alias_arguments;
+	char **alias_alias_name = tokeniseString(buffer_user_input);
+	head_history = addToHistory(head_history, alias_alias_name);
+	free(alias_alias_name);
+      }
     }
  
      /**
