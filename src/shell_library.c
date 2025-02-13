@@ -329,15 +329,13 @@ char **invokeHistory(DNode *head_history, char *user_command) {
   // Convert string to number, skipping the '!'
   char *endptr;
   int n = strtol(user_command + 1, &endptr, 10);
-    
-  // Check if conversion was successful
-  if (*endptr != '\0') {
+
+  // Check if conversion was successful and ensure !0 is not allowed
+  if (*endptr != '\0' || n == 0) {
     printf("Invalid history index format\n");
     return NULL;
   }
 
-
-    
   if (n > 0) {
     // Traverse forward from head (most recent) for positive n
     n--; // Adjust n since we start at most recent
