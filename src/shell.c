@@ -140,7 +140,7 @@ int main() {
     }
     // Print History
     else if (compareStrings(arguments[0], "history")) {
-      doubleListPrint(head_history);
+      doubleListPrint(head_history, arguments);
     }
 
     // Erase History

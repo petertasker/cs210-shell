@@ -145,7 +145,13 @@ DNode* doubleListDeleteNodeAtPosition(DNode *head, int pos) {
 /**
    Print the value of each node of a linked list
 */
-void doubleListPrint(DNode *head) {
+void doubleListPrint(DNode *head, char **arguments) {
+
+  if(arguments[1] != NULL){
+    fprintf(stderr, "Error: Too many arguments provided\n");
+    return;
+  }
+
   if (head == NULL) {
     printf("List is empty\n");
     return;

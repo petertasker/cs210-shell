@@ -21,7 +21,7 @@ DNode *doubleListDeleteNodeAtPosition(DNode *head, int pos);
 /**
    List adjacent functions
 */
-void doubleListPrint(DNode *head);
+void doubleListPrint(DNode *head, char **arguments);
 DNode *doubleListFree(DNode *head);
 
 
