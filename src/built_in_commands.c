@@ -137,29 +137,62 @@ SNode *unbindAlias(SNode *head, char **args) {
 }
 
 char **invokeAlias(SNode *head, char *input) {
-  SNode *current;
-  char **resolvedArgs = NULL;
+    SNode *current;
+    char **resolvedArgs = NULL;
+    char **resolvedAliases = NULL; // To keep track alias calls for cycles
+    int resolvedCount = 0;
+    int capacity = 10; // Initial capacity for resolvedAliases array
 
-  while (input) {  // Keep resolving aliases until no more exist
-    current = head;
-    int found = 0;
-
-    while (current != NULL) {
-      if (compareStrings(current->alias_name, input)) {
-        resolvedArgs = duplicateArguments(current->arguments);
-        input = resolvedArgs[0]; // Check if the first argument is another alias
-        found = 1;
-        break;
-      }
-      current = current->next;
+    // Allocate memory for the resolvedAliases array
+    resolvedAliases = malloc(capacity * sizeof(char *));
+    if (resolvedAliases == NULL) {
+        perror("malloc");
+        return NULL;
     }
 
-    if (!found) {
-      break;  // No more alias resolution possible
-    }
-  }
+    while (input) {
+        current = head;
+        int found = 0;
 
-  return resolvedArgs;
+        // Check if the current input is already in the resolved list
+        for (int i = 0; i < resolvedCount; i++) {
+            if (compareStrings(resolvedAliases[i], input)) {
+                fprintf(stderr, "Error: Alias cycle detected for '%s'\n", input);
+                free(resolvedAliases); // Free the memory allocated for resolvedAliases
+                return NULL;
+            }
+        }
+
+        // Add the current input to the resolvedAliases list
+        if (resolvedCount >= capacity) {
+            // If array is full resize
+            capacity *= 2;
+            resolvedAliases = realloc(resolvedAliases, capacity * sizeof(char *));
+            if (resolvedAliases == NULL) {
+                perror("realloc");
+                return NULL;
+            }
+        }
+        resolvedAliases[resolvedCount++] = input;
+
+        // Search for the alias
+        while (current != NULL) {
+            if (compareStrings(current->alias_name, input)) {
+                resolvedArgs = duplicateArguments(current->arguments);
+                input = resolvedArgs[0]; // Check if the first argument is another alias
+                found = 1;
+                break;
+            }
+            current = current->next;
+        }
+
+        if (!found) {
+            break; // No more alias resolution possible
+        }
+    }
+
+    free(resolvedAliases); // Free the memory allocated for resolvedAliases
+    return resolvedArgs;
 }
 
 

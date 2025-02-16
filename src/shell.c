@@ -166,7 +166,7 @@ int main() {
     else {
       externalCommands(arguments);
     }
-    
+
     arguments = freeArguments(arguments);
 
   }
