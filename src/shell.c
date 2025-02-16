@@ -88,7 +88,7 @@ int main() {
 
     // Invoke history
     if (buffer_user_input[0] == '!') {
-      arguments = invokeHistory(head_history, buffer_user_input);
+      arguments = invokeHistory(head_history, buffer_user_input, head_alias);
       if (arguments == NULL) {
 	continue;
       }

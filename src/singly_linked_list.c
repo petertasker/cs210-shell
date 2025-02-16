@@ -310,6 +310,12 @@ SNode* singleListReadFromFile(SNode *head, char *path) {
    Print all nodes of a singly linked list
 */
 void singleListPrint(SNode *head) {
+
+  if (head == NULL){
+     fprintf(stderr, "No aliases defined\n");
+     return;
+  }
+
   SNode *current = head;
   printf("Aliases: \n");
   while (current != NULL) {

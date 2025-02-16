@@ -22,7 +22,7 @@ void trimString(char *);
    History management
 */
 DNode* addToHistory(DNode*, char**);
-char **invokeHistory(DNode*, char *);
+char **invokeHistory(DNode*, char *, SNode*);
 
 
 /**

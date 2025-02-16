@@ -20,6 +20,8 @@
 #include "doubly_linked_list.h"
 #include "shell_library.h"
 #include "constants.h"
+#include "built_in_commands.h"
+
 
 
 /**
@@ -314,17 +316,33 @@ int compareStringArrays(char **a, char **b) {
 /**
    Invoke history from history list
 */
-char **invokeHistory(DNode *head_history, char *user_command) {
+char **invokeHistory(DNode *head_history, char *user_command, SNode *head_alias) {
   DNode *current = head_history;
   if (current == NULL) {
     printf("No previous command in history\n");
     return NULL;
   }
 
-  // Handle !! command - return most recent command
+ // Handle !! command - return most recent command
   if (compareStrings(user_command, "!!")) {
-    return duplicateArguments(head_history->arguments);
+    // Fetch the most recent command from history
+    char **recent_command = duplicateArguments(head_history->arguments);
+    if (!recent_command) {
+      return NULL;
+    }
+
+    // Check if the recent command is an alias
+    char **alias_arguments = invokeAlias(head_alias, recent_command[0]);
+    if (alias_arguments != NULL) {
+      // If it's an alias, return the resolved command
+      freeArguments(recent_command); // Free the original command
+      return alias_arguments;
+    } else {
+      // If it's not an alias, return the recent command as is
+      return recent_command;
+    }
   }
+
 
   // Convert string to number, skipping the '!'
   char *endptr;
@@ -362,7 +380,15 @@ char **invokeHistory(DNode *head_history, char *user_command) {
     return NULL;
   }
 
-  return duplicateArguments(current->arguments);
+ // Check if the command is an alias
+  char **alias_arguments = invokeAlias(head_alias, current->arguments[0]);
+  if (alias_arguments != NULL) {
+    // If it's an alias, return the resolved command
+    return alias_arguments;
+  } else {
+    // If it's not an alias, return the command as is
+    return duplicateArguments(current->arguments);
+  }
 }
 
 /**

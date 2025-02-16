@@ -121,6 +121,12 @@ SNode *bindAlias(SNode *head, char **args) {
    Unbind an alias
 */
 SNode *unbindAlias(SNode *head, char **args) {
+
+  if (head == NULL){
+    fprintf(stderr, "Failed to unbind alias: no aliases declared\n");
+    return head;
+  }
+
   if (args[2] != NULL) {
     fprintf(stderr, "Failed to unbind alias: too many arguments provided\n");
     return head;
@@ -130,15 +136,32 @@ SNode *unbindAlias(SNode *head, char **args) {
   
 }
 
-
 char **invokeAlias(SNode *head, char *input) {
-  SNode *current = head;
-  while (current != NULL) {
-    if (compareStrings(current->alias_name, input)) {
-      return duplicateArguments(current->arguments);
+  SNode *current;
+  char **resolvedArgs = NULL;
+
+  while (input) {  // Keep resolving aliases until no more exist
+    current = head;
+    int found = 0;
+
+    while (current != NULL) {
+      if (compareStrings(current->alias_name, input)) {
+        resolvedArgs = duplicateArguments(current->arguments);
+        input = resolvedArgs[0]; // Check if the first argument is another alias
+        found = 1;
+        break;
+      }
+      current = current->next;
     }
-    current = current->next;
+
+    if (!found) {
+      break;  // No more alias resolution possible
+    }
   }
-  return NULL;
+
+  return resolvedArgs;
 }
+
+
+
 
