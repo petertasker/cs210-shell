@@ -1,3 +1,4 @@
+
 /**
    A library of functions which are used inside the main shell
    script and the assisting files
@@ -109,7 +110,7 @@ char **tokeniseString(char *str) {
   char **arguments = malloc((ARG_MAX + 1) * sizeof(char *));
   if (!arguments) {
     free(copy_str);
-    fprintf(stdout, "Failed to allocate memory for arguments");
+    fprintf(stderr, "Failed to allocate memory for arguments");
     return NULL;
   }
 
@@ -118,11 +119,23 @@ char **tokeniseString(char *str) {
 
   // Loop through the command and put each token in arguments
   while (token && i < ARG_MAX) {
-    arguments[i] = strdup(token);
+    if (*token != '\0') {
+      arguments[i] = strdup(token);
+      if (!arguments[i]) {
+	for (int j = 0; j < i; j++) {
+	  free(arguments[j]);
+	}
+	free(arguments);
+	free(copy_str);
+	fprintf(stderr, "Failed to allocate memory for arguments");
+	return NULL;
+      }
+      i++;
+    }
     token = strtok(NULL, TOKEN_DELIMITERS);
-    i++;
+    
   }
-
+  
   arguments[i] = NULL;
   free(copy_str);
   return arguments;
@@ -155,11 +168,8 @@ char **freeArguments(char **arguments) {
    Returns 1 if strings match
 */
 int compareStrings(char *x, char *y) {
-  if (x == NULL && y == NULL) {
+  if (!x || !y) {
     return 0;
-  }
-  if (x == NULL || y == NULL) {
-    return 1;
   }
   return (strcmp(x, y) == 0);  
 }
@@ -431,3 +441,6 @@ void exitRestorePath(char *path) {
   printf("Restored PATH: %s\n", path);
   free(path);
 }
+
+
+

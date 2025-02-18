@@ -77,8 +77,11 @@ int main() {
 	break;
       }
     }
+
+
     // Strip newline
     buffer_user_input[strcspn(buffer_user_input, "\n")] = '\0';
+
     // Edge case: user has inputted nothing
     if (isEmptyOrWhitespace(buffer_user_input)) {
       continue;
@@ -97,6 +100,9 @@ int main() {
       // Alias not found
       if (alias_arguments == NULL) {
 	arguments = tokeniseString(buffer_user_input);
+	if (arguments == NULL || arguments[0] == NULL) {
+	  continue;
+	}
 	head_history = addToHistory(head_history, arguments);
       }
       // Alias found
