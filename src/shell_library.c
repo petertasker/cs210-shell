@@ -154,8 +154,14 @@ char **freeArguments(char **arguments) {
 /**
    Returns 1 if strings match
 */
-int compareStrings(char *input, char *arg) {
-  return (strcmp(input, arg) == 0);  
+int compareStrings(char *x, char *y) {
+  if (x == NULL && y == NULL) {
+    return 0;
+  }
+  if (x == NULL || y == NULL) {
+    return 1;
+  }
+  return (strcmp(x, y) == 0);  
 }
 
 
@@ -202,16 +208,15 @@ void externalCommands(char **args) {
    Trim leading and trailing whitespace from a string
    Also trims newline characters
 */
-void trimString(char *s) {
+int isEmptyOrWhitespace(const char *s) {
   // Create copy of original pointer address
-  char *original = s;
-  while (isspace((unsigned char)*s)) {
+  while (*s) {
+    if (!isspace((unsigned char)*s)) {
+      return 0;
+    }
     s++;
   }
-
-  // Use memmove to shift the trimmed string to the start of the buffer
-  memmove(original, s, strlen(s) + 1);
-  original[strcspn(s, "\n")] = '\0';
+  return 1;
 }
 
 

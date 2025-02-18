@@ -15,7 +15,7 @@ void getWorkingDirectory(char *);
    Input parsing
 */
 char **tokeniseString(char *);
-void trimString(char *);
+int isEmptyOrWhitespace(const char *);
 
 
 /**

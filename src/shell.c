@@ -77,12 +77,10 @@ int main() {
 	break;
       }
     }
-
-    // Trim leading whitespace and NULL terminator
-    trimString(buffer_user_input);
-
+    // Strip newline
+    buffer_user_input[strcspn(buffer_user_input, "\n")] = '\0';
     // Edge case: user has inputted nothing
-    if (compareStrings(buffer_user_input, "")) {
+    if (isEmptyOrWhitespace(buffer_user_input)) {
       continue;
     }
     
