@@ -288,8 +288,7 @@ SNode* singleListReadFromFile(SNode *head, char *path) {
   
     
   char line[MAX_INPUT_LEN + 1];
-  while (fgets(line, sizeof(line), file)) {
-    trimString(line);  
+  while (fgets(line, sizeof(line), file)) {  
     if (compareStrings(line, "")) {
       continue;
     }
