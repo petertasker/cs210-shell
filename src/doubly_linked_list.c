@@ -245,7 +245,7 @@ DNode* doubleListReadFromFile(DNode* head, char *path) {
   // We are reading the 
   char line[MAX_INPUT_LEN + 1];
   while (fgets(line, sizeof(line), file)) {
-    trimString(line);  
+    //trimString(line);  
     if (compareStrings(line, "")) {
       continue;
     }

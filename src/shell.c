@@ -85,6 +85,7 @@ int main() {
     if (compareStrings(buffer_user_input, "")) {
       continue;
     }
+    
 
     // Invoke history
     if (buffer_user_input[0] == '!') {
