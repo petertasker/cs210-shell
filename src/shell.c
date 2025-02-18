@@ -79,7 +79,7 @@ int main() {
     }
 
     // Trim leading whitespace and NULL terminator
-    trimString(buffer_user_input);
+    //trimString(buffer_user_input);
 
     // Edge case: user has inputted nothing
     if (compareStrings(buffer_user_input, "")) {
