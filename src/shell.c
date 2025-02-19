@@ -94,33 +94,36 @@ int main() {
     // for being a history or alias invocation ie input is "     !!"
     char* buffer_user_input_trimmed = buffer_user_input;
     buffer_user_input_trimmed = trimWhitespace(buffer_user_input_trimmed);
-    
-    if (*buffer_user_input_trimmed == '!') {
-      arguments = invokeHistory(head_history, buffer_user_input_trimmed, head_alias);
-      if (arguments == NULL) {
+
+    // Check for alias
+    char **alias_arguments = invokeAlias(head_alias, buffer_user_input_trimmed);
+
+    // Alias Found
+    if (alias_arguments != NULL) {
+      arguments = alias_arguments;
+      char **alias_alias_name = tokeniseString(buffer_user_input);
+      head_history = addToHistory(head_history, alias_alias_name);
+      free(alias_alias_name);
+    }
+
+    // Alias not found
+    else {
+      // Tokenise user input
+      arguments = tokeniseString(buffer_user_input);
+      if (arguments == NULL || arguments[0] == NULL) {
 	continue;
       }
-    }
-    else {
-      char **alias_arguments = invokeAlias(head_alias, buffer_user_input_trimmed);
-      // Alias not found
-      if (alias_arguments == NULL) {
-	arguments = tokeniseString(buffer_user_input);
-	if (arguments == NULL || arguments[0] == NULL) {
+      // Check for history invocation
+      if (arguments[0][0] == '!') {
+	arguments = invokeHistory(head_history, buffer_user_input_trimmed, head_alias);
+	if (arguments == NULL) {
 	  continue;
 	}
-	head_history = addToHistory(head_history, arguments);
       }
-      // Alias found
-      else {
-	arguments = alias_arguments;
-	char **alias_alias_name = tokeniseString(buffer_user_input);
-	head_history = addToHistory(head_history, alias_alias_name);
-	free(alias_alias_name);
-      }
+      head_history = addToHistory(head_history, arguments);
     }
- 
-     /**
+  
+    /**
        Internal Commands:
     */
     // Exit the program
