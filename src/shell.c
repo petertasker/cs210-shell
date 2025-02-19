@@ -88,15 +88,21 @@ int main() {
     }
     
 
-    // Invoke history
-    if (buffer_user_input[0] == '!') {
-      arguments = invokeHistory(head_history, buffer_user_input, head_alias);
+    // Since string tokenise removes whitespace, and the tokenisation
+    // is done after checking for invocation, the leading whitespace of
+    // buffer_user_input must be manually trimmed so it can be checked
+    // for being a history or alias invocation ie input is "     !!"
+    char* buffer_user_input_trimmed = buffer_user_input;
+    buffer_user_input_trimmed = trimWhitespace(buffer_user_input_trimmed);
+    
+    if (*buffer_user_input_trimmed == '!') {
+      arguments = invokeHistory(head_history, buffer_user_input_trimmed, head_alias);
       if (arguments == NULL) {
 	continue;
       }
     }
     else {
-      char **alias_arguments = invokeAlias(head_alias, buffer_user_input);
+      char **alias_arguments = invokeAlias(head_alias, buffer_user_input_trimmed);
       // Alias not found
       if (alias_arguments == NULL) {
 	arguments = tokeniseString(buffer_user_input);

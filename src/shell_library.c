@@ -1,4 +1,5 @@
 
+
 /**
    A library of functions which are used inside the main shell
    script and the assisting files
@@ -216,7 +217,29 @@ void externalCommands(char **args) {
 
 /**
    Trim leading and trailing whitespace from a string
-   Also trims newline characters
+*/
+char *trimWhitespace(char *str) {
+  char *end;
+
+  // Trim leading space
+  while(isspace((unsigned char)*str)) str++;
+
+  if(*str == 0)  // All spaces?
+    return str;
+
+  // Trim trailing space
+  end = str + strlen(str) - 1;
+  while(end > str && isspace((unsigned char)*end)) end--;
+
+  // Write new null terminator character
+  end[1] = '\0';
+
+  return str;
+}
+
+
+/**
+   Returns 1 if the string is empty
 */
 int isEmptyOrWhitespace(const char *s) {
   // Create copy of original pointer address

@@ -16,7 +16,7 @@ void getWorkingDirectory(char *);
 */
 char **tokeniseString(char *);
 int isEmptyOrWhitespace(const char *);
-
+char *trimWhitespace(char *str);
 
 /**
    History management
