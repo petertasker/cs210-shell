@@ -22,6 +22,7 @@ This simplified shell implements the following commands:
 | `setpath`     | Set environment `PATH` |
 | `cd`          | Change directory |
 | `history`     | Print most recent history |
+| `history -d`  | Delete history |
 | `!!`          | Invoke the most recent command |
 | `!<n>`        | Invoke the `n`th newest command |
 | `!-<n>`       | Invoke the `n`th oldest command |

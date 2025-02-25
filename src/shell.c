@@ -150,18 +150,20 @@ int main() {
 
     // Change path
     else if (compareStrings(arguments[0], "setpath")) {
-    setpath(arguments);
+      setpath(arguments);
     }
-    // Print History
+
     else if (compareStrings(arguments[0], "history")) {
-      doubleListPrint(head_history, arguments);
+      // Erase history
+      if (compareStrings(arguments[1], "-d")) {
+	head_history = doubleListFree(head_history);
+      }
+      //Print history
+      else {
+	doubleListPrint(head_history, arguments);
+      }
     }
-
-    // Erase History
-    else if (compareStrings(arguments[0], "delhist")) {
-      head_history = doubleListFree(head_history);
-    }
-
+   
     // Bind alias / view aliases
     else if (compareStrings(arguments[0], "alias")) {
       if (!arguments[1]) {
@@ -171,7 +173,7 @@ int main() {
 	head_alias = bindAlias(head_alias, arguments);
       }
     }
-
+    
     // Unbind alias
     else if (compareStrings(arguments[0], "unalias")) {
       head_alias = unbindAlias(head_alias, arguments);
