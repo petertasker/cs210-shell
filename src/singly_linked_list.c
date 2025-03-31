@@ -278,29 +278,34 @@ void singleListWriteToFile(SNode* head, char *path) {
   
 /**
    Read a file's contents into a Singly linked list
+   Creates the file if it doesn't exist
 */
 SNode* singleListReadFromFile(SNode *head, char *path) {
   FILE *file = fopen(path, "r");
   if (file == NULL) {
-    fprintf(stderr, "Failed to open file %s\n", path);
-    return NULL;
+    // File doesn't exist, create it
+    file = fopen(path, "w");
+    if (file == NULL) {
+      fprintf(stderr, "Failed to create file %s\n", path);
+      return NULL;
+    }
+    fclose(file);
+    // Return existing head since the new file is empty
+    return head; 
   }
   
-    
   char line[MAX_INPUT_LEN + 1];
   while (fgets(line, sizeof(line), file)) {
-    //trimString(line);  
+    //trimString(line);
     if (compareStrings(line, "")) {
       continue;
     }
-  
-    char **args = tokeniseString(line); 
+    char **args = tokeniseString(line);
     if (args != NULL) {
-      head = bindAlias(head, args); 
-      freeArguments(args);  
+      head = bindAlias(head, args);
+      freeArguments(args);
     }
   }
-  
   fclose(file);
   return head;
 }

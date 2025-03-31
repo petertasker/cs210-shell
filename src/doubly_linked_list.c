@@ -234,31 +234,34 @@ void doubleListWriteToFile(DNode* head, char *path) {
 
 /**
    Read a file's contents into a doubly linked list
+   Creates the file if it doesn't exist
  */
 DNode* doubleListReadFromFile(DNode* head, char *path) {
   FILE *file = fopen(path, "r");
   if (file == NULL) {
-    fprintf(stderr, "Failed to open file %s\n", path);
-    return NULL;
+    // File doesn't exist, create it
+    file = fopen(path, "w");
+    if (file == NULL) {
+      fprintf(stderr, "Failed to create file %s\n", path);
+      return NULL;
+    }
+    // Return existing head since the new file is empty
+    fclose(file);
+    return head;
   }
-
-  // We are reading the 
+  
+  // Read the existing file
   char line[MAX_INPUT_LEN + 1];
   while (fgets(line, sizeof(line), file)) {
-    //trimString(line);  
     if (compareStrings(line, "")) {
       continue;
     }
-
-    char **args = tokeniseString(line); 
+    char **args = tokeniseString(line);
     if (args != NULL) {
-      loadIntoHistory(&head, args);  
-      freeArguments(args);  
+      loadIntoHistory(&head, args);
+      freeArguments(args);
     }
   }
-  
   fclose(file);  // Close the file after reading
   return head;
 }
-
-
