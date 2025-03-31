@@ -52,7 +52,7 @@ void getpath(char **args) {
 void cd(char **args) {
   // Not enough args
   if (args[1] == NULL) {
-    fprintf(stderr, "Failed to change directory: no arguments provided\n");
+    fprintf(stderr, "Failed to change directory: no arguments were provided\n");
     return;
   }
   // Too many args
@@ -69,12 +69,12 @@ void cd(char **args) {
 void setpath(char **args) {
   // Checks if no parameters are present
   if (args[1] == NULL) {
-    fprintf(stderr, "setpath: missing argument\n");
+    fprintf(stderr, "Failed to set path: no path was provided\n");
     return;
   }
   // Checks if too many parameters are present
   if (args[2] != NULL) {
-    fprintf(stderr, "setpath: too many arguments\n");
+    fprintf(stderr, "Failed to set path: more than one path was provided\n");
     return;
   }
   // perror if setenv fails
@@ -97,7 +97,7 @@ void setpath(char **args) {
 SNode *bindAlias(SNode *head, char **args) {
 
   if (!args || !args[2]) {
-    fprintf(stderr, "Failed to bind alias: to few arguments provided\n");
+    fprintf(stderr, "Failed to bind alias: too few arguments provided\n");
     return head;
   }
 
