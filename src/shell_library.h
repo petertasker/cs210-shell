@@ -21,23 +21,21 @@ char *trimWhitespace(char *str);
 /**
    History management
 */
-DNode* addToHistory(DNode*, char**);
-char **invokeHistory(DNode*, char *, SNode*);
-
+DNode *addToHistory(DNode *, char **);
+char **invokeHistory(DNode *, char *, SNode *);
 
 /**
    Comparison functions
 */
 int compareStrings(char *, char *);
-int compareStringArrays(char **, char**);
-
+int compareStringArrays(char **, char **);
 
 /**
    Argument management
 */
 char **freeArguments(char **);
 char **duplicateArguments(char **);
-void prependStringToArguments(char*, char**);
+void prependStringToArguments(char *, char **);
 
 /**
    External command handling

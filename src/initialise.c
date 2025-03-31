@@ -2,15 +2,14 @@
    Variables that are initialised before the main loop
 */
 
-
+#include "constants.h"
+#include "doubly_linked_list.h"
+#include "shell_library.h"
+#include "singly_linked_list.h"
+#include <linux/limits.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <linux/limits.h>
-#include "shell_library.h"
-#include "constants.h"
-#include "singly_linked_list.h"
-#include "doubly_linked_list.h"
 
 /**
    Create buffer for stdin
@@ -25,12 +24,11 @@ char *createBuffer() {
   return buf;
 }
 
-
 /**
    Save the working directory that the shell
    was ran in, to be restored later
 */
-char *saveInitialDirectory() {  
+char *saveInitialDirectory() {
   // Working directory of the place which the shell was ran
   char *dir = malloc(PATH_MAX * sizeof(char));
   if (!dir) {
@@ -40,7 +38,6 @@ char *saveInitialDirectory() {
   getWorkingDirectory(dir);
   return dir;
 }
-
 
 /**
    Set initial directory to home
@@ -57,11 +54,10 @@ char *initialiseDirectory() {
   return directory_current;
 }
 
-
 /**
   Concatenate the home path with a file name suffix
 */
-char* concatFilePath(char *fileName){
+char *concatFilePath(char *fileName) {
   // Concatenate file path with %HOME% prefix and filename suffix
   size_t len = strlen(getHomeDirectory()) + strlen(fileName) + 1;
   char *path = malloc(len);
@@ -73,12 +69,11 @@ char* concatFilePath(char *fileName){
   return path;
 }
 
-
 /**
    Create a node of the newest command and add it to
    the beginning of history
 */
-void loadIntoHistory(DNode** head_history, char **tokens) {
+void loadIntoHistory(DNode **head_history, char **tokens) {
   if (!tokens || !*tokens || !head_history) {
     return;
   }
@@ -90,7 +85,7 @@ void loadIntoHistory(DNode** head_history, char **tokens) {
   }
 
   // Allocate memory for arguments array
-  char** args = malloc((arg_count + 1) * sizeof(char*));
+  char **args = malloc((arg_count + 1) * sizeof(char *));
   if (!args) {
     fprintf(stderr, "Failed to allocate memory for arguments\n");
     return;
@@ -110,19 +105,17 @@ void loadIntoHistory(DNode** head_history, char **tokens) {
     if (!args[i]) {
       fprintf(stderr, "Failed to allocate memory for an argument\n");
       for (int j = 0; j < i; j++) {
-	free(args[j]);
+        free(args[j]);
       }
       free(args);
       return;
     }
   }
 
-  args[arg_count] = NULL;  // NULL-terminate the array
-  
-  *head_history = doubleListInsertNodeAtEnd(*head_history, args);
-  
-}
+  args[arg_count] = NULL; // NULL-terminate the array
 
+  *head_history = doubleListInsertNodeAtEnd(*head_history, args);
+}
 
 char *saveInitialPath() {
   char *initial_path = getenv("PATH");
