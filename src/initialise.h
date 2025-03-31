@@ -1,3 +1,5 @@
+#include "singly_linked_list.h"
+
 char *createBuffer();
 char *saveInitialDirectory();
 char *initialiseDirectory();
