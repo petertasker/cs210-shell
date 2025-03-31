@@ -2,25 +2,22 @@
    The main loop of the shell
 */
 
-
+#include <linux/limits.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <linux/limits.h>
 
-#include "shell_library.h"
 #include "built_in_commands.h"
-#include "doubly_linked_list.h"
-#include "singly_linked_list.h"
-#include "initialise.h"
 #include "constants.h"
+#include "doubly_linked_list.h"
+#include "initialise.h"
+#include "shell_library.h"
+#include "singly_linked_list.h"
 
 char *originalPath = NULL;
 
-
 int main() {
 
-  
   system("clear");
 
   // Create input buffer and also a copy of the initial
@@ -37,11 +34,11 @@ int main() {
   char *directory_current = initialiseDirectory();
 
   // Save pre-session PATH
-  char *path_initial = saveInitialPath();  
+  char *path_initial = saveInitialPath();
   if (path_initial == NULL) {
     return 1;
   }
-  
+
   // Set read / write file paths
   char *file_path_history = concatFilePath(HISTORY_FILE);
   char *file_path_alias = concatFilePath(ALIAS_FILE);
@@ -53,7 +50,6 @@ int main() {
   // Load aliases into singly-linked list
   SNode *head_alias = NULL;
   head_alias = singleListReadFromFile(head_alias, file_path_alias);
-
 
   // Main shell loop
   do {
@@ -69,15 +65,14 @@ int main() {
     // Check user input for EOF (<CTRL> + D) and escape if so
     if (fgets(buffer_user_input, MAX_INPUT_LEN, stdin) == NULL) {
       if (feof(stdin)) {
-	if (arguments != NULL) {
-	  freeArguments(arguments);
-	  arguments = NULL;
-	}
-	printf("\n");
-	break;
+        if (arguments != NULL) {
+          freeArguments(arguments);
+          arguments = NULL;
+        }
+        printf("\n");
+        break;
       }
     }
-
 
     // Strip newline
     buffer_user_input[strcspn(buffer_user_input, "\n")] = '\0';
@@ -86,13 +81,12 @@ int main() {
     if (isEmptyOrWhitespace(buffer_user_input)) {
       continue;
     }
-    
 
     // Since string tokenise removes whitespace, and the tokenisation
     // is done after checking for invocation, the leading whitespace of
     // buffer_user_input must be manually trimmed so it can be checked
     // for being a history or alias invocation ie input is "     !!"
-    char* buffer_user_input_trimmed = buffer_user_input;
+    char *buffer_user_input_trimmed = buffer_user_input;
     buffer_user_input_trimmed = trimWhitespace(buffer_user_input_trimmed);
 
     // Check for alias
@@ -111,18 +105,19 @@ int main() {
       // Tokenise user input
       arguments = tokeniseString(buffer_user_input);
       if (arguments == NULL || arguments[0] == NULL) {
-	continue;
+        continue;
       }
       // Check for history invocation
       if (arguments[0][0] == '!') {
-	arguments = invokeHistory(head_history, buffer_user_input_trimmed, head_alias);
-	if (arguments == NULL) {
-	  continue;
-	}
+        arguments =
+            invokeHistory(head_history, buffer_user_input_trimmed, head_alias);
+        if (arguments == NULL) {
+          continue;
+        }
       }
       head_history = addToHistory(head_history, arguments);
     }
-  
+
     /**
        Internal Commands:
     */
@@ -133,19 +128,19 @@ int main() {
     }
 
     // Echo the command
-    else if (compareStrings(arguments[0], "echo") ||	\
-	     compareStrings(arguments[0], "regurgitate")) {
+    else if (compareStrings(arguments[0], "echo") ||
+             compareStrings(arguments[0], "regurgitate")) {
       echo(arguments);
     }
 
     // Print path
-    else if (compareStrings(arguments[0], "getpath")){
-     getpath(arguments);
+    else if (compareStrings(arguments[0], "getpath")) {
+      getpath(arguments);
     }
 
     // Change directory
     else if (compareStrings(arguments[0], "cd")) {
-    cd(arguments);
+      cd(arguments);
     }
 
     // Change path
@@ -156,24 +151,23 @@ int main() {
     else if (compareStrings(arguments[0], "history")) {
       // Erase history
       if (compareStrings(arguments[1], "-d")) {
-	head_history = doubleListFree(head_history);
+        head_history = doubleListFree(head_history);
       }
-      //Print history
+      // Print history
       else {
-	doubleListPrint(head_history, arguments);
+        doubleListPrint(head_history, arguments);
       }
     }
-   
+
     // Bind alias / view aliases
     else if (compareStrings(arguments[0], "alias")) {
       if (!arguments[1]) {
-	singleListPrint(head_alias);
-      }
-      else {
-	head_alias = bindAlias(head_alias, arguments);
+        singleListPrint(head_alias);
+      } else {
+        head_alias = bindAlias(head_alias, arguments);
       }
     }
-    
+
     // Unbind alias
     else if (compareStrings(arguments[0], "unalias")) {
       head_alias = unbindAlias(head_alias, arguments);
@@ -185,8 +179,7 @@ int main() {
 
     arguments = freeArguments(arguments);
 
-  }
-  while (1);
+  } while (1);
 
   // Replenish directory to pre-session
   setWorkingDirectory(directory_initial);
@@ -212,6 +205,4 @@ int main() {
 
   printf("Exiting...\n");
   return 0;
-
-
 }

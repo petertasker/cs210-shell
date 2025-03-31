@@ -16,5 +16,3 @@
 
 // Delimiters used for tokenisation
 #define TOKEN_DELIMITERS " \t\n;&><|"
-
-

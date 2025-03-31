@@ -5,31 +5,27 @@
    script and the assisting files
 */
 
-
+#include <ctype.h>
+#include <errno.h>
+#include <linux/limits.h>
+#include <pwd.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <unistd.h>
-#include <sys/types.h>
 #include <sys/stat.h>
-#include <pwd.h>
-#include <linux/limits.h>
+#include <sys/types.h>
 #include <unistd.h>
 #include <wait.h>
-#include <ctype.h>
-#include <errno.h>
 
+#include "built_in_commands.h"
+#include "constants.h"
 #include "doubly_linked_list.h"
 #include "shell_library.h"
-#include "constants.h"
-#include "built_in_commands.h"
-
-
 
 /**
    Get the home directory
 */
-char* getHomeDirectory(void) {
+char *getHomeDirectory(void) {
   // Check if the HOME enviroment variable is set
   char *home = getenv("HOME");
   if (home) {
@@ -44,10 +40,9 @@ char* getHomeDirectory(void) {
   if (pw) {
     return pw->pw_dir;
   }
-  
+
   return NULL;
 }
-
 
 /**
    Get the current working directory
@@ -60,35 +55,32 @@ void getWorkingDirectory(char *buffer) {
   }
 }
 
-
 /**
    Set the current working directory
 */
 void setWorkingDirectory(char *arg) {
   struct stat path_stat;
 
-    // Check if the path exists and get its type
-    if (stat(arg, &path_stat) != 0) {
-        // Path does not exist
-        fprintf(stdout, "%s: No such file or directory\n", arg);
-        return;
-    }
+  // Check if the path exists and get its type
+  if (stat(arg, &path_stat) != 0) {
+    // Path does not exist
+    fprintf(stdout, "%s: No such file or directory\n", arg);
+    return;
+  }
 
-    // Check if the path is a directory
-    if (!S_ISDIR(path_stat.st_mode)) {
-        // Path is not a directory
-        fprintf(stdout, "%s: Not a directory\n", arg);
-        return;
-    }
+  // Check if the path is a directory
+  if (!S_ISDIR(path_stat.st_mode)) {
+    // Path is not a directory
+    fprintf(stdout, "%s: Not a directory\n", arg);
+    return;
+  }
 
-    // Change the working directory
-    if (chdir(arg) != 0) {
-        // chdir failed for some other reason
-        fprintf(stdout, "%s: Failed to change directory\n", arg);
-    }
-
+  // Change the working directory
+  if (chdir(arg) != 0) {
+    // chdir failed for some other reason
+    fprintf(stdout, "%s: Failed to change directory\n", arg);
+  }
 }
-
 
 /**
    Tokenise a string using a series of delimeters
@@ -123,25 +115,23 @@ char **tokeniseString(char *str) {
     if (*token != '\0') {
       arguments[i] = strdup(token);
       if (!arguments[i]) {
-	for (int j = 0; j < i; j++) {
-	  free(arguments[j]);
-	}
-	free(arguments);
-	free(copy_str);
-	fprintf(stderr, "Failed to allocate memory for arguments");
-	return NULL;
+        for (int j = 0; j < i; j++) {
+          free(arguments[j]);
+        }
+        free(arguments);
+        free(copy_str);
+        fprintf(stderr, "Failed to allocate memory for arguments");
+        return NULL;
       }
       i++;
     }
     token = strtok(NULL, TOKEN_DELIMITERS);
-    
   }
-  
+
   arguments[i] = NULL;
   free(copy_str);
   return arguments;
 }
-
 
 /**
    Free the arguments of the command input
@@ -151,7 +141,7 @@ char **freeArguments(char **arguments) {
   if (!arguments) {
     return NULL;
   }
-  
+
   // Free each string
   for (int i = 0; arguments[i] != NULL; i++) {
     free(arguments[i]);
@@ -163,8 +153,6 @@ char **freeArguments(char **arguments) {
   return NULL;
 }
 
-
-
 /**
    Returns 1 if strings match
 */
@@ -172,9 +160,8 @@ int compareStrings(char *x, char *y) {
   if (!x || !y) {
     return 0;
   }
-  return (strcmp(x, y) == 0);  
+  return (strcmp(x, y) == 0);
 }
-
 
 /**
    Pipe external commands
@@ -185,35 +172,33 @@ int compareStrings(char *x, char *y) {
 
    "Command not found" handling is found here
 */
-void externalCommands(char **args) {  
+void externalCommands(char **args) {
   // Create a new process with fork and give it an ID (child)
   // and a parent ID
   pid_t pid = fork();
-  
+
   // Fork failed
-  if (pid == -1) {  
+  if (pid == -1) {
     fprintf(stdout, "fork failed");
     return;
   }
-  
+
   // pid = 0 is the child process
   if (pid == 0) {
-     
+
     // Execute first argument as a command, with all other arguments
     // as *that* command's arguments
     if (execvp(args[0], args) == -1) {
-      fprintf(stderr , "%s: command not found\n", args[0]);
+      fprintf(stderr, "%s: command not found\n", args[0]);
       _exit(1);
-      
     }
   }
   // Parent waits for the child to finish (pid has changed state)
-  else {  
+  else {
     int status;
     waitpid(pid, &status, 0);
   }
 }
-
 
 /**
    Trim leading and trailing whitespace from a string
@@ -222,21 +207,22 @@ char *trimWhitespace(char *str) {
   char *end;
 
   // Trim leading space
-  while(isspace((unsigned char)*str)) str++;
+  while (isspace((unsigned char)*str))
+    str++;
 
-  if(*str == 0)  // All spaces?
+  if (*str == 0) // All spaces?
     return str;
 
   // Trim trailing space
   end = str + strlen(str) - 1;
-  while(end > str && isspace((unsigned char)*end)) end--;
+  while (end > str && isspace((unsigned char)*end))
+    end--;
 
   // Write new null terminator character
   end[1] = '\0';
 
   return str;
 }
-
 
 /**
    Returns 1 if the string is empty
@@ -252,25 +238,23 @@ int isEmptyOrWhitespace(const char *s) {
   return 1;
 }
 
-
-
 /**
    Create a node of the newest command and add it to
    the beginning of history
 */
-DNode* addToHistory(DNode* head_history, char **tokens) {
+DNode *addToHistory(DNode *head_history, char **tokens) {
   if (!tokens || !*tokens) {
     return head_history;
   }
-    
-  if (compareStrings(tokens[0], "exit")) {      
+
+  if (compareStrings(tokens[0], "exit")) {
     return head_history;
   }
 
   if (compareStrings(tokens[0], "alias") && tokens[1] != NULL) {
     return head_history;
   }
-  
+
   // Avoid duplicates
   if (head_history && compareStringArrays(head_history->arguments, tokens)) {
     return head_history;
@@ -283,7 +267,7 @@ DNode* addToHistory(DNode* head_history, char **tokens) {
   }
 
   // Allocate memory for arguments array
-  char** args = malloc((arg_count + 1) * sizeof(char*));
+  char **args = malloc((arg_count + 1) * sizeof(char *));
   if (!args) {
     fprintf(stderr, "Failed to allocate memory for arguments\n");
     return head_history;
@@ -303,17 +287,17 @@ DNode* addToHistory(DNode* head_history, char **tokens) {
     if (!args[i]) {
       fprintf(stderr, "Failed to allocate memory for an argument\n");
       for (int j = 0; j < i; j++) {
-	free(args[j]);
+        free(args[j]);
       }
       free(args);
       return head_history;
     }
   }
 
-  args[arg_count] = NULL;  // NULL-terminate the array
-  
+  args[arg_count] = NULL; // NULL-terminate the array
+
   DNode *new_head = doubleListInsertNodeAtBeginning(head_history, args);
-  
+
   // Delete oldest node if history exceeds MAX_NUM_HISTORY
   int size = 0;
   DNode *temp = new_head;
@@ -329,20 +313,19 @@ DNode* addToHistory(DNode* head_history, char **tokens) {
   return new_head;
 }
 
-
 /**
-   Returns 1 if arrays match 
+   Returns 1 if arrays match
 */
 int compareStringArrays(char **a, char **b) {
   if (!a || !b) {
     return 0;
   }
-  
+
   int i = 0;
   while (a[i] && b[i]) {
     // Mismatch found
     if (!compareStrings(a[i], b[i])) {
-      return 0; 
+      return 0;
     }
     i++;
   }
@@ -350,18 +333,18 @@ int compareStringArrays(char **a, char **b) {
   return a[i] == NULL && b[i] == NULL;
 }
 
-
 /**
    Invoke history from history list
 */
-char **invokeHistory(DNode *head_history, char *user_command, SNode *head_alias) {
+char **invokeHistory(DNode *head_history, char *user_command,
+                     SNode *head_alias) {
   DNode *current = head_history;
   if (current == NULL) {
     printf("No previous command in history\n");
     return NULL;
   }
 
- // Handle !! command - return most recent command
+  // Handle !! command - return most recent command
   if (compareStrings(user_command, "!!")) {
     // Fetch the most recent command from history
     char **recent_command = duplicateArguments(head_history->arguments);
@@ -380,7 +363,6 @@ char **invokeHistory(DNode *head_history, char *user_command, SNode *head_alias)
       return recent_command;
     }
   }
-
 
   // Convert string to number, skipping the '!'
   char *endptr;
@@ -418,7 +400,7 @@ char **invokeHistory(DNode *head_history, char *user_command, SNode *head_alias)
     return NULL;
   }
 
- // Check if the command is an alias
+  // Check if the command is an alias
   char **alias_arguments = invokeAlias(head_alias, current->arguments[0]);
   if (alias_arguments != NULL) {
     // If it's an alias, return the resolved command
@@ -435,20 +417,23 @@ char **invokeHistory(DNode *head_history, char *user_command, SNode *head_alias)
    pointing to the data in the linked list
 */
 char **duplicateArguments(char **args) {
-    if (args == NULL) return NULL;
+  if (args == NULL)
+    return NULL;
 
-    int count = 0;
-    while (args[count] != NULL) count++;
+  int count = 0;
+  while (args[count] != NULL)
+    count++;
 
-    char **copy = malloc((count + 1) * sizeof(char *));
-    if (!copy) return NULL;
+  char **copy = malloc((count + 1) * sizeof(char *));
+  if (!copy)
+    return NULL;
 
-    for (int i = 0; i < count; i++) {
-        copy[i] = strdup(args[i]);  // Duplicate each argument
-    }
-    copy[count] = NULL; // NULL terminate the array
+  for (int i = 0; i < count; i++) {
+    copy[i] = strdup(args[i]); // Duplicate each argument
+  }
+  copy[count] = NULL; // NULL terminate the array
 
-    return copy;
+  return copy;
 }
 
 /**
@@ -460,10 +445,7 @@ void exitRestorePath(char *path) {
     perror("setenv");
     return;
   }
-  
+
   printf("Restored PATH: %s\n", path);
   free(path);
 }
-
-
-
